@@ -5,7 +5,9 @@ Newest first. Each entry is one sync to `production site/`.
 ## v0.13.3 — 2026-09-11 — September 2026 edition
 `versions/cape-wine-atlas_2026-09-11_v0.13.3_september-2026-edition.html`
 
-- **Coastline, ridges and roads on every screen.** Both maps used a fixed 150-row dot grid, so on a laptop or phone the dots shrank to a grain and the thin source lines fell between them. The grid now keeps its dots at least ~4 px across (3.6 on the tactical maps), the tactical drawing is made at the canvas's own resolution with line weights tied to the dot pitch, and the chart's coast, ridges, roads and offshore soundings are redrawn from the atlas geometry over the texture at pitch-relative weights. Big screens change least (a slightly firmer coast).
+Small screens, refined rather than coarsened.
+- **Coast, ridges and roads on every screen.** The dot grid stays exactly as it was (the grain is the look). On top of the finished bake, the coast, ridges and roads are laid as dotted hairlines in the weight of the HUD geometry, fading in only as the dots get small: full on a phone, about half on a 13-inch laptop, nothing on a big screen. On the tactical maps the hairlines dissolve at the frame with the drawing's own edge fade.
+- **HUD geometry.** Rings, crosses, boot-screen circles and section frames keep their hairline weight but lift in tone on laptops and tablets (≈24 % white) and phones (≈32 %), so they read as they do on a large monitor.
 - "Explore the regions" set flat, in line with every other heading.
 
 ## v0.13.2 — 2026-09-11 — September 2026 edition

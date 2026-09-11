@@ -625,6 +625,26 @@
     #menuToggle, #soundToggle{ padding:6px 10px; font-size:9px; }
   }
 
+  /* ---------- HUD geometry on small and short screens ----------
+     The hairline rings, crosses and section frames are drawn at 14–16 % white: right on a large monitor,
+     lost on a phone in daylight or a 13-inch laptop. The weight stays hairline; only the tone lifts. */
+  @media (max-width:900px), (max-height:820px){
+    .motif-ring-line{ stroke:rgba(234,234,234,0.24); }
+    .motif-cross{ stroke:rgba(234,234,234,0.21); }
+    .pl-geo circle{ stroke:rgba(234,234,234,0.24); }
+    .pl-geo .cross{ stroke:rgba(234,234,234,0.21); }
+    .frame{ border-color:rgba(234,234,234,0.24); }
+  }
+  @media (max-width:640px){
+    .motif-ring-line{ stroke:rgba(234,234,234,0.32); stroke-width:0.7px; }
+    .motif-cross{ stroke:rgba(234,234,234,0.28); }
+    .motif-tick{ stroke:rgba(234,234,234,0.6); }
+    .pl-geo circle{ stroke:rgba(234,234,234,0.32); stroke-width:0.6; }
+    .pl-geo .cross{ stroke:rgba(234,234,234,0.28); }
+    .pl-geo .dot{ fill:rgba(234,234,234,0.55); }
+    .frame{ border-color:rgba(234,234,234,0.3); }
+  }
+
   /* ---------- PHONES & SMALL TABLETS ---------- */
   /* Everything above is the desktop composition; these rules re-stack it for a hand-held screen without
      changing the look: same type, same geometry, same gold — just one column and reachable targets. */

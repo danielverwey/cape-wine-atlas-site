@@ -642,6 +642,26 @@
     #menuToggle, #soundToggle{ padding:6px 10px; font-size:9px; }
   }
 
+  /* ---------- HUD geometry on small and short screens ----------
+     The hairline rings, crosses and section frames are drawn at 14–16 % white: right on a large monitor,
+     lost on a phone in daylight or a 13-inch laptop. The weight stays hairline; only the tone lifts. */
+  @media (max-width:900px), (max-height:820px){
+    .motif-ring-line{ stroke:rgba(234,234,234,0.24); }
+    .motif-cross{ stroke:rgba(234,234,234,0.21); }
+    .pl-geo circle{ stroke:rgba(234,234,234,0.24); }
+    .pl-geo .cross{ stroke:rgba(234,234,234,0.21); }
+    .frame{ border-color:rgba(234,234,234,0.24); }
+  }
+  @media (max-width:640px){
+    .motif-ring-line{ stroke:rgba(234,234,234,0.32); stroke-width:0.7px; }
+    .motif-cross{ stroke:rgba(234,234,234,0.28); }
+    .motif-tick{ stroke:rgba(234,234,234,0.6); }
+    .pl-geo circle{ stroke:rgba(234,234,234,0.32); stroke-width:0.6; }
+    .pl-geo .cross{ stroke:rgba(234,234,234,0.28); }
+    .pl-geo .dot{ fill:rgba(234,234,234,0.55); }
+    .frame{ border-color:rgba(234,234,234,0.3); }
+  }
+
   /* ---------- PHONES & SMALL TABLETS ---------- */
   /* Everything above is the desktop composition; these rules re-stack it for a hand-held screen without
      changing the look: same type, same geometry, same gold — just one column and reachable targets. */
@@ -2059,9 +2079,27 @@ USE OR OTHER DEALINGS IN THE SOFTWARE.
   // and the coastline, ridges and roads — thin lines in the source — fell between them. The grid now
   // keeps its dots at least ~4 px across (fewer rows on a small canvas), and where the dots are small
   // the source is spread and brightened a little so a thin line still fills its dot.
-  function gridRows(ch, minPitch){ return Math.max(56, Math.min(150, Math.round(ch / (minPitch || 4.2)))); }
-  function fineBlur(pitch){ return pitch < 5.5 ? +(pitch * 0.32).toFixed(2) : 0; }
-  function fineBoost(pitch){ return pitch < 5.5 ? 1 + (5.5 - pitch) * 0.12 : 1; }
+  function gridRows(){ return 150; }                       // the fine grid, on every screen — the grain is the look
+  function fineBlur(){ return 0; }
+  function fineBoost(){ return 1; }
+  // On a phone or a laptop the dots are too small for the map's thin lines to survive the dot-screen. Rather
+  // than coarsen the grid, the coast, ridges and roads are laid over the finished bake as hairlines — the
+  // same weight as the HUD geometry on the other pages — dotted so they still read as part of the screen.
+  // Strength fades to nothing as the dots grow: a big screen shows exactly what it showed before.
+  function hairlineStrength(pitch){ return Math.max(0, Math.min(1, (6.2 - pitch) / 3.2)); }
+  function overlayLines(g, W, H, box, pitch){
+    const s = hairlineStrength(pitch); if(!GEO || s <= 0) return;
+    const P = (lon, lat) => [ (lon - box.lon0)/(box.lon1 - box.lon0) * W, (lat - box.lat0)/(box.lat1 - box.lat0) * H ];
+    const stroke = (pts, alpha, width, dash) => {
+      g.strokeStyle = `rgba(255,255,255,${(alpha * s).toFixed(3)})`; g.lineWidth = width; g.setLineDash(dash);
+      g.beginPath(); pts.forEach((p, i) => { const q = P(p[0], p[1]); i ? g.lineTo(q[0], q[1]) : g.moveTo(q[0], q[1]); }); g.stroke();
+    };
+    g.save(); g.globalCompositeOperation = 'lighter'; g.lineCap = 'round'; g.lineJoin = 'round';
+    GEO.ridges.forEach(r => stroke(r, 0.55, 0.8, [1, 2.6]));
+    GEO.roads.forEach(r => stroke(r, 0.5, 0.7, [2.4, 2.4]));
+    stroke(GEO.coast, 0.9, 1.1, [1.6, 2.2]);
+    g.restore(); g.setLineDash([]);
+  }
 
   function makeDisc(dPx){
     // soft-edged disc sprite, like the shader's circle(): solid core, short alpha ramp at the rim, faint rim highlight
@@ -2306,21 +2344,7 @@ USE OR OTHER DEALINGS IN THE SOFTWARE.
     mtex.onload = () => { mready = true; bakeMap(); };
     mtex.src = MAP_TEX_SRC;
 
-    // the chart's own coast, ridges and roads, redrawn over the texture at weights tied to the dot pitch
-    // (the texture's lines are fixed pixels: fine on a big screen, lost between the dots on a small one)
     const CHART_BOX = { lon0: 17.6, lon1: 23.75, lat0: 31.25, lat1: 35.05 };
-    function overlayGeo(g, W, H, pitch){
-      if(!GEO) return;
-      const P = (lon, lat) => [ (lon - CHART_BOX.lon0)/(CHART_BOX.lon1 - CHART_BOX.lon0) * W, (lat - CHART_BOX.lat0)/(CHART_BOX.lat1 - CHART_BOX.lat0) * H ];
-      const stroke = (pts, alpha, width) => { g.strokeStyle = `rgba(255,255,255,${alpha})`; g.lineWidth = width; g.lineCap = 'round'; g.lineJoin = 'round'; g.beginPath(); pts.forEach((p, i) => { const q = P(p[0], p[1]); i ? g.lineTo(q[0], q[1]) : g.moveTo(q[0], q[1]); }); g.stroke(); };
-      const k = W / 1100;
-      g.save(); g.globalCompositeOperation = 'lighter';
-      [[10, 0.10], [22, 0.06], [36, 0.04]].forEach(([w, al]) => stroke(GEO.coast, al, w * k));   // offshore soundings
-      GEO.ridges.forEach(r => stroke(r, 0.45, Math.max(0.9, pitch * 0.45)));
-      GEO.roads.forEach(r => stroke(r, 0.42, Math.max(0.9, pitch * 0.4)));
-      stroke(GEO.coast, 0.9, Math.max(1.4, pitch * 0.75));
-      g.restore();
-    }
     function bakeMap(){
       if(!mready) return;
       const dpr = Math.min(window.devicePixelRatio || 1, 2);
@@ -2346,8 +2370,7 @@ USE OR OTHER DEALINGS IN THE SOFTWARE.
       // layer = texture × mask, then a bloom pass
       const layer = document.createElement('canvas'); layer.width = mc.width; layer.height = mc.height;
       const lc = layer.getContext('2d'); lc.setTransform(dpr, 0, 0, dpr, 0, 0);
-      drawFiltered(lc, mtex, { brightness: 1.25 * fineBoost(pitch), contrast: 1.1, blur: fineBlur(pitch) }, 0, 0, cw, ch);
-      overlayGeo(lc, cw, ch, pitch);
+      drawFiltered(lc, mtex, { brightness: 1.25, contrast: 1.1 }, 0, 0, cw, ch);
       lc.setTransform(1, 0, 0, 1, 0, 0); lc.globalCompositeOperation = 'destination-in'; lc.drawImage(mask, 0, 0);
       mctx.setTransform(1, 0, 0, 1, 0, 0);
       mctx.fillStyle = '#000'; mctx.fillRect(0, 0, mc.width, mc.height);
@@ -2355,6 +2378,7 @@ USE OR OTHER DEALINGS IN THE SOFTWARE.
       mctx.globalCompositeOperation = 'lighter'; mctx.globalAlpha = 0.55;
       drawFiltered(mctx, layer, { blur: Math.max(2, pitch * 0.8 * dpr), contrast: 1.5 }, 0, 0);
       mctx.globalAlpha = 1; mctx.globalCompositeOperation = 'source-over';
+      mctx.setTransform(dpr, 0, 0, dpr, 0, 0); overlayLines(mctx, cw, ch, CHART_BOX, pitch); mctx.setTransform(1, 0, 0, 1, 0, 0);
     }
     window.addEventListener('resize', bakeMap);
     setTimeout(bakeMap, 50);
@@ -2550,10 +2574,9 @@ USE OR OTHER DEALINGS IN THE SOFTWARE.
     const cw = cv.clientWidth, ch = cv.clientHeight; if(!cw || !ch) return;
     cv.width = Math.round(cw*dpr); cv.height = Math.round(ch*dpr);
     const x = cv.getContext('2d');
-    const ny = gridRows(ch, 3.6), nx = Math.round(ny * cw / ch), pitch = cw / nx;
-    // the tactical drawing is made at the canvas's own resolution, with its line weights tied to the dot pitch
-    const tex = document.createElement('canvas'); tex.width = Math.max(760, cv.width); tex.height = Math.round(tex.width * ch / cw);
-    drawTactical(tex, R, tacticalBox, pitch * tex.width / cw);
+    const ny = gridRows(ch), nx = Math.round(ny * cw / ch), pitch = cw / nx;
+    const tex = document.createElement('canvas'); tex.width = 760; tex.height = 915;
+    drawTactical(tex, R, tacticalBox);
     const sc = document.createElement('canvas'); sc.width = nx; sc.height = ny;
     const sx = sc.getContext('2d'); sx.drawImage(tex, 0, 0, nx, ny);
     const id = sx.getImageData(0, 0, nx, ny).data;
@@ -2567,13 +2590,20 @@ USE OR OTHER DEALINGS IN THE SOFTWARE.
     }
     const layer = document.createElement('canvas'); layer.width = cv.width; layer.height = cv.height;
     const lc = layer.getContext('2d'); lc.setTransform(dpr,0,0,dpr,0,0);
-    drawFiltered(lc, tex, { brightness: 1.6 * fineBoost(pitch), contrast: 1.15, blur: fineBlur(pitch) }, 0, 0, cw, ch);
+    drawFiltered(lc, tex, { brightness: 1.6, contrast: 1.15 }, 0, 0, cw, ch);
     lc.setTransform(1,0,0,1,0,0); lc.globalCompositeOperation = 'destination-in'; lc.drawImage(mask, 0, 0);
     x.fillStyle = '#000'; x.fillRect(0,0,cv.width,cv.height);
     x.drawImage(layer, 0, 0);
     x.globalCompositeOperation = 'lighter'; x.globalAlpha = 0.65;
     drawFiltered(x, layer, { blur: Math.max(2, pitch*0.8*dpr), contrast: 1.5 }, 0, 0);
     x.globalAlpha = 1; x.globalCompositeOperation = 'source-over';
+    x.setTransform(dpr, 0, 0, dpr, 0, 0); overlayLines(x, cw, ch, tacticalBox, pitch);
+    if(hairlineStrength(pitch) > 0){   // the same edge fade the drawing has, so the hairlines dissolve at the frame rather than run to it
+      const fh = x.createLinearGradient(0,0,cw,0); fh.addColorStop(0,'rgba(0,0,0,.9)'); fh.addColorStop(.12,'rgba(0,0,0,0)'); fh.addColorStop(.88,'rgba(0,0,0,0)'); fh.addColorStop(1,'rgba(0,0,0,.9)');
+      const fv = x.createLinearGradient(0,0,0,ch); fv.addColorStop(0,'rgba(0,0,0,.9)'); fv.addColorStop(.1,'rgba(0,0,0,0)'); fv.addColorStop(.9,'rgba(0,0,0,0)'); fv.addColorStop(1,'rgba(0,0,0,.9)');
+      x.fillStyle = fh; x.fillRect(0,0,cw,ch); x.fillStyle = fv; x.fillRect(0,0,cw,ch);
+    }
+    x.setTransform(1, 0, 0, 1, 0, 0);
     const kmAcross = (tacticalBox.lon1 - tacticalBox.lon0) * 111.32 * Math.cos(33.9*Math.PI/180);
     const sb = document.querySelector('#rvMap .scale'); if(sb){ const km = kmAcross > 40 ? 10 : kmAcross > 12 ? 5 : 1; sb.querySelector('i').style.width = (cw * km / kmAcross).toFixed(1) + 'px'; sb.querySelector('span').textContent = `≈ ${km} KM`; }
   }

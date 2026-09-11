@@ -2,6 +2,14 @@
 
 Newest first. Each entry is one sync to `production site/`.
 
+## v0.13.1 — 2026-09-11 — September 2026 edition
+`versions/cape-wine-atlas_2026-09-11_v0.13.1_september-2026-edition.html`
+
+Short laptop screens (13-inch, ~700–770 px tall). The chart's size was tied only to the width, so on a wide, short screen it ran off the bottom and the region index ran under the footer line.
+- The chart now also scales with the viewport height and sits under the title on any laptop.
+- The region index scrolls within itself when 31 rows will not fit, and tightens slightly below 820 px tall.
+- No change on phones or on 900 px+ screens.
+
 ## v0.13.0 — 2026-09-11 — September 2026 edition
 `versions/cape-wine-atlas_2026-09-11_v0.13.0_september-2026-edition.html`
 

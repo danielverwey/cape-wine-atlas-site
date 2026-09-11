@@ -381,7 +381,7 @@
     overflow:visible;
   }
   .map-plane{
-    position:absolute; left:calc(50% - 90px); top:-16%; width:min(84vw, 1200px); aspect-ratio:1100/816;
+    position:absolute; left:calc(50% - 90px); top:-16%; width:min(84vw, 1200px, calc((100vh - 360px) * 2.2)); aspect-ratio:1100/816;   /* the projected chart is about half its width tall: on a short laptop screen it shrinks to fit under the title */
     transform-origin:50% 50%;
     transform:translateX(-50%) rotateX(62deg) rotateZ(-3deg) scale(1);
     transform-style:preserve-3d;
@@ -432,7 +432,9 @@
     position:absolute; right:40px; top:250px; z-index:6; width:236px; background:rgba(6,6,6,0.72); padding:6px 8px; border:1px solid rgba(234,234,234,0.06);
     font-size:9.5px; letter-spacing:.12em; color:var(--muted); line-height:1.75;
     opacity:0; transition:opacity .8s ease .4s; pointer-events:none;
+    max-height:calc(100vh - 290px); overflow-y:auto; scrollbar-width:thin; scrollbar-color:#333 transparent;   /* 31 rows do not fit a short laptop screen: the index scrolls rather than running under the footer line */
   }
+  @media (max-height:820px) and (min-width:901px){ .region-list{ top:215px; line-height:1.55; } .ex-head{ padding-top:80px; } }
   #explore.visible .region-list{ opacity:1; pointer-events:auto; }
   .region-list .rl-head{ color:#bdbdbd; border-bottom:1px dashed var(--line); padding-bottom:6px; margin-bottom:6px; display:flex; justify-content:space-between; }
   .region-list .rl{ display:flex; justify-content:space-between; gap:8px; cursor:default; padding:0 4px; margin:0 -4px; }
@@ -634,7 +636,7 @@
     .orb{ transform:translate(-50%,-50%) scale(calc(var(--sc,1) * .72)); }
     .orb.live::after{ display:none; }
     .map-card{ display:none; }
-    .region-list{ display:block; position:static; width:auto; margin:0 20px; padding:8px 10px; font-size:10px; line-height:2.3; background:rgba(6,6,6,0.5); }
+    .region-list{ display:block; position:static; width:auto; margin:0 20px; padding:8px 10px; font-size:10px; line-height:2.3; background:rgba(6,6,6,0.5); max-height:none; overflow:visible; }
     .region-list .rl{ padding:1px 6px; margin:0 -6px; }
     .map-hint{ position:static; margin:14px 20px 0; font-size:9px; line-height:1.8; }
   }

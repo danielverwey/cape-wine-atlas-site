@@ -376,6 +376,14 @@
     ctx.drawImage(img, dx, dy, dw, dh);
   }
 
+  // The charts used a fixed 150-row grid, so on a phone or a 13-inch laptop the dots shrank to a grain
+  // and the coastline, ridges and roads — thin lines in the source — fell between them. The grid now
+  // keeps its dots at least ~4 px across (fewer rows on a small canvas), and where the dots are small
+  // the source is spread and brightened a little so a thin line still fills its dot.
+  function gridRows(ch, minPitch){ return Math.max(56, Math.min(150, Math.round(ch / (minPitch || 4.2)))); }
+  function fineBlur(pitch){ return pitch < 5.5 ? +(pitch * 0.32).toFixed(2) : 0; }
+  function fineBoost(pitch){ return pitch < 5.5 ? 1 + (5.5 - pitch) * 0.12 : 1; }
+
   function makeDisc(dPx){
     // soft-edged disc sprite, like the shader's circle(): solid core, short alpha ramp at the rim, faint rim highlight
     const s = document.createElement('canvas');
@@ -619,13 +627,28 @@
     mtex.onload = () => { mready = true; bakeMap(); };
     mtex.src = MAP_TEX_SRC;
 
+    // the chart's own coast, ridges and roads, redrawn over the texture at weights tied to the dot pitch
+    // (the texture's lines are fixed pixels: fine on a big screen, lost between the dots on a small one)
+    const CHART_BOX = { lon0: 17.6, lon1: 23.75, lat0: 31.25, lat1: 35.05 };
+    function overlayGeo(g, W, H, pitch){
+      if(!GEO) return;
+      const P = (lon, lat) => [ (lon - CHART_BOX.lon0)/(CHART_BOX.lon1 - CHART_BOX.lon0) * W, (lat - CHART_BOX.lat0)/(CHART_BOX.lat1 - CHART_BOX.lat0) * H ];
+      const stroke = (pts, alpha, width) => { g.strokeStyle = `rgba(255,255,255,${alpha})`; g.lineWidth = width; g.lineCap = 'round'; g.lineJoin = 'round'; g.beginPath(); pts.forEach((p, i) => { const q = P(p[0], p[1]); i ? g.lineTo(q[0], q[1]) : g.moveTo(q[0], q[1]); }); g.stroke(); };
+      const k = W / 1100;
+      g.save(); g.globalCompositeOperation = 'lighter';
+      [[10, 0.10], [22, 0.06], [36, 0.04]].forEach(([w, al]) => stroke(GEO.coast, al, w * k));   // offshore soundings
+      GEO.ridges.forEach(r => stroke(r, 0.45, Math.max(0.9, pitch * 0.45)));
+      GEO.roads.forEach(r => stroke(r, 0.42, Math.max(0.9, pitch * 0.4)));
+      stroke(GEO.coast, 0.9, Math.max(1.4, pitch * 0.75));
+      g.restore();
+    }
     function bakeMap(){
       if(!mready) return;
       const dpr = Math.min(window.devicePixelRatio || 1, 2);
       const cw = plane.clientWidth, ch = plane.clientHeight;
       if(!cw || !ch) return;
       mc.width = Math.round(cw * dpr); mc.height = Math.round(ch * dpr);
-      const ny = 150, nx = Math.round(ny * cw / ch);
+      const ny = gridRows(ch), nx = Math.round(ny * cw / ch);
       const pitch = cw / nx;
       // per-cell brightness → which cells exist at all
       const sc = document.createElement('canvas'); sc.width = nx; sc.height = ny;
@@ -644,7 +667,8 @@
       // layer = texture × mask, then a bloom pass
       const layer = document.createElement('canvas'); layer.width = mc.width; layer.height = mc.height;
       const lc = layer.getContext('2d'); lc.setTransform(dpr, 0, 0, dpr, 0, 0);
-      drawFiltered(lc, mtex, { brightness: 1.25, contrast: 1.1 }, 0, 0, cw, ch);
+      drawFiltered(lc, mtex, { brightness: 1.25 * fineBoost(pitch), contrast: 1.1, blur: fineBlur(pitch) }, 0, 0, cw, ch);
+      overlayGeo(lc, cw, ch, pitch);
       lc.setTransform(1, 0, 0, 1, 0, 0); lc.globalCompositeOperation = 'destination-in'; lc.drawImage(mask, 0, 0);
       mctx.setTransform(1, 0, 0, 1, 0, 0);
       mctx.fillStyle = '#000'; mctx.fillRect(0, 0, mc.width, mc.height);
@@ -781,8 +805,12 @@
     const cx = (lon0+lon1)/2, cy = (lat0+lat1)/2;
     return { lon0: cx - w/2, lon1: cx + w/2, lat0: cy - h/2, lat1: cy + h/2 };
   }
-  function drawTactical(cv, R, box){
+  function drawTactical(cv, R, box, pitchTex){
     const W = cv.width, H = cv.height, g = cv.getContext('2d');
+    // line weights: the drawing was tuned at 760 px wide; scale with the canvas, and never thinner than a
+    // good fraction of a dot, so the coast, ridges and roads survive the dot-screen on a small screen
+    const k = W / 760, pt = pitchTex || 0;
+    const lw = (base, frac) => Math.max(base * k, frac * pt);
     const P = (lon, lat) => [ (lon - box.lon0)/(box.lon1 - box.lon0) * W, (lat - box.lat0)/(box.lat1 - box.lat0) * H ];
     const rnd = (() => { let s = 7; return () => { s = (s * 16807) % 2147483647; return s / 2147483647; }; })();
     g.fillStyle = '#000'; g.fillRect(0,0,W,H);
@@ -792,7 +820,8 @@
     const landPath = new Path2D(); land.forEach((p,i) => i ? landPath.lineTo(p[0],p[1]) : landPath.moveTo(p[0],p[1])); landPath.closePath();
     g.save(); g.clip(landPath);
     g.fillStyle = 'rgba(255,255,255,0.3)';
-    for(let i=0;i<W*H/380;i++){ g.globalAlpha = 0.5 + 0.5*rnd(); g.fillRect(rnd()*W, rnd()*H, 1.4, 1.4); }
+    const sp = lw(1.4, 0.3);
+    for(let i=0;i<W*H/380;i++){ g.globalAlpha = 0.5 + 0.5*rnd(); g.fillRect(rnd()*W, rnd()*H, sp, sp); }
     g.globalAlpha = 1; g.restore();
     const smooth = pts => { const out=[]; for(let i=0;i<pts.length-1;i++){ const a=pts[i], b=pts[i+1]; for(let t=0;t<1;t+=0.1) out.push([a[0]+(b[0]-a[0])*t, a[1]+(b[1]-a[1])*t]); } out.push(pts[pts.length-1]); return out; };
     const line = (pts, alpha, width, dash) => {
@@ -803,31 +832,32 @@
     };
     // offshore soundings: three faint dotted echoes of the coast, offset seaward is hard — use dashed parallel strokes via wider translucent lines
     g.save(); g.globalCompositeOperation = 'destination-over';
-    [[10,0.10],[22,0.06],[36,0.04]].forEach(([w,a]) => line(GEO.coast, a, w, 0));
+    [[10,0.10],[22,0.06],[36,0.04]].forEach(([w,a]) => line(GEO.coast, a, w * k, 0));
     g.restore();
     // ridges: hatched
     GEO.ridges.forEach(r => {
-      const q = line(r, 0.45, 1.2, 0);
+      const q = line(r, 0.55, lw(1.2, 0.45), 0);
       for(let i=0;i<q.length-1;i+=3){
         const a=q[i], b=q[i+1]; let nx=-(b[1]-a[1]), ny=b[0]-a[0]; const l=Math.hypot(nx,ny)||1; nx/=l; ny/=l;
         const L = (W/26) * (0.5 + rnd());
-        g.strokeStyle = `rgba(255,255,255,${0.35+0.4*rnd()})`; g.lineWidth = 1;
+        g.strokeStyle = `rgba(255,255,255,${0.35+0.4*rnd()})`; g.lineWidth = lw(1, 0.35);
         g.beginPath(); g.moveTo(a[0]-nx*L*0.2, a[1]-ny*L*0.2); g.lineTo(a[0]+nx*L, a[1]+ny*L); g.stroke();
       }
     });
-    GEO.roads.forEach(r => line(r, 0.5, 1, 0));
-    line(GEO.coast, 1, 2.6, 0);
+    GEO.roads.forEach(r => line(r, 0.55, lw(1, 0.4), 0));
+    line(GEO.coast, 1, lw(2.6, 0.7), 0);
     // vineyard stipple around each producer
     R.farms.filter(f => f.lat != null).forEach(f => {
       const [x,y] = P(f.lng, -f.lat); const rx = W*(0.035+0.03*rnd()), ry = rx*(0.6+0.4*rnd()), rot = rnd()*Math.PI;
       for(let i=0;i<220;i++){ const a=rnd()*Math.PI*2, d=Math.sqrt(rnd()); const px=Math.cos(a)*rx*d, py=Math.sin(a)*ry*d;
-        g.fillStyle = `rgba(255,255,255,${0.45+0.55*rnd()})`; g.fillRect(x+px*Math.cos(rot)-py*Math.sin(rot), y+px*Math.sin(rot)+py*Math.cos(rot), 1.5, 1.5); }
+        const sq = lw(1.5, 0.32); g.fillStyle = `rgba(255,255,255,${0.45+0.55*rnd()})`; g.fillRect(x+px*Math.cos(rot)-py*Math.sin(rot), y+px*Math.sin(rot)+py*Math.cos(rot), sq, sq); }
     });
     // graticule
     const span = box.lon1 - box.lon0; const step = span > 1.2 ? 0.5 : span > 0.5 ? 0.2 : span > 0.2 ? 0.1 : 0.02;
     g.fillStyle = 'rgba(255,255,255,0.3)';
-    for(let lon = Math.ceil(box.lon0/step)*step; lon < box.lon1; lon += step){ const x = P(lon,0)[0]; for(let y=0;y<H;y+=3) if(rnd()<0.35) g.fillRect(x, y, 1, 1); }
-    for(let lat = Math.ceil(box.lat0/step)*step; lat < box.lat1; lat += step){ const y = P(0,lat)[1]; for(let x=0;x<W;x+=3) if(rnd()<0.35) g.fillRect(x, y, 1, 1); }
+    const gq = lw(1, 0.25), gs = Math.max(3, Math.round(3 * k));
+    for(let lon = Math.ceil(box.lon0/step)*step; lon < box.lon1; lon += step){ const x = P(lon,0)[0]; for(let y=0;y<H;y+=gs) if(rnd()<0.35) g.fillRect(x, y, gq, gq); }
+    for(let lat = Math.ceil(box.lat0/step)*step; lat < box.lat1; lat += step){ const y = P(0,lat)[1]; for(let x=0;x<W;x+=gs) if(rnd()<0.35) g.fillRect(x, y, gq, gq); }
     // edge fade
     const fade = g.createLinearGradient(0,0,W,0); fade.addColorStop(0,'rgba(0,0,0,.9)'); fade.addColorStop(.12,'rgba(0,0,0,0)'); fade.addColorStop(.88,'rgba(0,0,0,0)'); fade.addColorStop(1,'rgba(0,0,0,.9)');
     g.fillStyle = fade; g.fillRect(0,0,W,H);
@@ -839,11 +869,12 @@
     const cv = document.getElementById('miniCanvas'); if(!cv) return;
     const dpr = Math.min(window.devicePixelRatio || 1, 2);
     const cw = cv.clientWidth, ch = cv.clientHeight; if(!cw || !ch) return;
-    const tex = document.createElement('canvas'); tex.width = 760; tex.height = 915;
-    drawTactical(tex, R, tacticalBox);
     cv.width = Math.round(cw*dpr); cv.height = Math.round(ch*dpr);
     const x = cv.getContext('2d');
-    const ny = 150, nx = Math.round(ny * cw / ch), pitch = cw / nx;
+    const ny = gridRows(ch, 3.6), nx = Math.round(ny * cw / ch), pitch = cw / nx;
+    // the tactical drawing is made at the canvas's own resolution, with its line weights tied to the dot pitch
+    const tex = document.createElement('canvas'); tex.width = Math.max(760, cv.width); tex.height = Math.round(tex.width * ch / cw);
+    drawTactical(tex, R, tacticalBox, pitch * tex.width / cw);
     const sc = document.createElement('canvas'); sc.width = nx; sc.height = ny;
     const sx = sc.getContext('2d'); sx.drawImage(tex, 0, 0, nx, ny);
     const id = sx.getImageData(0, 0, nx, ny).data;
@@ -857,7 +888,7 @@
     }
     const layer = document.createElement('canvas'); layer.width = cv.width; layer.height = cv.height;
     const lc = layer.getContext('2d'); lc.setTransform(dpr,0,0,dpr,0,0);
-    drawFiltered(lc, tex, { brightness: 1.6, contrast: 1.15 }, 0, 0, cw, ch);
+    drawFiltered(lc, tex, { brightness: 1.6 * fineBoost(pitch), contrast: 1.15, blur: fineBlur(pitch) }, 0, 0, cw, ch);
     lc.setTransform(1,0,0,1,0,0); lc.globalCompositeOperation = 'destination-in'; lc.drawImage(mask, 0, 0);
     x.fillStyle = '#000'; x.fillRect(0,0,cv.width,cv.height);
     x.drawImage(layer, 0, 0);

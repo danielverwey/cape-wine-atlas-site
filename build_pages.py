@@ -250,10 +250,10 @@ def prerender(R):
     tours = ''.join(tour_html(t) for t in R['tours']) or '<div class="tour"><span class="t mono">NO TOUR OPERATOR IS YET LISTED FOR THIS ROUTE</span></div>'
     comps = ' · '.join(f'{esc(c["body"])} {c["year"]}' for c in S['competitions'])
     return f'''
-      <header class="rv-head">
+      <div class="rv-head">
         <div>
           <div class="rv-eyebrow mono">{eyebrow}</div>
-          <h2 class="display">{esc(R['name'])}</h2>
+          <h2 class="display" id="rvTitle" tabindex="-1">{esc(R['name'])}</h2>
           <p class="rv-lede" id="rvLede">{esc(R['lede'])}</p>
           <div class="rv-stats mono">
             <div><span class="v">{len(farms)}</span><span class="k">PRODUCERS ON RECORD</span></div>
@@ -267,10 +267,10 @@ def prerender(R):
           </div>
           {f'<div class="rv-withheld mono">{R["withheld"]} FURTHER {"RECORD IS" if R["withheld"] == 1 else "RECORDS ARE"} HELD BACK UNTIL {"IT MEETS" if R["withheld"] == 1 else "THEY MEET"} THE PUBLICATION STANDARD</div>' if R['withheld'] else ''}
         </div>
-        <div class="rv-map" id="rvMap"><canvas id="miniCanvas"></canvas><span class="corner tl"></span><span class="corner br"></span>
+        <div class="rv-map" id="rvMap"><canvas id="miniCanvas" role="img" aria-label="Tactical map of {esc(R['name'])}: producers with a published position"></canvas><span class="corner tl"></span><span class="corner br"></span>
           <div class="hud mono">TACTICAL · {esc(R['name'].upper())}<br><b>{pinned}/{len(farms)}</b> POSITIONS LOCATED</div>
           <div class="scale mono"><i style="width:60px"></i><span>≈ 1 KM</span></div></div>
-      </header>
+      </div>
       <section class="rv-block">
         <h3 class="mono"><span class="h3l">PRODUCER RECORDS <span>{len(farms)} ON RECORD · {esc(STATUS.get(R['status'], R['status']).upper())}</span></span></h3>
         <div class="rv-grid" id="recGrid">{''.join(recs)}</div>
@@ -290,7 +290,7 @@ def prerender(R):
           {f'<h4 class="mono" style="margin-top:26px">TERROIR</h4><p>{esc(R["terroir"])}</p>' if (R['terroir'] and R['lede'] != R['terroir']) else ''}
         </div>
       </section>
-      <footer class="rv-foot mono"><span>THE ATLAS RECORD · {EDITION}</span><span>DATA UNDER ODbL 1.0 · CONTAINS INFORMATION FROM OPENSTREETMAP, © OPENSTREETMAP CONTRIBUTORS</span><span>{' · '.join([*chain, *([esc(ward.upper())] if ward else [])]) or esc(R['name'].upper())}</span><span>RECORDS GATHERED {esc(R['collected'] or '—')}</span><span>ACROSS THE ATLAS · {S['farms']} FARMS · {S['regions']} REGIONS · {S['verifiedAwards']} HONOURS VERIFIED</span></footer>'''
+      <div class="rv-foot mono"><span>THE ATLAS RECORD · {EDITION}</span><span>DATA UNDER ODbL 1.0 · CONTAINS INFORMATION FROM OPENSTREETMAP, © OPENSTREETMAP CONTRIBUTORS</span><span>{' · '.join([*chain, *([esc(ward.upper())] if ward else [])]) or esc(R['name'].upper())}</span><span>RECORDS GATHERED {esc(R['collected'] or '—')}</span><span>ACROSS THE ATLAS · {S['farms']} FARMS · {S['regions']} REGIONS · {S['verifiedAwards']} HONOURS VERIFIED</span></div>'''
 
 # ---------------------------------------------------------------- templating
 template = (SRC / 'index.template.html').read_text(encoding='utf-8')

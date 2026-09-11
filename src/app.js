@@ -51,7 +51,7 @@
   let pct = 0;
   const plInterval = setInterval(()=>{
     pct += Math.random()*9 + 4;
-    if(pct >= 100){ pct = 100; clearInterval(plInterval); enterBtn.classList.add('ready'); document.getElementById('plGeo').classList.add('show'); }
+    if(pct >= 100){ pct = 100; clearInterval(plInterval); enterBtn.classList.add('ready'); enterBtn.focus({ preventScroll: true }); document.getElementById('plGeo').classList.add('show'); }
     plPct.textContent = 'LOADING ' + Math.floor(pct) + ' / 100';
     plBar.style.width = pct + '%';
     const shown = Math.min(logLines.length, Math.ceil((pct/100)*logLines.length));
@@ -280,7 +280,8 @@
   const GRID_ROWS = 162;      // reference: 9 × 18 rows
   const DOT_D = 0.76;         // disc diameter as a fraction of the cell pitch
   const OVERSCAN = 1.10;      // bake the layer slightly larger than the viewport so zoom-out never shows edges
-  const BREATH_AMP = 10;      // ±10 world units toward/away from camera
+  const REDUCED_MOTION = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const BREATH_AMP = REDUCED_MOTION ? 0 : 10;      // ±10 world units toward/away from camera; still when the reader asks for less motion
   const BREATH_SPEED = 1.5;   // rad/s  → period ≈ 4.2 s
   const ENTRY_MS = 2500;
   const BLOOM_ALPHA = 0.55;
@@ -668,17 +669,21 @@
     const maxFarms = Math.max(...ATLAS.idx.map(r => r.farms));
     ATLAS.idx.forEach((r, i) => {
       const m = MAP_MARKS[r.key]; if(!m) return;
-      const o = document.createElement('div');
+      const o = document.createElement('button');
+      o.type = 'button';
       o.className = 'orb live';
       o.dataset.key = r.key;
+      o.setAttribute('aria-label', `${r.name} — ${r.farms} producer${r.farms === 1 ? '' : 's'}. Open the region`);
       const sc = 0.72 + 0.55 * Math.sqrt(r.farms / maxFarms);
       o.style.left = (m[0]*100).toFixed(2) + '%'; o.style.top = (m[1]*100).toFixed(2) + '%';
       o.style.setProperty('--sc', sc.toFixed(2));
       o.innerHTML = '<i></i><i></i><i></i><i></i>';
       o.style.transitionDelay = (0.04 * i) + 's';
       plane.appendChild(o);
-      const li = document.createElement('div');
+      const li = document.createElement('button');
+      li.type = 'button';
       li.className = 'rl'; li.dataset.key = r.key;
+      li.setAttribute('aria-label', `${r.name} — ${r.farms} producer${r.farms === 1 ? '' : 's'}. Open the region`);
       li.innerHTML = `<span class="n">${String(i+1).padStart(2,'0')} ${r.name.toUpperCase()}</span><span class="c">${r.farms}</span>`;
       listEl.appendChild(li);
       const show = () => {
@@ -695,7 +700,7 @@
           <span>AWARD RESEARCH</span><b>${r.researched} / ${r.farms}</b>
           ${r.withheld ? `<span>HELD BACK UNTIL THEY MEET THE STANDARD</span><b>${r.withheld}</b>` : ''}
           <span>STATUS</span><b>${STATUS_LABEL[r.status] || r.status.toUpperCase()}</b>
-        </div><div class="cta mono">CLICK TO OPEN THE REGION ▸</div>`;
+        </div><div class="cta mono">OPEN THE REGION ▸</div>`;
         document.getElementById('mcTags').innerHTML = '';
         card.classList.add('show');
       };
@@ -705,12 +710,14 @@
       };
       o.addEventListener('mouseenter', show); o.addEventListener('mouseleave', hide);
       li.addEventListener('mouseenter', show); li.addEventListener('mouseleave', hide);
+      o.addEventListener('focus', show); o.addEventListener('blur', hide); li.addEventListener('focus', show); li.addEventListener('blur', hide);
       li.addEventListener('click', () => openRegion(r.key));
     });
     // A press on the chart opens the marker nearest the finger or pointer, measured on screen after the
     // 3-D projection — so in the dense Stellenbosch / Cape Town cluster, and on a phone-sized chart,
     // the marker you aimed at wins rather than whichever overlapping hit-area happens to sit on top.
     plane.addEventListener('click', e => {
+      if (e.detail === 0){ const o = e.target.closest('.orb'); if (o){ e.stopPropagation(); openRegion(o.dataset.key); } return; }   // keyboard
       let best = null, bd = Infinity;
       plane.querySelectorAll('.orb').forEach(o => {
         const b = o.getBoundingClientRect();
@@ -865,7 +872,7 @@
       let side = p[0] < 55 ? 'r' : 'l', dy = 0;
       if(prev && Math.abs(prev.p[1] - p[1]) < 3.2 && Math.abs(prev.p[0] - p[0]) < 30){ dy = prev.dy <= 0 ? 9 : -9; side = prev.side === 'r' ? 'l' : 'r'; }
       prev = { p, dy, side };
-      return `<div class="pin${showLabels ? '' : ' quiet'}" data-id="${f.id}" style="left:${p[0].toFixed(2)}%;top:${p[1].toFixed(2)}%"><i></i><i></i><i></i><b class="${side}" style="margin-top:${dy}px">${esc(shortName(f.name))}</b></div>`;
+      return `<button type="button" class="pin${showLabels ? '' : ' quiet'}" data-id="${f.id}" aria-label="Show the record for ${esc(f.name)}" style="left:${p[0].toFixed(2)}%;top:${p[1].toFixed(2)}%"><i></i><i></i><i></i><b class="${side}" style="margin-top:${dy}px">${esc(shortName(f.name))}</b></button>`;
     }).join('');
 
     const ward = R.ward && !/\(/.test(R.ward) ? R.ward : null;
@@ -917,10 +924,10 @@
     const compList = S.competitions.map(c => `${esc(c.body)} ${c.year}`).join(' · ');
 
     rvScroll.innerHTML = `
-      <header class="rv-head">
+      <div class="rv-head">
         <div>
           <div class="rv-eyebrow mono">${[...chainTxt, ward ? esc(ward.toUpperCase()) + ' WARD' : null, R.routes[0] ? esc(R.routes[0].name.toUpperCase()) : null].filter(Boolean).join(' · ') || 'WESTERN CAPE'}</div>
-          <h2 class="display">${esc(R.name)}</h2>
+          <h2 class="display" id="rvTitle" tabindex="-1">${esc(R.name)}</h2>
           <p class="rv-lede" id="rvLede"></p>
           <div class="rv-stats mono">
             <div><span class="v">${farms.length}</span><span class="k">PRODUCERS ON RECORD</span></div>
@@ -935,18 +942,18 @@
           ${R.withheld ? `<div class="rv-withheld mono">${R.withheld} FURTHER ${R.withheld === 1 ? 'RECORD IS' : 'RECORDS ARE'} HELD BACK UNTIL ${R.withheld === 1 ? 'IT MEETS' : 'THEY MEET'} THE PUBLICATION STANDARD</div>` : ''}
         </div>
         <div class="rv-map" id="rvMap">
-          <canvas id="miniCanvas"></canvas>
+          <canvas id="miniCanvas" role="img" aria-label="Tactical map of ${esc(R.name)}: producers with a published position"></canvas>
           <span class="corner tl"></span><span class="corner br"></span>
           <div class="hud mono">TACTICAL · ${esc(R.name.toUpperCase())}<br><b>${pinned}/${farms.length}</b> POSITIONS LOCATED${pinned < farms.length ? `<br>${farms.length - pinned} AWAITING A PUBLISHED POSITION` : ''}</div>
           ${pins}
           ${pinned ? '' : '<div class="nopins mono">NO PUBLISHED POSITION YET<br>FOR THESE PRODUCERS</div>'}
           <div class="scale mono"><i style="width:60px"></i><span>≈ 1 KM</span></div>
         </div>
-      </header>
+      </div>
 
       <section class="rv-block">
         <h3 class="mono"><span class="h3l">PRODUCER RECORDS <span>${farms.length} ON RECORD · ${esc((STATUS_LABEL_RV[R.status]||R.status).toUpperCase())}</span></span>
-          <span class="h3r"><input class="mono" id="recFilter" placeholder="FILTER · NAME, WARD, GRAPE" autocomplete="off"><label class="mono"><input type="checkbox" id="recAwarded"> HONOURS ONLY</label></span></h3>
+          <span class="h3r"><input class="mono" id="recFilter" placeholder="FILTER · NAME, WARD, GRAPE" aria-label="Filter producers by name, ward or grape" autocomplete="off"><label class="mono"><input type="checkbox" id="recAwarded"> HONOURS ONLY</label></span></h3>
         <div class="rv-grid" id="recGrid">${recs}</div>
         <div class="rv-empty mono" id="recEmpty" hidden>NO RECORD MATCHES THAT FILTER</div>
       </section>
@@ -972,16 +979,16 @@
         </div>
       </section>
 
-      <footer class="rv-foot mono">
+      <div class="rv-foot mono">
         <span>THE ATLAS RECORD · ${esc(EDITION)}</span><span>DATA UNDER ODbL 1.0 · CONTAINS INFORMATION FROM OPENSTREETMAP, © OPENSTREETMAP CONTRIBUTORS</span><span>${[...chainTxt, ward ? esc(ward.toUpperCase()) : null].filter(Boolean).join(' · ') || esc(R.name.toUpperCase())}</span><span>RECORDS GATHERED ${esc(R.collected || '—')}</span><span>ACROSS THE ATLAS · ${S.farms} FARMS · ${S.regions} REGIONS · ${S.verifiedAwards} HONOURS VERIFIED</span>
-      </footer>`;
+      </div>`;
 
     // pin ↔ record highlighting
     rvScroll.querySelectorAll('.pin').forEach(p => {
       const rec = rvScroll.querySelector('#rec-' + p.dataset.id);
       p.addEventListener('mouseenter', () => { rec && rec.classList.add('hi'); });
       p.addEventListener('mouseleave', () => { rec && rec.classList.remove('hi'); });
-      p.addEventListener('click', () => { rec && rec.scrollIntoView({ behavior:'smooth', block:'center' }); });
+      p.addEventListener('click', () => { if(!rec) return; rec.scrollIntoView({ behavior: REDUCED_MOTION ? 'auto' : 'smooth', block:'center' }); rec.classList.add('hi'); setTimeout(() => rec.classList.remove('hi'), 1600); });
     });
     rvScroll.querySelectorAll('.rec').forEach(r => {
       const pin = rvScroll.querySelector(`.pin[data-id="${r.dataset.id}"]`);
@@ -1002,15 +1009,36 @@
 
   let rvOpen = false, rvKey = null;
   function regionPath(key){ return ROOT + 'region/' + key + '/'; }
+  /* ---- dialogs: focus goes in, stays in, and comes back out ---- */
+  const BEHIND = () => [document.getElementById('main'), document.getElementById('footer'), document.getElementById('chrome')].filter(Boolean);
+  let rvOpener = null, lvOpener = null;
+  function setBehindInert(on){ BEHIND().forEach(el => { el.inert = on; if(on) el.setAttribute('aria-hidden', 'true'); else el.removeAttribute('aria-hidden'); }); }
+  function trapTab(dialog){
+    dialog.addEventListener('keydown', e => {
+      if(e.key !== 'Tab') return;
+      const f = [...dialog.querySelectorAll('a[href], button:not([disabled]), input:not([disabled]), summary, [tabindex]:not([tabindex="-1"])')].filter(el => el.offsetParent !== null || el === document.activeElement);
+      if(!f.length) return;
+      const first = f[0], last = f[f.length - 1];
+      if(e.shiftKey && (document.activeElement === first || !dialog.contains(document.activeElement))){ e.preventDefault(); last.focus(); }
+      else if(!e.shiftKey && document.activeElement === last){ e.preventDefault(); first.focus(); }
+    });
+  }
+  trapTab(rv);
+  const menuBtn = document.getElementById('menuToggle');
+  if(menuBtn) menuBtn.addEventListener('click', () => { try { if(document.fullscreenElement) document.exitFullscreen(); else document.documentElement.requestFullscreen(); } catch(e){} });
+
   async function openRegion(key, opts){
     opts = opts || {};
     if(rvOpen && rvKey === key) return;
     let R; try { R = await loadRegion(key); } catch(e){ console.warn(e); return; }
+    if(!rvOpen) rvOpener = document.activeElement;
     rvOpen = true; rvKey = key;
     renderRegion(R);
     rv.classList.add('open');
+    setBehindInert(true);
     document.body.style.overflow = 'hidden';
     rvScroll.scrollTop = 0;
+    const title = document.getElementById('rvTitle'); if(title) title.focus({ preventScroll: true });
     if(!opts.fromHistory && location.pathname !== regionPath(key)){ push({ region: key }, regionPath(key)); }
     document.title = R.name + ' — Cape Wine Atlas';
     const boot = document.getElementById('rvBoot'), lines = document.getElementById('rvBootLines');
@@ -1032,7 +1060,11 @@
   function closeRegion(opts){
     opts = opts || {};
     rv.classList.remove('open'); document.body.style.overflow = ''; rvOpen = false; rvKey = null;
+    if(!lv.classList.contains('open')) setBehindInert(false);
     document.title = 'Cape Wine Atlas';
+    const back = rvOpener && document.contains(rvOpener) && rvOpener !== document.body ? rvOpener : document.querySelector('#regionList .rl');
+    if(back) back.focus({ preventScroll: true });
+    rvOpener = null;
     if(!opts.fromHistory && location.pathname !== ROOT){ push({}, ROOT + '#explore'); }
   }
   window.addEventListener('popstate', e => {
@@ -1042,9 +1074,10 @@
   document.getElementById('rvClose').addEventListener('click', closeRegion);
   /* ---- licence & credits view ---- */
   const lv = document.getElementById('licenceView');
-  function openLicence(){ lv.classList.add('open'); document.body.style.overflow = 'hidden'; lv.querySelector('.rv-scroll').scrollTop = 0; if(location.hash !== '#licence') push({ licence: true }, ROOT + '#licence'); }
-  function closeLicence(){ lv.classList.remove('open'); if(!rvOpen) document.body.style.overflow = ''; if(location.hash === '#licence') push({}, ROOT + '#explore'); }
-  window.addEventListener('hashchange', () => { if(location.hash === '#licence') lv.classList.add('open'); else if(lv.classList.contains('open')) lv.classList.remove('open'); });
+  function openLicence(){ if(!lv.classList.contains('open')) lvOpener = document.activeElement; lv.classList.add('open'); setBehindInert(true); document.body.style.overflow = 'hidden'; lv.querySelector('.rv-scroll').scrollTop = 0; if(location.hash !== '#licence') push({ licence: true }, ROOT + '#licence'); const t = document.getElementById('lvTitle'); if(t) t.focus({ preventScroll: true }); }
+  function closeLicence(){ lv.classList.remove('open'); if(!rvOpen){ document.body.style.overflow = ''; setBehindInert(false); } if(location.hash === '#licence') push({}, ROOT + '#explore'); const back = lvOpener && document.contains(lvOpener) ? lvOpener : document.getElementById('openLicence'); if(back) back.focus({ preventScroll: true }); lvOpener = null; }
+  trapTab(lv);
+  window.addEventListener('hashchange', () => { if(location.hash === '#licence'){ if(!lv.classList.contains('open')) openLicence(); } else if(lv.classList.contains('open')) closeLicence(); });
   document.getElementById('openLicence').addEventListener('click', e => { e.preventDefault(); openLicence(); });
   document.getElementById('lvClose').addEventListener('click', closeLicence);
   window.addEventListener('keydown', e => { if(e.key === 'Escape' && lv.classList.contains('open')) closeLicence(); });

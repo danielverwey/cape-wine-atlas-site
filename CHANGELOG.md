@@ -2,6 +2,18 @@
 
 Newest first. Each entry is one sync to `production site/`.
 
+## v0.13.0 — 2026-09-11 — September 2026 edition
+`versions/cape-wine-atlas_2026-09-11_v0.13.0_september-2026-edition.html`
+
+Accessibility pass. No visual change except a gold focus ring for keyboard users.
+- **Real controls.** Region markers, index rows and tactical-map pins are buttons with spoken names ("Stellenbosch — 210 producers. Open the region"); the full-screen corner box is a working button; the record filter is labelled. Everything the mouse can do, the keyboard and a screen reader can do.
+- **Dialogs that behave.** The region readout and the licence page are modal: focus moves to the title on open, Tab stays inside, Escape closes, and focus returns to the marker, row or link that opened them. The page behind is made inert while a dialog is open.
+- **Landmarks and structure.** A skip link to the regions; a `main` landmark; the closing page as `contentinfo`; the boot log announced as it fills; heading levels made consecutive on the licence page; duplicate banner/footer landmarks inside dialogs removed. The hero and tactical maps carry text descriptions; the chart canvas defers to the index beside it.
+- **Reduced motion.** When the reader asks for it, the hero stops breathing, the radar and markers hold still, and the typewriter and reveal effects complete instantly.
+- **Contrast.** Index counts and the map's attribution line lifted to meet the 4.5:1 minimum.
+- Automated audit (axe-core 4.10) reports no violations across boot, home, region and licence states; keyboard walk-through verified in Chromium.
+- MIT licence text: copyright holder is now "the Cape Wine Atlas project, maintained by MDRF".
+
 ## v0.12.0 — 2026-09-11 — September 2026 edition
 `versions/cape-wine-atlas_2026-09-11_v0.12.0_september-2026-edition.html`
 

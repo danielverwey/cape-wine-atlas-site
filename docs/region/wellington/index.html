@@ -29,7 +29,7 @@
 <body>
 
   <!-- ================= PRELOADER ================= -->
-  <div id="preloader">
+  <div id="preloader" role="dialog" aria-modal="true" aria-label="Opening the atlas">
     <svg class="pl-geo" id="plGeo" viewBox="0 0 800 952" preserveAspectRatio="xMidYMid slice">
       <circle cx="200" cy="480" r="230"/>
       <circle cx="600" cy="480" r="230"/>
@@ -45,23 +45,26 @@
       <span id="plPct">LOADING 0 / 100</span>
       <div class="bar"><div class="bar-fill" id="plBar"></div></div>
     </div>
-    <div class="pl-log mono" id="plLog"></div>
+    <div class="pl-log mono" id="plLog" aria-live="polite"></div>
     <button id="enterBtn" class="mono">OPEN THE ATLAS</button>
   </div>
 
+  <a class="skip mono" href="#explore">SKIP TO THE REGIONS</a>
+
   <!-- ================= PERSISTENT CHROME ================= -->
   <div id="chrome">
-    <div class="corner-box" id="emblem">
+    <div class="corner-box" id="emblem" aria-hidden="true">
       <svg width="20" height="20" viewBox="0 0 20 20"><circle cx="10" cy="6" r="3" stroke="var(--fg)" fill="none" stroke-width="1"/><circle cx="6" cy="12" r="3" stroke="var(--fg)" fill="none" stroke-width="1"/><circle cx="14" cy="12" r="3" stroke="var(--fg)" fill="none" stroke-width="1"/></svg>
     </div>
-    <div class="corner-box" id="menuToggle">
+    <button class="corner-box" id="menuToggle" type="button" aria-label="Toggle full screen">
       <svg width="16" height="16" viewBox="0 0 16 16"><path d="M1 1h4M1 1v4M15 1h-4M15 1v4M1 15h4M1 15v-4M15 15h-4M15 15v-4" stroke="var(--fg)" stroke-width="1"/></svg>
-    </div>
+    </button>
   </div>
 
   <!-- ================= HERO ================= -->
+  <main id="main">
   <section id="hero">
-    <canvas id="particleCanvas"></canvas>
+    <canvas id="particleCanvas" role="img" aria-label="Aerial view of Cape Town Stadium and Table Mountain, rendered as a breathing dot-screen"></canvas>
     <svg width="0" height="0" style="position:absolute" aria-hidden="true"><filter id="titleGrain" x="-5%" y="-5%" width="110%" height="110%"><feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="3" seed="3" stitchTiles="stitch" result="n"/><feColorMatrix in="n" type="matrix" values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 1.9 -0.25" result="m"/><feComposite in="SourceGraphic" in2="m" operator="in"/></filter></svg>
 
     <div class="motif-cluster" id="cluster1" style="width:520px;height:520px; left:-140px; top:8%;"></div>
@@ -121,7 +124,7 @@
     </div>
     <div class="map-stage" id="mapStage">
       <div class="map-plane" id="mapPlane">
-        <canvas id="mapCanvas"></canvas>
+        <canvas id="mapCanvas" aria-hidden="true"></canvas>
         <div class="edge"></div>
         
       </div>
@@ -129,24 +132,25 @@
     <div class="map-card" id="mapCard"><span class="corner tl"></span><span class="corner br"></span>
       <div class="eyebrow mono" id="mcEyebrow"></div><div class="name display" id="mcName"></div><div class="txt" id="mcText"></div><div class="tags mono" id="mcTags"></div>
     </div>
-    <div class="region-list mono" id="regionList"><div class="rl-head"><span>REGION INDEX · 31</span><span>FARMS</span></div></div>
-    <div class="map-hint mono">SELECT A MARKER OR AN INDEX ROW TO OPEN — 31 REGIONS<br><span style="opacity:.7">POSITIONS FROM THE ATLAS RECORD · CONTAINS INFORMATION FROM OPENSTREETMAP, © OPENSTREETMAP CONTRIBUTORS (ODbL)</span></div>
+    <div class="region-list mono" id="regionList" role="group" aria-label="Region index"><div class="rl-head"><span>REGION INDEX · 31</span><span>FARMS</span></div></div>
+    <div class="map-hint mono">SELECT A MARKER OR AN INDEX ROW TO OPEN — 31 REGIONS<br><span>POSITIONS FROM THE ATLAS RECORD · CONTAINS INFORMATION FROM OPENSTREETMAP, © OPENSTREETMAP CONTRIBUTORS (ODbL)</span></div>
     <div class="scroll-down mono"><span class="dot"></span>SCROLL DOWN ⇓</div>
   </section>
+  </main>
 
   <!-- ================= REGION VIEW (opened from the map) ================= -->
-  <div id="regionView" class="open" role="dialog" aria-label="Region data">
+  <div id="regionView" class="open" role="dialog" aria-modal="true" aria-labelledby="rvTitle">
     <div class="frame"><i class="tl"></i><i class="tr"></i><i class="bl"></i><i class="br"></i></div>
     <div class="rv-boot mono" id="rvBoot"><div class="lines" id="rvBootLines"></div></div>
     <div class="rv-top mono">
       <div class="crumb" id="rvCrumb"><b>CAPE WINE ATLAS</b><span>/</span>COASTAL REGION<span>/</span><b>WELLINGTON</b></div>
-      <button id="rvClose" class="mono">[ CLOSE ] ✕</button>
+      <button id="rvClose" class="mono" type="button" aria-label="Close the region">[ CLOSE ] ✕</button>
     </div>
     <div class="rv-scroll" id="rvScroll">
-      <header class="rv-head">
+      <div class="rv-head">
         <div>
           <div class="rv-eyebrow mono">COASTAL REGION · WELLINGTON WINE ROUTE</div>
-          <h2 class="display">Wellington</h2>
+          <h2 class="display" id="rvTitle" tabindex="-1">Wellington</h2>
           <p class="rv-lede" id="rvLede">30 producers on record in the Wellington district of the Coastal Region.</p>
           <div class="rv-stats mono">
             <div><span class="v">30</span><span class="k">PRODUCERS ON RECORD</span></div>
@@ -160,10 +164,10 @@
           </div>
           <div class="rv-withheld mono">9 FURTHER RECORDS ARE HELD BACK UNTIL THEY MEET THE PUBLICATION STANDARD</div>
         </div>
-        <div class="rv-map" id="rvMap"><canvas id="miniCanvas"></canvas><span class="corner tl"></span><span class="corner br"></span>
+        <div class="rv-map" id="rvMap"><canvas id="miniCanvas" role="img" aria-label="Tactical map of Wellington: producers with a published position"></canvas><span class="corner tl"></span><span class="corner br"></span>
           <div class="hud mono">TACTICAL · WELLINGTON<br><b>19/30</b> POSITIONS LOCATED</div>
           <div class="scale mono"><i style="width:60px"></i><span>≈ 1 KM</span></div></div>
-      </header>
+      </div>
       <section class="rv-block">
         <h3 class="mono"><span class="h3l">PRODUCER RECORDS <span>30 ON RECORD · RESEARCH IN PROGRESS</span></span></h3>
         <div class="rv-grid" id="recGrid"><article class="rec" id="rec-bosman-family-vineyards" data-id="bosman-family-vineyards">
@@ -543,28 +547,28 @@
           
         </div>
       </section>
-      <footer class="rv-foot mono"><span>THE ATLAS RECORD · SEPTEMBER 2026 EDITION</span><span>DATA UNDER ODbL 1.0 · CONTAINS INFORMATION FROM OPENSTREETMAP, © OPENSTREETMAP CONTRIBUTORS</span><span>COASTAL REGION</span><span>RECORDS GATHERED 2026-09-01</span><span>ACROSS THE ATLAS · 644 FARMS · 31 REGIONS · 1133 HONOURS VERIFIED</span></footer></div>
+      <div class="rv-foot mono"><span>THE ATLAS RECORD · SEPTEMBER 2026 EDITION</span><span>DATA UNDER ODbL 1.0 · CONTAINS INFORMATION FROM OPENSTREETMAP, © OPENSTREETMAP CONTRIBUTORS</span><span>COASTAL REGION</span><span>RECORDS GATHERED 2026-09-01</span><span>ACROSS THE ATLAS · 644 FARMS · 31 REGIONS · 1133 HONOURS VERIFIED</span></div></div>
   </div>
 
   <!-- ================= LICENCE & CREDITS (opened from the footer) ================= -->
-  <div id="licenceView" role="dialog" aria-label="Licence and credits">
+  <div id="licenceView" role="dialog" aria-modal="true" aria-labelledby="lvTitle">
     <div class="frame"><i class="tl"></i><i class="tr"></i><i class="bl"></i><i class="br"></i></div>
     <div class="rv-top mono">
       <div class="crumb"><b>CAPE WINE ATLAS</b><span>/</span><b>LICENCE &amp; CREDITS</b></div>
-      <button id="lvClose" class="mono">[ CLOSE ] ✕</button>
+      <button id="lvClose" class="mono" type="button" aria-label="Close licence and credits">[ CLOSE ] ✕</button>
     </div>
     <div class="rv-scroll lv-scroll">
-      <header class="lv-head">
+      <div class="lv-head">
         <div class="rv-eyebrow mono">HOW THIS RECORD MAY BE USED · WHO MADE IT · WHERE ITS PARTS CAME FROM</div>
-        <h2 class="display">Licence<br>&amp; credits</h2>
+        <h2 class="display" id="lvTitle" tabindex="-1">Licence<br>&amp; credits</h2>
         <p class="lv-lede">The Cape Wine Atlas is published by <b>the Cape Wine Atlas project, maintained by MDRF</b>. It is made to be read, questioned, corrected and reused, and its parts carry three different licences because the data carries an obligation that the prose and the code do not.</p>
-      </header>
+      </div>
 
       <section class="lv-grid">
         <article class="lv-card">
           <div class="rec-bar mono"><span>$ licence.data</span><span class="lv-tag">ODbL 1.0</span></div>
           <div class="lv-body">
-            <h4 class="mono">THE DATA — OPEN DATABASE LICENCE 1.0</h4>
+            <h3 class="mono">THE DATA — OPEN DATABASE LICENCE 1.0</h3>
             <p>Every producer record, region file, award ledger and route roster is offered under the Open Data Commons Open Database License. You may copy, share, adapt and build on the database, provided you attribute it, keep it open, and offer any database you derive from it under the same licence.</p>
             <p><b>Why this licence:</b> a substantial share of the coordinates in the atlas derive from OpenStreetMap, whose licence is share-alike. That obligation travelled with the coordinates the moment they were adopted, and it is honoured here rather than chosen.</p>
             <div class="rv-note"><b>CONTAINS INFORMATION FROM OPENSTREETMAP</b>, which is made available under the Open Database License (ODbL). © OpenStreetMap contributors.</div>
@@ -575,7 +579,7 @@
         <article class="lv-card">
           <div class="rec-bar mono"><span>$ licence.prose</span><span class="lv-tag">CC BY 4.0</span></div>
           <div class="lv-body">
-            <h4 class="mono">THE WRITING — CREATIVE COMMONS ATTRIBUTION 4.0</h4>
+            <h3 class="mono">THE WRITING — CREATIVE COMMONS ATTRIBUTION 4.0</h3>
             <p>The prose on this site, the project’s documentation, its method, its recorded decisions and its register of hazards are licensed CC BY 4.0. Quote it, teach from it, translate it or build on the method, with attribution.</p>
           </div>
         </article>
@@ -583,7 +587,7 @@
         <article class="lv-card">
           <div class="rec-bar mono"><span>$ licence.code</span><span class="lv-tag">MIT</span></div>
           <div class="lv-body">
-            <h4 class="mono">THE CODE — MIT LICENCE</h4>
+            <h3 class="mono">THE CODE — MIT LICENCE</h3>
             <p>The page you are reading, the scripts that build it and the tools that validate the record are released under the MIT licence: reuse them freely, keep the notice.</p>
           </div>
         </article>
@@ -591,7 +595,7 @@
         <article class="lv-card">
           <div class="rec-bar mono"><span>$ credits</span><span class="lv-tag">ACKNOWLEDGEMENTS</span></div>
           <div class="lv-body">
-            <h4 class="mono">CREDITS</h4>
+            <h3 class="mono">CREDITS</h3>
             <div class="lv-credit"><span class="k mono">TYPEFACES</span><span><b>Orbitron</b> (The Orbitron Project Authors) and <b>JetBrains Mono</b> (JetBrains), both embedded under the SIL Open Font License 1.1.</span></div>
             <div class="lv-credit"><span class="k mono">DESIGN</span><span>The interface language of this page — the boot screen, the dot-screen rendering, the HUD geometry and the gold closing page — is made after <b>“Neon Grid”</b> by Fernanda Herrera. Everything here was re-implemented from scratch; no code, imagery, type or text was taken from that work.</span></div>
             <div class="lv-credit"><span class="k mono">HERO IMAGE</span><span>The aerial of Cape Town Stadium and Table Mountain on the opening page was generated from a text prompt (ChatGPT) and then rendered by the atlas as a dot-screen. It is not a photograph and no photographer’s rights attach to it.</span></div>
@@ -602,15 +606,15 @@
 
       <section class="rv-block rv-two">
         <div>
-          <h4 class="mono">CORRECTIONS &amp; REMOVAL</h4>
+          <h3 class="mono">CORRECTIONS &amp; REMOVAL</h3>
           <p>If you make wine and find your entry wrong, incomplete or out of date, write to <a class="lv-link" href="mailto:capewineatlas@gmail.com">capewineatlas@gmail.com</a>. A correction is made against a source — your own website, a published listing, a competition’s results page — and the record then cites it, with your name beside the change if you wish.</p>
           <p>Records are corrected on request. A record is removed only where it is wrong beyond correction or where the producer has ceased trading; the atlas does not remove accurate, sourced entries about businesses that make wine under their own name, because a compendium with gaps chosen by its subjects would no longer be a record.</p>
           <p>Contact details are never republished here. Where the atlas holds a telephone number or an address, the page says so and sends the reader to the producer’s own site.</p>
         </div>
         <div>
-          <h4 class="mono">HOW TO ATTRIBUTE</h4>
+          <h3 class="mono">HOW TO ATTRIBUTE</h3>
           <div class="rv-note lv-attrib">Cape Wine Atlas, maintained by MDRF, 2026. Data under ODbL 1.0; contains information from OpenStreetMap, © OpenStreetMap contributors. Documentation under CC BY 4.0.</div>
-          <h4 class="mono" style="margin-top:26px">TOUR OPERATORS</h4>
+          <h3 class="mono" style="margin-top:26px">TOUR OPERATORS</h3>
           <p>Operators are <b>listed, not endorsed</b>. An operator appears because it publicly offers winelands tours and the atlas can point to where it says so. Inclusion says nothing about licensing, insurance or safety; confirm operating permits and current schedules with the operator directly.</p>
         </div>
       </section>
@@ -1317,7 +1321,7 @@ Creative Commons may be contacted at creativecommons.org.
 </pre></details>
         <details class="lv-full"><summary class="mono">MIT LICENCE — FULL TEXT</summary><pre class="mono">MIT License
 
-Copyright (c) 2026 Daniel Verwey
+Copyright (c) 2026 the Cape Wine Atlas project, maintained by MDRF
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
 associated documentation files (the &quot;Software&quot;), to deal in the Software without restriction, including
@@ -1336,14 +1340,14 @@ USE OR OTHER DEALINGS IN THE SOFTWARE.
 </pre></details>
       </section>
 
-      <footer class="rv-foot mono">
+      <div class="rv-foot mono">
         <span>THE CAPE WINE ATLAS PROJECT · MAINTAINED BY MDRF</span><span>SEPTEMBER 2026 EDITION</span><span>CAPEWINEATLAS@GMAIL.COM</span>
-      </footer>
+      </div>
     </div>
   </div>
 
   <!-- ================= FOOTER ================= -->
-  <section id="footer">
+  <section id="footer" role="contentinfo">
     <canvas id="footerPix"></canvas>
     <div class="grain"><svg><filter id="grainFooter"><feTurbulence type="fractalNoise" baseFrequency="1.1" numOctaves="3" seed="9" stitchTiles="stitch"/><feColorMatrix type="saturate" values="0"/><feComponentTransfer><feFuncR type="gamma" exponent="0.75"/><feFuncG type="gamma" exponent="0.75"/><feFuncB type="gamma" exponent="0.75"/></feComponentTransfer></filter><rect width="100%" height="100%" filter="url(#grainFooter)"/></svg></div>
     <div class="f-frame" aria-hidden="true">

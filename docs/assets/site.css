@@ -100,6 +100,21 @@
     mix-blend-mode:multiply;
   }
 
+  /* ---------- accessibility: real controls, visible focus, a skip link, calmer motion on request ---------- */
+  button.corner-box, button.orb, button.rl, button.pin{ appearance:none; -webkit-appearance:none; font:inherit; color:inherit; background:none; border:0; margin:0; padding:0; text-align:left; letter-spacing:inherit; line-height:inherit; }
+  button.corner-box{ display:flex; }
+  .region-list button.rl{ display:flex; width:calc(100% + 8px); }
+  a:focus-visible, button:focus-visible, input:focus-visible, summary:focus-visible, [tabindex]:focus-visible{ outline:1px solid var(--gold); outline-offset:3px; }
+  .orb:focus-visible{ outline-offset:6px; border-radius:50%; }
+  #rvTitle:focus, #lvTitle:focus{ outline:none; }   /* the dialog title takes focus so it is announced; a ring around a display heading is not needed */
+  .rv-map .pin:focus-visible{ outline-offset:4px; border-radius:50%; }
+  .skip{ position:absolute; left:20px; top:-60px; z-index:1200; background:#050505; color:var(--gold); border:1px solid var(--gold); padding:10px 14px; font-size:10px; letter-spacing:.16em; text-decoration:none; transition:top .15s; }
+  .skip:focus{ top:20px; }
+  @media (prefers-reduced-motion: reduce){
+    *, *::before, *::after{ animation-duration:.01ms !important; animation-iteration-count:1 !important; transition-duration:.01ms !important; scroll-behavior:auto !important; }
+    .compass .rot, .compass .sweep{ transform:rotate(45deg); }
+  }
+
   /* ---------- persistent corner chrome ---------- */
   #chrome{
     position:fixed; inset:0; z-index:200; pointer-events:none;
@@ -408,6 +423,7 @@
   .map-card .corner.tl{ top:-1px; left:-1px; border-right:none; border-bottom:none; }
   .map-card .corner.br{ bottom:-1px; right:-1px; border-left:none; border-top:none; }
   .map-hint{ position:absolute; left:40px; bottom:34px; z-index:5; font-size:10px; color:var(--muted); letter-spacing:.16em; }
+  .map-hint span{ opacity:1 !important; color:#8a8a8a; }
   @media (max-width:760px){ .ex-head{ padding-top:90px; } .compass{ width:90px; height:90px; } .map-card{ right:20px; left:20px; width:auto; top:auto; bottom:70px; } }
 
 
@@ -421,7 +437,7 @@
   .region-list .rl-head{ color:#bdbdbd; border-bottom:1px dashed var(--line); padding-bottom:6px; margin-bottom:6px; display:flex; justify-content:space-between; }
   .region-list .rl{ display:flex; justify-content:space-between; gap:8px; cursor:default; padding:0 4px; margin:0 -4px; }
   .region-list .rl .n{ white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-  .region-list .rl .c{ color:#6f6f6f; }
+  .region-list .rl .c{ color:#8a8a8a; }
   .region-list .rl{ cursor:pointer; }
   .region-list .rl:hover, .region-list .rl.hi{ color:var(--gold); background:rgba(201,162,39,0.07); }
   .region-list .rl:hover .c, .region-list .rl.hi .c{ color:var(--gold); }
@@ -548,7 +564,7 @@
   .rec-contact a{ color:#bdbdbd; text-decoration:none; border-bottom:1px dotted #555; }
   .rec-contact a:hover{ color:var(--gold); }
   .rv-two{ display:grid; grid-template-columns:1fr 1fr; gap:40px; }
-  .rv-two h4{ font-size:10px; letter-spacing:.18em; color:var(--gold); margin-bottom:12px; font-weight:400; }
+  .rv-two h4, #licenceView .rv-two h3{ font-size:10px; letter-spacing:.18em; color:var(--gold); margin-bottom:12px; font-weight:400; }
   .rv-two p{ font-size:12.5px; line-height:1.7; color:#bdbdbd; margin-bottom:10px; }
   .tour{ border-top:1px dashed var(--line); padding:9px 0; font-size:12px; color:#c9c9c9; }
   .tour b{ font-weight:400; color:#eaeaea; }
@@ -580,7 +596,7 @@
   .lv-card{ border:1px solid var(--line); background:rgba(255,255,255,0.015); display:flex; flex-direction:column; }
   .lv-tag{ color:var(--gold); }
   .lv-body{ padding:18px 20px 20px; font-size:12.5px; line-height:1.65; color:#c9c9c9; }
-  .lv-body h4{ font-size:10px; letter-spacing:.18em; color:var(--gold); margin-bottom:12px; font-weight:400; }
+  .lv-body h3, .lv-body h4{ font-size:10px; letter-spacing:.18em; color:var(--gold); margin-bottom:12px; font-weight:400; }
   .lv-body p{ margin-bottom:10px; }
   .lv-body .rv-note{ margin:12px 0; }
   .lv-small{ font-size:11.5px; color:#a8a8a8; }

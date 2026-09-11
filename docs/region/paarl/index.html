@@ -1,0 +1,1625 @@
+<!DOCTYPE html>
+<html lang="en" data-root="/" data-region="paarl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Paarl — Cape Wine Atlas</title>
+<meta name="description" content="Paarl — 55 wine producers on record, 113 honours verified against their sources. Warm-to-moderate Mediterranean climate, 500-700mm annual rainfall; highly diverse soils (decomposed granite, potassium-rich gravel, shale, sandstone, ">
+<link rel="canonical" href="https://capewineatlas.co.za/region/paarl/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Cape Wine Atlas">
+<meta property="og:title" content="Paarl — Cape Wine Atlas">
+<meta property="og:description" content="Paarl — 55 wine producers on record, 113 honours verified against their sources. Warm-to-moderate Mediterranean climate, 500-700mm annual rainfall; highly diverse soils (decomposed granite, potassium-rich gravel, shale, sandstone, ">
+<meta property="og:url" content="https://capewineatlas.co.za/region/paarl/">
+<meta property="og:image" content="https://capewineatlas.co.za/assets/img/og.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#0a0a0a">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%230a0a0a'/%3E%3Ccircle cx='16' cy='16' r='9' fill='none' stroke='%23c9a227' stroke-width='1.5'/%3E%3Ccircle cx='16' cy='16' r='3.5' fill='%23c9a227'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="/assets/site.css">
+<noscript><style>#preloader{display:none!important}#chrome{opacity:1!important}#regionView.open,#regionView.open .rv-boot{display:flex}#regionView .rv-boot{display:none!important}.rv-lede{min-height:0}</style></noscript>
+<!--
+  Cape Wine Atlas. © 2026 the Cape Wine Atlas project, maintained by MDRF.
+  Data: Open Database License (ODbL) 1.0 — contains information from OpenStreetMap, © OpenStreetMap contributors.
+  Prose: CC BY 4.0.  Page code: MIT.
+  Typefaces under the SIL Open Font License 1.1: Orbitron (The Orbitron Project Authors) and JetBrains Mono (JetBrains).
+  Interface language after "Neon Grid" by Fernanda Herrera; everything here was re-implemented from scratch.
+  Built 2026-09-11 · SEPTEMBER 2026 EDITION
+-->
+</head>
+<body>
+
+  <!-- ================= PRELOADER ================= -->
+  <div id="preloader">
+    <svg class="pl-geo" id="plGeo" viewBox="0 0 800 952" preserveAspectRatio="xMidYMid slice">
+      <circle cx="200" cy="480" r="230"/>
+      <circle cx="600" cy="480" r="230"/>
+      <circle cx="400" cy="480" r="330"/>
+      <line class="cross" x1="400" y1="10" x2="400" y2="942"/>
+      <line class="cross" x1="10" y1="480" x2="790" y2="480"/>
+      <circle class="dot" cx="28" cy="480" r="2.4"/>
+      <circle class="dot" cx="193" cy="480" r="2.4"/>
+      <circle class="dot" cx="607" cy="480" r="2.4"/>
+      <circle class="dot" cx="772" cy="480" r="2.4"/>
+    </svg>
+    <div class="pl-counter mono">
+      <span id="plPct">LOADING 0 / 100</span>
+      <div class="bar"><div class="bar-fill" id="plBar"></div></div>
+    </div>
+    <div class="pl-log mono" id="plLog"></div>
+    <button id="enterBtn" class="mono">OPEN THE ATLAS</button>
+  </div>
+
+  <!-- ================= PERSISTENT CHROME ================= -->
+  <div id="chrome">
+    <div class="corner-box" id="emblem">
+      <svg width="20" height="20" viewBox="0 0 20 20"><circle cx="10" cy="6" r="3" stroke="var(--fg)" fill="none" stroke-width="1"/><circle cx="6" cy="12" r="3" stroke="var(--fg)" fill="none" stroke-width="1"/><circle cx="14" cy="12" r="3" stroke="var(--fg)" fill="none" stroke-width="1"/></svg>
+    </div>
+    <div class="corner-box" id="menuToggle">
+      <svg width="16" height="16" viewBox="0 0 16 16"><path d="M1 1h4M1 1v4M15 1h-4M15 1v4M1 15h4M1 15v-4M15 15h-4M15 15v-4" stroke="var(--fg)" stroke-width="1"/></svg>
+    </div>
+  </div>
+
+  <!-- ================= HERO ================= -->
+  <section id="hero">
+    <canvas id="particleCanvas"></canvas>
+    <svg width="0" height="0" style="position:absolute" aria-hidden="true"><filter id="titleGrain" x="-5%" y="-5%" width="110%" height="110%"><feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="3" seed="3" stitchTiles="stitch" result="n"/><feColorMatrix in="n" type="matrix" values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 1.9 -0.25" result="m"/><feComposite in="SourceGraphic" in2="m" operator="in"/></filter></svg>
+
+    <div class="motif-cluster" id="cluster1" style="width:520px;height:520px; left:-140px; top:8%;"></div>
+    <div class="motif-cluster" id="cluster2" style="width:340px;height:340px; right:-60px; bottom:6%;"></div>
+
+    <div class="frame"><i class="tl"></i><i class="tr"></i><i class="bl"></i><i class="br"></i></div>
+
+    <div class="hero-inner">
+      <h1 class="display">CAPE WINE<br>ATLAS</h1>
+      <div class="byline mono">AN OPEN REFERENCE TO <b>SOUTH AFRICA’S WINE FARMS</b> — SEPTEMBER 2026 EDITION · 644 PRODUCERS · 31 REGIONS</div>
+    </div>
+
+    <div class="caption-box mono-body" id="heroCaption" style="font-family:inherit; text-transform:none; letter-spacing:normal;"></div>
+
+    <div class="scroll-down mono"><span class="dot"></span>SCROLL DOWN ⇓</div>
+  </section>
+
+  <!-- ================= TITLE CARD ================= -->
+  <section id="title-card">
+    <svg class="pl-geo show tc-geo" viewBox="0 0 800 952" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+      <circle cx="200" cy="480" r="230"/><circle cx="600" cy="480" r="230"/><circle cx="400" cy="480" r="330"/>
+      <line class="cross" x1="400" y1="10" x2="400" y2="942"/><line class="cross" x1="10" y1="480" x2="790" y2="480"/>
+      <circle class="dot" cx="28" cy="480" r="2.4"/><circle class="dot" cx="193" cy="480" r="2.4"/><circle class="dot" cx="607" cy="480" r="2.4"/><circle class="dot" cx="772" cy="480" r="2.4"/>
+    </svg>
+    <div class="motif-cluster" id="cluster3" style="width:min(150vh,1100px);height:min(150vh,1100px); left:50%; top:50%; transform:translate(-50%,-50%);"></div>
+    <div class="frame"><i class="tl"></i><i class="tr"></i><i class="bl"></i><i class="br"></i></div>
+    <div class="tc-inner reveal" id="tcInner">
+      <h2 class="display">Western Cape (2026)</h2>
+      <p id="tcText" style="font-family:inherit; text-transform:none; letter-spacing:normal;"></p>
+    </div>
+  </section>
+
+  <!-- ================= TERMINAL ================= -->
+  <section id="terminal">
+    <div class="frame"><i class="tl"></i><i class="tr"></i><i class="bl"></i><i class="br"></i></div>
+    <div class="term-window" id="termWindow">
+      <div class="term-titlebar mono">
+        <span>$ cape-wine-atlas — september 2026 edition</span>
+        <span class="term-dots"><span></span><span></span><span></span></span>
+      </div>
+      <div class="term-body mono" id="termBody"></div>
+    </div>
+  </section>
+
+  <!-- ================= EXPLORE (3D map) ================= -->
+  <section id="explore">
+    <div class="frame"><i class="tl"></i><i class="tr"></i><i class="bl"></i><i class="br"></i></div>
+    <div class="ex-head">
+      <h2 class="display ex-title">Explore<br>the regions</h2>
+      <div class="compass" id="compass" aria-hidden="true"><svg viewBox="0 0 100 100">
+        <circle cx="50" cy="50" r="46"/><circle cx="50" cy="50" r="38" stroke-dasharray="1 3"/><circle cx="50" cy="50" r="30"/><circle cx="50" cy="50" r="22" stroke-dasharray="0.6 2"/><circle cx="50" cy="50" r="7"/>
+        <defs><linearGradient id="sweepGrad" gradientUnits="userSpaceOnUse" x1="50" y1="50" x2="4" y2="50"><stop offset="0" stop-color="#c9a227" stop-opacity=".55"/><stop offset="1" stop-color="#c9a227" stop-opacity="0"/></linearGradient></defs>
+        <path class="sweep" d="M50 50 L50 4 A46 46 0 0 0 4.9 36.3 Z" fill="url(#sweepGrad)" stroke="none"/>
+        <g class="rot" id="compassRot"><line class="needle" x1="50" y1="50" x2="50" y2="10"/><circle cx="50" cy="10" r="1.6" style="fill:var(--gold);stroke:none"/></g>
+        <circle class="blip" cx="72" cy="66" r="1.3" style="fill:#eaeaea;stroke:none;animation-delay:-9.1s"/><circle class="blip" cx="35" cy="32" r="1.1" style="fill:#eaeaea;stroke:none;animation-delay:-1.6s"/>
+      </svg></div>
+    </div>
+    <div class="map-stage" id="mapStage">
+      <div class="map-plane" id="mapPlane">
+        <canvas id="mapCanvas"></canvas>
+        <div class="edge"></div>
+        
+      </div>
+    </div>
+    <div class="map-card" id="mapCard"><span class="corner tl"></span><span class="corner br"></span>
+      <div class="eyebrow mono" id="mcEyebrow"></div><div class="name display" id="mcName"></div><div class="txt" id="mcText"></div><div class="tags mono" id="mcTags"></div>
+    </div>
+    <div class="region-list mono" id="regionList"><div class="rl-head"><span>REGION INDEX · 31</span><span>FARMS</span></div></div>
+    <div class="map-hint mono">HOVER A MARKER OR AN INDEX ROW · CLICK TO OPEN — 31 REGIONS<br><span style="opacity:.7">POSITIONS FROM THE ATLAS RECORD · CONTAINS INFORMATION FROM OPENSTREETMAP, © OPENSTREETMAP CONTRIBUTORS (ODbL)</span></div>
+    <div class="scroll-down mono"><span class="dot"></span>SCROLL DOWN ⇓</div>
+  </section>
+
+  <!-- ================= REGION VIEW (opened from the map) ================= -->
+  <div id="regionView" class="open" role="dialog" aria-label="Region data">
+    <div class="frame"><i class="tl"></i><i class="tr"></i><i class="bl"></i><i class="br"></i></div>
+    <div class="rv-boot mono" id="rvBoot"><div class="lines" id="rvBootLines"></div></div>
+    <div class="rv-top mono">
+      <div class="crumb" id="rvCrumb"><b>CAPE WINE ATLAS</b><span>/</span>COASTAL REGION<span>/</span><b>PAARL</b></div>
+      <button id="rvClose" class="mono">[ CLOSE ] ✕</button>
+    </div>
+    <div class="rv-scroll" id="rvScroll">
+      <header class="rv-head">
+        <div>
+          <div class="rv-eyebrow mono">COASTAL REGION · PAARL WINE ROUTE</div>
+          <h2 class="display">Paarl</h2>
+          <p class="rv-lede" id="rvLede">Warm-to-moderate Mediterranean climate, 500-700mm annual rainfall; highly diverse soils (decomposed granite, potassium-rich gravel, shale, sandstone, loam, clay) including the ancient &#x27;Vilafontes&#x27; soil type; Paarl Rock granite outcrop (&#x27;second largest granite block in the world&#x27; per WOSA copy — marketing superlative, UNVERIFIED against a geology source);</p>
+          <div class="rv-stats mono">
+            <div><span class="v">55</span><span class="k">PRODUCERS ON RECORD</span></div>
+            <div><span class="v">42</span><span class="k">WITH A LOCATION</span></div>
+            <div><span class="v g">113</span><span class="k">HONOURS VERIFIED</span></div>
+            <div><span class="v">0</span><span class="k">CLAIMS UNDER REVIEW</span></div>
+            <div><span class="v">40/55</span><span class="k">AWARD RESEARCH COMPLETE</span></div>
+            <div><span class="v">31</span><span class="k">WALK-IN TASTING ROOMS</span></div>
+            <div><span class="v">1688</span><span class="k">OLDEST FOUNDING ON FILE</span></div>
+            <div><span class="v">2</span><span class="k">WARDS REPRESENTED</span></div>
+          </div>
+          <div class="rv-withheld mono">16 FURTHER RECORDS ARE HELD BACK UNTIL THEY MEET THE PUBLICATION STANDARD</div>
+        </div>
+        <div class="rv-map" id="rvMap"><canvas id="miniCanvas"></canvas><span class="corner tl"></span><span class="corner br"></span>
+          <div class="hud mono">TACTICAL · PAARL<br><b>42/55</b> POSITIONS LOCATED</div>
+          <div class="scale mono"><i style="width:60px"></i><span>≈ 1 KM</span></div></div>
+      </header>
+      <section class="rv-block">
+        <h3 class="mono"><span class="h3l">PRODUCER RECORDS <span>55 OF 21 EXPECTED · RECORDED · AWAITING INDEPENDENT REVIEW</span></span></h3>
+        <div class="rv-grid" id="recGrid"><article class="rec" id="rec-adara-palmiet-valley" data-id="adara-palmiet-valley">
+        <div class="rec-bar mono"><span>$ record.adara-palmiet-valley</span><span class="term-dots"><span></span><span></span><span></span></span></div>
+        <div class="rec-body">
+          <div class="rec-name display">Adara Palmiet Valley</div>
+          <div class="rec-meta mono"><span><span class="">ACCESS NOT CONFIRMED</span></span><span>ROUTE MEMBER</span><span>LOCATION · MEDIUM</span></div>
+          <p class="rec-hist">Estate is primarily a boutique hotel and restaurant (Adara Restaurant) at Palmiet Valley Estate, Sonstraal Road, Paarl, with a small wine label made in partnership with winemaker Niel Bester; red wines…</p>
+          <div class="rec-row"><span class="k mono">HOURS</span><span>Tourism directory states Mon-Sun 08:00-17:00 — likely hotel/restaurant hours, NOT confirmed as cellar-door tasting hours (HAZARDS #16/#28)</span></div>
+          <div class="rec-row"><span class="k mono">VARIETIES</span><div class="tags mono"><span>Chenin Blanc</span><span>Sauvignon Blanc</span></div></div>
+          <div class="rec-row"><span class="k mono">SIGNATURE</span><span>Adara Chenin Blanc 2022</span></div>
+          <div class="rec-awards"><span class="flag dim mono">NO VERIFIED HONOUR ON FILE</span></div>
+          <div class="rec-contact mono"><a href="https://adara-palmiet-valley.co.za/" target="_blank" rel="noopener">adara-palmiet-valley.co.za</a></div>
+        </div></article><article class="rec" id="rec-dekkersvlei" data-id="dekkersvlei">
+        <div class="rec-bar mono"><span>$ record.dekkersvlei</span><span class="term-dots"><span></span><span></span><span></span></span></div>
+        <div class="rec-body">
+          <div class="rec-name display">Dekkersvlei</div>
+          <div class="rec-meta mono"><span>EST 1693</span><span><span class="ok">TASTING BY APPOINTMENT</span></span><span>ROUTE MEMBER</span><span>LOCATION · MEDIUM</span></div>
+          <p class="rec-hist">Pinotage specialist at Keerweder Rd, Paarl, 7646; tasting email [email withheld]. FOUNDED (HAZARDS #29, both halves kept): association page cites 1693 as the farm&#x27;s heritage date (used in founded field); the…</p>
+          <div class="rec-row"><span class="k mono">HOURS</span><span>Tasting Room Mon-Sun 11:00-17:00 (corroborated: producer site + paarlwineroute.co.za agree); Office Mon-Fri 08:00-17:00; Deli Mon-Sun 07:00-18:00 (producer site only)</span></div>
+          <div class="rec-row"><span class="k mono">VARIETIES</span><div class="tags mono"><span>Pinotage</span></div></div>
+          <div class="rec-row"><span class="k mono">SIGNATURE</span><span>World&#x27;s First White Pinotage · Coffee Pinotage · Pinotage Rosé</span></div>
+          <div class="rec-awards"><span class="flag dim mono">NO VERIFIED HONOUR ON FILE</span></div>
+          <div class="rec-contact mono"><a href="https://dekkersvlei.com/" target="_blank" rel="noopener">dekkersvlei.com</a></div>
+        </div></article><article class="rec" id="rec-landskroon-survivor" data-id="landskroon-survivor">
+        <div class="rec-bar mono"><span>$ record.landskroon-survivor</span><span class="term-dots"><span></span><span></span><span></span></span></div>
+        <div class="rec-body">
+          <div class="rec-name display">Landskroon &amp; Survivor</div>
+          <div class="rec-meta mono"><span><span class="ok">WALK-IN TASTING</span></span><span>ROUTE MEMBER</span><span>LOCATION · MEDIUM</span></div>
+          <p class="rec-hist">TWO BRANDS, ONE VENUE at Suid-Agter-Paarl Rd, Southern Paarl, 7624: Landskroon Wines (De Villiers family) and Survivor Wines; roster lists them as one combined entry — kept as one record pending verification…</p>
+          <div class="rec-row"><span class="k mono">HOURS</span><span>Mon-Tue closed; Wed-Fri 09:00-16:00; Sat-Sun 11:00-16:00; open public holidays (corroborated: association page and survivorwines.com agree exactly)</span></div>
+          <div class="rec-row"><span class="k mono">VARIETIES</span><div class="tags mono"><span>Sauvignon Blanc</span><span>Chenin Blanc</span><span>Chardonnay</span><span>Pinotage</span><span>Shiraz</span><span>Cabernet Sauvignon</span><span>Cabernet Franc</span><span>Merlot</span></div></div>
+          <div class="rec-row"><span class="k mono">SIGNATURE</span><span>Cape Vintage (port-style) · Landskroon Blanc de Noir</span></div>
+          <div class="rec-awards"><div class="aw"><span class="y">2025</span><span><b>Veritas</b> — Double Gold — 94 pts<br><span class="w">Survivor Reserve Chenin Blanc 2022</span><br><a class="src mono" href="https://topwinesa.com/veritas-awards-revisited-the-scores-of-all-the-double-golds/" target="_blank" rel="noopener" title="TopWineSA (compiled Double Gold report)">SOURCE · TOPWINESA (COMPILED DOUBLE GOL…</a></span></div><div class="aw"><span class="y">2025</span><span><b>Veritas</b> — Double Gold — None pts<br><span class="w">Paul de Villiers Cabernet Franc 2022</span><br><a class="src mono" href="https://topwinesa.com/veritas-awards-revisited-the-scores-of-all-the-double-golds/" target="_blank" rel="noopener" title="TopWineSA (compiled Double Gold report)">SOURCE · TOPWINESA (COMPILED DOUBLE GOL…</a></span></div><div class="aw"><span class="y">2025</span><span><b>Veritas</b> — Gold<br><span class="w">Cellar Master Series Chardonnay 2023</span><br><a class="src mono" href="https://user-hpa96tt.cld.bz/VERITAS-RESULTS/2/" target="_blank" rel="noopener" title="Veritas Awards — official 2025 Gold and Double Gold results booklet">SOURCE · VERITAS AWARDS — OFFICIAL 2025…</a></span></div><div class="aw"><span class="y">2025</span><span><b>Veritas</b> — Silver Outstanding<br><span class="w">Terroir Chardonnay 2024</span><br><a class="src mono" href="https://user-hpa96tt.cld.bz/VERITAS-2025/17/" target="_blank" rel="noopener" title="Veritas Awards — official 2025 complete results booklet">SOURCE · VERITAS AWARDS — OFFICIAL 2025…</a></span></div><div class="aw"><span class="y">2025</span><span><b>Veritas</b> — Silver Outstanding<br><span class="w">Terroir Sauvignon Blanc 2025</span><br><a class="src mono" href="https://user-hpa96tt.cld.bz/VERITAS-2025/22/" target="_blank" rel="noopener" title="Veritas Awards — official 2025 complete results booklet">SOURCE · VERITAS AWARDS — OFFICIAL 2025…</a></span></div><div class="aw"><span class="y">2025</span><span><b>Veritas</b> — Silver<br><span class="w">Paul de Villiers Merlot 2021</span><br><a class="src mono" href="https://user-hpa96tt.cld.bz/VERITAS-2025/42/" target="_blank" rel="noopener" title="Veritas Awards — official 2025 complete results booklet">SOURCE · VERITAS AWARDS — OFFICIAL 2025…</a></span></div><div class="aw"><span class="y">2025</span><span><b>Veritas</b> — Silver<br><span class="w">Reserve Pinotage 2022</span><br><a class="src mono" href="https://user-hpa96tt.cld.bz/VERITAS-2025/44/" target="_blank" rel="noopener" title="Veritas Awards — official 2025 complete results booklet">SOURCE · VERITAS AWARDS — OFFICIAL 2025…</a></span></div><div class="aw"><span class="y">2025</span><span><b>Veritas</b> — Silver<br><span class="w">Paul de Villiers Reserve 2021</span><br><a class="src mono" href="https://user-hpa96tt.cld.bz/VERITAS-2025/35/" target="_blank" rel="noopener" title="Veritas Awards — official 2025 complete results booklet">SOURCE · VERITAS AWARDS — OFFICIAL 2025…</a></span></div><div class="aw"><span class="y">2025</span><span><b>Veritas</b> — Silver<br><span class="w">Cellar Master Series Cabernet Franc/Merlot 2021</span><br><a class="src mono" href="https://user-hpa96tt.cld.bz/VERITAS-2025/35/" target="_blank" rel="noopener" title="Veritas Awards — official 2025 complete results booklet">SOURCE · VERITAS AWARDS — OFFICIAL 2025…</a></span></div><div class="aw"><span class="y">2025</span><span><b>DWWA</b> — Gold<br><span class="w">Chenin Blanc Reserve 2022</span><br><a class="src mono" href="https://topwinesa.com/stellenbosch-cab-prevails-again-on-the-international-stage/" target="_blank" rel="noopener" title="TopWineSA — complete South African DWWA 2025 Gold ledger">SOURCE · TOPWINESA — COMPLETE SOUTH AFR…</a></span></div><div class="aw"><span class="y">2025</span><span><b>DWWA</b> — Gold<br><span class="w">Pinotage Reserve 2022</span><br><a class="src mono" href="https://topwinesa.com/stellenbosch-cab-prevails-again-on-the-international-stage/" target="_blank" rel="noopener" title="TopWineSA — complete South African DWWA 2025 Gold ledger">SOURCE · TOPWINESA — COMPLETE SOUTH AFR…</a></span></div></div>
+          <div class="rec-contact mono"><a href="https://www.landskroonwines.com/" target="_blank" rel="noopener">landskroonwines.com</a></div>
+        </div></article><article class="rec" id="rec-perdeberg" data-id="perdeberg">
+        <div class="rec-bar mono"><span>$ record.perdeberg</span><span class="term-dots"><span></span><span></span><span></span></span></div>
+        <div class="rec-body">
+          <div class="rec-name display">Perdeberg</div>
+          <div class="rec-meta mono"><span>EST 1941</span><span><span class="ok">WALK-IN TASTING</span></span><span>WARD · AGTER-PAARL</span><span>ROUTE MEMBER</span><span>LOCATION · MEDIUM</span></div>
+          <p class="rec-hist">Large grower cooperative (&#x27;Home of Chenin Blanc&#x27;) at Vryguns Farm, Windmeul, Paarl, 7630; tasting-room line; founded 1941 when farmer Jan Rossouw proposed area farmers produce their own wine; named after the…</p>
+          <div class="rec-row"><span class="k mono">HOURS</span><span>Tasting Room: Mon-Sat 09:00-17:00; Sun &amp; public holidays 10:00-17:00 (producer site)</span></div>
+          <div class="rec-row"><span class="k mono">VARIETIES</span><div class="tags mono"><span>Chenin Blanc</span></div></div>
+          <div class="rec-row"><span class="k mono">SIGNATURE</span><span>Endura Range · Dry Land Collection · Vineyard Collection · G.O.A.T.</span></div>
+          <div class="rec-awards"><div class="aw"><span class="y">2025</span><span><b>Veritas</b> — Double Gold — 95 pts<br><span class="w">Endura Single Vineyard Chenin Blanc 2023</span><br><a class="src mono" href="https://topwinesa.com/veritas-awards-revisited-the-scores-of-all-the-double-golds/" target="_blank" rel="noopener" title="TopWineSA (compiled Double Gold report)">SOURCE · TOPWINESA (COMPILED DOUBLE GOL…</a><span class="corr mono">✓✓ CORROBORATED</span></span></div><div class="aw"><span class="y">2025</span><span><b>Veritas</b> — Double Gold — 93 pts<br><span class="w">Dry Land Barrel Fermented Chenin Blanc 2024</span><br><a class="src mono" href="https://topwinesa.com/veritas-awards-revisited-the-scores-of-all-the-double-golds/" target="_blank" rel="noopener" title="TopWineSA (compiled Double Gold report)">SOURCE · TOPWINESA (COMPILED DOUBLE GOL…</a></span></div><div class="aw"><span class="y">2025</span><span><b>Veritas</b> — Double Gold — 93 pts<br><span class="w">Dry Land Rossouw&#x27;s Heritage 2022</span><br><a class="src mono" href="https://topwinesa.com/veritas-awards-revisited-the-scores-of-all-the-double-golds/" target="_blank" rel="noopener" title="TopWineSA (compiled Double Gold report)">SOURCE · TOPWINESA (COMPILED DOUBLE GOL…</a></span></div><div class="aw"><span class="y">2026</span><span><b>Trophy Wine Show</b> — Gold<br><span class="w">G.O.A.T Chenin Blanc 2025</span><br><a class="src mono" href="https://news.wine.co.za/news.aspx?NEWSID=47075" target="_blank" rel="noopener" title="wine.co.za (official results release)">SOURCE · WINE.CO.ZA (OFFICIAL RESULTS R…</a></span></div><div class="aw"><span class="y">2025</span><span><b>Veritas</b> — Gold<br><span class="w">G.O.A.T Greatest of all time Chenin Blanc 2025</span><br><a class="src mono" href="https://user-hpa96tt.cld.bz/VERITAS-RESULTS/3/" target="_blank" rel="noopener" title="Veritas Awards — official 2025 Gold and Double Gold results booklet">SOURCE · VERITAS AWARDS — OFFICIAL 2025…</a></span></div><div class="aw"><span class="y">2025</span><span><b>Veritas</b> — Gold<br><span class="w">The Dry Land Collection Longevity Natural Sweet Chenin Blanc 2022</span><br><a class="src mono" href="https://user-hpa96tt.cld.bz/VERITAS-RESULTS/5/" target="_blank" rel="noopener" title="Veritas Awards — official 2025 Gold and Double Gold results booklet">SOURCE · VERITAS AWARDS — OFFICIAL 2025…</a></span></div><div class="aw"><span class="y">2025</span><span><b>Veritas</b> — Gold<br><span class="w">The Dry Land Collection Courageous Barrel Fermented Chenin Blanc 2022</span><br><a class="src mono" href="https://user-hpa96tt.cld.bz/VERITAS-2025/54/" target="_blank" rel="noopener" title="Veritas Awards — official 2025 complete results booklet">SOURCE · VERITAS AWARDS — OFFICIAL 2025…</a></span></div><div class="aw"><span class="y">2025</span><span><b>Veritas</b> — Silver Outstanding<br><span class="w">The Vineyard Collection Chenin Blanc 2025</span><br><a class="src mono" href="https://user-hpa96tt.cld.bz/VERITAS-2025/19/" target="_blank" rel="noopener" title="Veritas Awards — official 2025 complete results booklet">SOURCE · VERITAS AWARDS — OFFICIAL 2025…</a></span></div><div class="aw"><span class="y">2025</span><span><b>Veritas</b> — Silver Outstanding<br><span class="w">The Vineyard Collection Sauvignon Blanc 2025</span><br><a class="src mono" href="https://user-hpa96tt.cld.bz/VERITAS-2025/21/" target="_blank" rel="noopener" title="Veritas Awards — official 2025 complete results booklet">SOURCE · VERITAS AWARDS — OFFICIAL 2025…</a></span></div><div class="aw"><span class="y">2025</span><span><b>Veritas</b> — Silver<br><span class="w">The Vineyard Collection Cinsault 2024</span><br><a class="src mono" href="https://user-hpa96tt.cld.bz/VERITAS-2025/42/" target="_blank" rel="noopener" title="Veritas Awards — official 2025 complete results booklet">SOURCE · VERITAS AWARDS — OFFICIAL 2025…</a></span></div><div class="aw"><span class="y">2025</span><span><b>Veritas</b> — Silver<br><span class="w">The Vineyard Collection Malbec 2024</span><br><a class="src mono" href="https://user-hpa96tt.cld.bz/VERITAS-2025/42/" target="_blank" rel="noopener" title="Veritas Awards — official 2025 complete results booklet">SOURCE · VERITAS AWARDS — OFFICIAL 2025…</a></span></div><div class="aw"><span class="y">2025</span><span><b>Veritas</b> — Silver<br><span class="w">The Vineyard Collection Pinotage 2023</span><br><a class="src mono" href="https://user-hpa96tt.cld.bz/VERITAS-2025/44/" target="_blank" rel="noopener" title="Veritas Awards — official 2025 complete results booklet">SOURCE · VERITAS AWARDS — OFFICIAL 2025…</a></span></div><div class="aw"><span class="y">2025</span><span><b>Veritas</b> — Silver Outstanding<br><span class="w">The Vineyard Collection Pinot Noir/Chardonnay 2025</span><br><a class="src mono" href="https://user-hpa96tt.cld.bz/VERITAS-2025/33/" target="_blank" rel="noopener" title="Veritas Awards — official 2025 complete results booklet">SOURCE · VERITAS AWARDS — OFFICIAL 2025…</a></span></div><div class="aw"><span class="y">2025</span><span><b>Veritas</b> — Silver Outstanding<br><span class="w">Endura Winemaker’s Selection Cape Blend 2022</span><br><a class="src mono" href="https://user-hpa96tt.cld.bz/VERITAS-2025/36/" target="_blank" rel="noopener" title="Veritas Awards — official 2025 complete results booklet">SOURCE · VERITAS AWARDS — OFFICIAL 2025…</a></span></div><div class="aw"><span class="y">2025</span><span><b>Veritas</b> — Silver Outstanding<br><span class="w">The Dry Land Collection Joseph’s Legacy 2023</span><br><a class="src mono" href="https://user-hpa96tt.cld.bz/VERITAS-2025/36/" target="_blank" rel="noopener" title="Veritas Awards — official 2025 complete results booklet">SOURCE · VERITAS AWARDS — OFFICIAL 2025…</a></span></div><div class="aw"><span class="y">2025</span><span><b>IWSC</b> — Silver<br><span class="w">Endura Single Vineyard Chenin Blanc 2023</span><br><a class="src mono" href="https://www.iwsc.net/results/search/2025/184" target="_blank" rel="noopener" title="IWSC — official 2025 tasting results">SOURCE · IWSC — OFFICIAL 2025 TASTING R…</a><span class="corr mono">✓✓ CORROBORATED</span></span></div><div class="aw"><span class="y">2025</span><span><b>IWSC</b> — Silver<br><span class="w">Endura Winemaker&#x27;s Selection Cape Blend</span><br><a class="src mono" href="https://www.iwsc.net/results/search/2025/184" target="_blank" rel="noopener" title="IWSC — official 2025 tasting results">SOURCE · IWSC — OFFICIAL 2025 TASTING R…</a></span></div><div class="aw"><span class="y">2025</span><span><b>IWSC</b> — Bronze<br><span class="w">The Dry Land Collection Courageous Barrel Fermented Chenin Blanc 2024</span><br><a class="src mono" href="https://iwsc.net/results/detail/166347/the-dry-land-collection-courageous-barrel-fermented-chenin-blanc--2024" target="_blank" rel="noopener" title="IWSC — official 2025 result detail">SOURCE · IWSC — OFFICIAL 2025 RESULT DE…</a></span></div><div class="aw"><span class="y">2025</span><span><b>DWWA</b> — Gold<br><span class="w">Endura Single Vineyard Chenin Blanc 2023</span><br><a class="src mono" href="https://www.decanter.com/decanter-world-wine-awards/dwwa-results-highlights/south-africa-gold-winning-white-wines/" target="_blank" rel="noopener" title="Decanter — South Africa: Gold-winning white wines (DWWA 2025)">SOURCE · DECANTER — SOUTH AFRICA: GOLD…</a><span class="corr mono">✓✓ CORROBORATED</span></span></div><div class="aw"><span class="y">2025</span><span><b>DWWA</b> — Gold<br><span class="w">Endura Winemaker&#x27;s Selection Cape Blend 2021</span><br><a class="src mono" href="https://topwinesa.com/stellenbosch-cab-prevails-again-on-the-international-stage/" target="_blank" rel="noopener" title="TopWineSA — complete South African DWWA 2025 Gold ledger">SOURCE · TOPWINESA — COMPLETE SOUTH AFR…</a></span></div><div class="aw"><span class="y">2025</span><span><b>DWWA</b> — Gold<br><span class="w">Dry Land Natural Sweet Chenin Blanc 2022</span><br><a class="src mono" href="https://topwinesa.com/stellenbosch-cab-prevails-again-on-the-international-stage/" target="_blank" rel="noopener" title="TopWineSA — complete South African DWWA 2025 Gold ledger">SOURCE · TOPWINESA — COMPLETE SOUTH AFR…</a></span></div></div>
+          <div class="rec-contact mono"><a href="https://perdeberg.co.za/" target="_blank" rel="noopener">perdeberg.co.za</a></div>
+        </div></article><article class="rec" id="rec-vrede-en-lust" data-id="vrede-en-lust">
+        <div class="rec-bar mono"><span>$ record.vrede-en-lust</span><span class="term-dots"><span></span><span></span><span></span></span></div>
+        <div class="rec-body">
+          <div class="rec-name display">Vrede en Lust</div>
+          <div class="rec-meta mono"><span>EST 1688</span><span><span class="ok">WALK-IN TASTING</span></span><span>ROUTE MEMBER</span><span>LOCATION · MEDIUM</span></div>
+          <p class="rec-hist">Home estate at Simondium; diversified hospitality operation: two restaurants (Lust Bistro &amp; Bakery, Savoye), a hotel, conference and wedding facilities, alongside wine production.</p>
+          <div class="rec-row"><span class="k mono">HOURS</span><span>Mon-Sun 10:00-17:00 (closed Good Friday, 24-25 Dec, 1 Jan) — corroborated by association page and producer site</span></div>
+          <div class="rec-row"><span class="k mono">VARIETIES</span><div class="tags mono"><span>Syrah</span><span>Shiraz</span><span>Cabernet Sauvignon</span><span>Malbec</span><span>Petit Verdot</span><span>Merlot</span><span>Pinotage</span><span>Grenache</span><span>Viognier</span><span>Chardonnay</span><span>Sauvignon Blanc</span><span>Pinot Noir</span><span>Riesling</span><span>Chenin Blanc</span><span>Semillon</span><span>Pinot Grigio</span><span>Cabernet Franc</span></div></div>
+          
+          <div class="rec-awards"><div class="aw"><span class="y">2025</span><span><b>Veritas</b> — Silver<br><span class="w">Marguerite Chardonnay 2024</span><br><a class="src mono" href="https://user-hpa96tt.cld.bz/VERITAS-2025/18/" target="_blank" rel="noopener" title="Veritas Awards — official 2025 complete results booklet">SOURCE · VERITAS AWARDS — OFFICIAL 2025…</a></span></div><div class="aw"><span class="y">2025</span><span><b>Veritas</b> — Silver<br><span class="w">Malbec 2023</span><br><a class="src mono" href="https://user-hpa96tt.cld.bz/VERITAS-2025/42/" target="_blank" rel="noopener" title="Veritas Awards — official 2025 complete results booklet">SOURCE · VERITAS AWARDS — OFFICIAL 2025…</a></span></div></div>
+          <div class="rec-contact mono"><a href="https://www.vnl.co.za/" target="_blank" rel="noopener">vnl.co.za</a></div>
+        </div></article><article class="rec" id="rec-nelson-wine-estate" data-id="nelson-wine-estate">
+        <div class="rec-bar mono"><span>$ record.nelson-wine-estate</span><span class="term-dots"><span></span><span></span><span></span></span></div>
+        <div class="rec-body">
+          <div class="rec-name display">Nelson Wine Estate</div>
+          <div class="rec-meta mono"><span>EST 1987</span><span><span class="ok">WALK-IN TASTING</span></span><span>LOCATION · MEDIUM</span></div>
+          <p class="rec-hist">R44, Windmeul, Agter Paarl. Branded interchangeably &#x27;Nelson Wine Estate&#x27; and &#x27;Nelson&#x27;s Creek&#x27; — same producer, both names co-occur on the current site (not a sequential rename).</p>
+          <div class="rec-row"><span class="k mono">HOURS</span><span>CONFLICT recorded, not averaged: tourism directory sa-venues.com Mon-Fri 09:00-17:00, Sat 09:00-14:00; aggregator wined.co.za Mon-Fri 08:00-17:00, Sat 09:00-14:00 (aggregator…</span></div>
+          <div class="rec-row"><span class="k mono">VARIETIES</span><div class="tags mono"><span>Cabernet Sauvignon</span><span>Cabernet Franc</span><span>Merlot</span><span>Shiraz</span><span>Pinotage</span><span>Sauvignon Blanc</span><span>Chardonnay</span><span>Semillon</span><span>Chenin Blanc</span><span>Petit Verdot</span></div></div>
+          <div class="rec-row"><span class="k mono">SIGNATURE</span><span>Lisha Nelson Signature Wines</span></div>
+          <div class="rec-awards"><span class="flag dim mono">NO VERIFIED HONOUR ON FILE</span></div>
+          <div class="rec-contact mono"><a href="https://www.nelsonscreek.co.za/" target="_blank" rel="noopener">nelsonscreek.co.za</a></div>
+        </div></article><article class="rec" id="rec-avondale" data-id="avondale">
+        <div class="rec-bar mono"><span>$ record.avondale</span><span class="term-dots"><span></span><span></span><span></span></span></div>
+        <div class="rec-body">
+          <div class="rec-name display">Avondale</div>
+          <div class="rec-meta mono"><span>EST 1694</span><span><span class="ok">WALK-IN TASTING</span></span><span>ROUTE MEMBER</span><span>LOCATION · MEDIUM</span></div>
+          <p class="rec-hist">Land granted 1694 to Hendrick Roodeberg (then &#x27;Gele Blomme Vallei&#x27;); Grieve family (John &amp; Ginny) bought the 160ha farm in 1996; son Johnathan Grieve released the first vintage under the Avondale label in 1999…</p>
+          <div class="rec-row"><span class="k mono">HOURS</span><span>Mon-Sun 10:00-16:00</span></div>
+          <div class="rec-row"><span class="k mono">VARIETIES</span><div class="tags mono"><span>Chenin Blanc</span><span>Sauvignon Blanc</span><span>Cabernet Sauvignon</span></div></div>
+          <div class="rec-row"><span class="k mono">SIGNATURE</span><span>Cyclus · Camissa</span></div>
+          <div class="rec-awards"><span class="flag dim mono">NO VERIFIED HONOUR ON FILE</span></div>
+          <div class="rec-contact mono"><a href="https://www.avondalewine.co.za/" target="_blank" rel="noopener">avondalewine.co.za</a></div>
+        </div></article><article class="rec" id="rec-doran-vineyards" data-id="doran-vineyards">
+        <div class="rec-bar mono"><span>$ record.doran-vineyards</span><span class="term-dots"><span></span><span></span><span></span></span></div>
+        <div class="rec-body">
+          <div class="rec-name display">Doran Vineyards</div>
+          <div class="rec-meta mono"><span>EST 1995</span><span><span class="ok">TASTING BY APPOINTMENT</span></span><span>WARD · VOOR-PAARDEBERG</span><span>ROUTE MEMBER</span><span>LOCATION · MEDIUM</span></div>
+          <p class="rec-hist">Producer&#x27;s own site states first vines planted 1995; farm is in Voor-Paardeberg, between Paarl and Riebeek Kasteel (producer-stated — ward recorded on that basis, medium confidence).</p>
+          <div class="rec-row"><span class="k mono">HOURS</span><span>By appointment (per tourism directory; producer site does not itself state hours)</span></div>
+          <div class="rec-row"><span class="k mono">VARIETIES</span><div class="tags mono"><span>Chenin Blanc</span><span>Grenache Blanc</span><span>Sauvignon Blanc</span><span>Roussanne</span><span>Grenache Noir</span><span>Durif</span><span>Pinotage</span><span>Syrah</span></div></div>
+          
+          <div class="rec-awards"><span class="flag dim mono">NO VERIFIED HONOUR ON FILE</span></div>
+          <div class="rec-contact mono"><a href="https://www.doranvineyards.co.za/" target="_blank" rel="noopener">doranvineyards.co.za</a></div>
+        </div></article><article class="rec" id="rec-mcfarlane-wines" data-id="mcfarlane-wines">
+        <div class="rec-bar mono"><span>$ record.mcfarlane-wines</span><span class="term-dots"><span></span><span></span><span></span></span></div>
+        <div class="rec-body">
+          <div class="rec-name display">McFarlane Wines</div>
+          <div class="rec-meta mono"><span>EST 2018</span><span><span class="">NO TASTING ROOM</span></span><span>ROUTE MEMBER</span><span>LOCATION NOT YET RESOLVED</span></div>
+          <p class="rec-hist">#24 (brand ≠ cellar): small negociant-style label with no vineyard of its own; wine made at a succession of shared facilities — Karibib, then Hemel-en-Aarde (2021), currently The Simondium Guild, R45…</p>
+          
+          <div class="rec-row"><span class="k mono">VARIETIES</span><div class="tags mono"><span>Chenin Blanc</span><span>Cinsault</span><span>Pinotage</span></div></div>
+          <div class="rec-row"><span class="k mono">SIGNATURE</span><span>Monday&#x27;s Child · Tuesday&#x27;s Child · Thursday&#x27;s Child · Capitoline Wolf (White &amp; Red, experimental range)</span></div>
+          <div class="rec-awards"><span class="flag dim mono">NO VERIFIED HONOUR ON FILE</span></div>
+          <div class="rec-contact mono"><a href="https://mcfarlanewines.com/" target="_blank" rel="noopener">mcfarlanewines.com</a></div>
+        </div></article><article class="rec" id="rec-rhebokskloof" data-id="rhebokskloof">
+        <div class="rec-bar mono"><span>$ record.rhebokskloof</span><span class="term-dots"><span></span><span></span><span></span></span></div>
+        <div class="rec-body">
+          <div class="rec-name display">Rhebokskloof</div>
+          <div class="rec-meta mono"><span>EST 1692</span><span><span class="ok">WALK-IN TASTING</span></span><span>ROUTE MEMBER</span><span>LOCATION · MEDIUM</span></div>
+          <p class="rec-hist">Land granted 1692 (Dirk van Schalkwyk) per wine.co.za history page (aggregator, dated narrative, not independently corroborated — founded held at medium-at-best confidence).</p>
+          <div class="rec-row"><span class="k mono">HOURS</span><span>Mon-Sun 09:00-17:00</span></div>
+          <div class="rec-row"><span class="k mono">VARIETIES</span><div class="tags mono"><span>Chenin Blanc</span><span>Chardonnay</span><span>Pinotage</span><span>Shiraz</span><span>Cabernet Sauvignon</span></div></div>
+          <div class="rec-row"><span class="k mono">SIGNATURE</span><span>Black Marble Hill Syrah</span></div>
+          <div class="rec-awards"><span class="flag dim mono">NO VERIFIED HONOUR ON FILE</span></div>
+          <div class="rec-contact mono"><a href="https://www.rhebokskloof.co.za/" target="_blank" rel="noopener">rhebokskloof.co.za</a></div>
+        </div></article><article class="rec" id="rec-vendome-wine-estate" data-id="vendome-wine-estate">
+        <div class="rec-bar mono"><span>$ record.vendome-wine-estate</span><span class="term-dots"><span></span><span></span><span></span></span></div>
+        <div class="rec-body">
+          <div class="rec-name display">Vendôme Wine Estate</div>
+          <div class="rec-meta mono"><span>EST 1692</span><span><span class="ok">TASTING BY APPOINTMENT</span></span><span>ARBORETUM AVENUE, PAARL.</span><span>LOCATION · MEDIUM</span></div>
+          <p class="rec-hist">Arboretum Avenue, Vendôme, Paarl 7645. Three independent sources corroborate: Le Roux brothers arrived as French Huguenots in 1688; the property has produced wine grapes since 1692 (founded=1692 is a…</p>
+          <div class="rec-row"><span class="k mono">HOURS</span><span>Restaurant (Salmon and Brine): Tue-Sun 08:00-16:00 (restaurant hours, HAZARDS #28). Wine tastings: by appointment only (all days incl. public/religious holidays, per paarlonline.com).</span></div>
+          <div class="rec-row"><span class="k mono">VARIETIES</span><div class="tags mono"><span>Chenin Blanc</span><span>Chardonnay</span><span>Cabernet Franc</span><span>Cabernet Sauvignon</span><span>Merlot</span><span>Sauvignon Blanc</span><span>Semillon</span></div></div>
+          
+          <div class="rec-awards"><span class="flag dim mono">NO VERIFIED HONOUR ON FILE</span></div>
+          <div class="rec-contact mono"><a href="https://www.vendome.co.za/" target="_blank" rel="noopener">vendome.co.za</a></div>
+        </div></article><article class="rec" id="rec-boland-cellar" data-id="boland-cellar">
+        <div class="rec-bar mono"><span>$ record.boland-cellar</span><span class="term-dots"><span></span><span></span><span></span></span></div>
+        <div class="rec-body">
+          <div class="rec-name display">Boland Cellar</div>
+          <div class="rec-meta mono"><span>EST 1941</span><span><span class="ok">WALK-IN TASTING</span></span><span>ROUTE MEMBER</span><span>LOCATION · MEDIUM</span></div>
+          <p class="rec-hist">Cooperative cellar established 1941 by nine pioneering Paarl-region farmers (association page).</p>
+          <div class="rec-row"><span class="k mono">HOURS</span><span>Mon-Fri 09:00-17:00; Sat 10:00-15:00; Sun closed</span></div>
+          <div class="rec-row"><span class="k mono">VARIETIES</span><div class="tags mono"><span>Chenin Blanc</span><span>Pinotage</span><span>Chardonnay</span><span>Cabernet Sauvignon</span><span>Sauvignon Blanc</span><span>Merlot</span><span>Shiraz</span><span>White Muscadel</span><span>Red Muscadel</span></div></div>
+          <div class="rec-row"><span class="k mono">SIGNATURE</span><span>Reserve No. 1 · One Formation · Talent &amp; Terroir · Five Climates · Flutterby · Sixty 40</span></div>
+          <div class="rec-awards"><div class="aw"><span class="y">2026</span><span><b>Trophy Wine Show</b> — Trophy for Best Pinotage-Based Red Blend / Cape Blend<br><span class="w">Reserve Red 2024</span><br><a class="src mono" href="https://news.wine.co.za/news.aspx?NEWSID=47075" target="_blank" rel="noopener" title="wine.co.za (official results release)">SOURCE · WINE.CO.ZA (OFFICIAL RESULTS R…</a></span></div></div>
+          <div class="rec-contact mono"><a href="https://bolandcellar.co.za" target="_blank" rel="noopener">bolandcellar.co.za</a></div>
+        </div></article><article class="rec" id="rec-fairview" data-id="fairview">
+        <div class="rec-bar mono"><span>$ record.fairview</span><span class="term-dots"><span></span><span></span><span></span></span></div>
+        <div class="rec-body">
+          <div class="rec-name display">Fairview</div>
+          <div class="rec-meta mono"><span>EST 1699</span><span><span class="ok">WALK-IN TASTING</span></span><span>ROUTE MEMBER</span><span>LOCATION · MEDIUM</span></div>
+          <p class="rec-hist">Suid-Agter Paarl Road, Suider-Paarl, 7646. founded=1937 = Back family purchase date; earliest recorded wine production on the property is dated 1699 by Wikipedia and 1693 (as &#x27;Bloemkoolfontein&#x27;) by…</p>
+          <div class="rec-row"><span class="k mono">HOURS</span><span>Mon-Sun 09:00-17:00 (closes 16:00 on Dec 24 &amp; 31; closed Dec 25 &amp; Jan 1)</span></div>
+          <div class="rec-row"><span class="k mono">VARIETIES</span><div class="tags mono"><span>Shiraz</span><span>Pinotage</span><span>Cabernet Sauvignon</span><span>Merlot</span><span>Carignan</span><span>Sauvignon Blanc</span><span>Chardonnay</span><span>Riesling</span><span>Viognier</span><span>Tempranillo</span><span>Sangiovese</span><span>Petite Sirah</span></div></div>
+          <div class="rec-row"><span class="k mono">SIGNATURE</span><span>Cyril Back (flagship) · The Beacon Shiraz · Primo Pinotage</span></div>
+          <div class="rec-awards"><span class="flag dim mono">NO VERIFIED HONOUR ON FILE</span></div>
+          <div class="rec-contact mono"><a href="https://www.fairview.co.za" target="_blank" rel="noopener">fairview.co.za</a></div>
+        </div></article><article class="rec" id="rec-nederburg" data-id="nederburg">
+        <div class="rec-bar mono"><span>$ record.nederburg</span><span class="term-dots"><span></span><span></span><span></span></span></div>
+        <div class="rec-body">
+          <div class="rec-name display">Nederburg</div>
+          <div class="rec-meta mono"><span>EST 1791</span><span><span class="ok">WALK-IN TASTING</span></span><span>ROUTE MEMBER</span><span>LOCATION · MEDIUM</span></div>
+          <p class="rec-hist">Founded 1791 by German immigrant Philippus Wolvaart (49 ha, Paarl Valley), originally &#x27;Nederburgh&#x27; after VOC commissioner Sebastian Cornelis Niederburgh; confirmed on producer&#x27;s own site and corroborated by…</p>
+          <div class="rec-row"><span class="k mono">HOURS</span><span>Mon-Fri 09:00-17:00 (May-Sept) / 09:00-18:00 (Oct-Apr); Sat-Sun 10:00-16:00; closed Christmas, New Year&#x27;s Day, Good Friday</span></div>
+          <div class="rec-row"><span class="k mono">VARIETIES</span><div class="tags mono"><span>Cabernet Sauvignon</span><span>Chardonnay</span><span>Chenin Blanc</span><span>Pinotage</span><span>Sauvignon Blanc</span><span>Shiraz</span><span>Grenache</span><span>Carignan</span></div></div>
+          
+          <div class="rec-awards"><div class="aw"><span class="y">2025</span><span><b>Veritas</b> — Double Gold — None pts<br><span class="w">Private Bin R163 Cabernet Sauvignon 2015</span><br><a class="src mono" href="https://topwinesa.com/veritas-awards-revisited-the-scores-of-all-the-double-golds/" target="_blank" rel="noopener" title="TopWineSA (compiled Double Gold report)">SOURCE · TOPWINESA (COMPILED DOUBLE GOL…</a></span></div><div class="aw"><span class="y">2025</span><span><b>Veritas</b> — Double Gold — None pts<br><span class="w">Private Bin Edelkeur Chenin Blanc 2011</span><br><a class="src mono" href="https://topwinesa.com/veritas-awards-revisited-the-scores-of-all-the-double-golds/" target="_blank" rel="noopener" title="TopWineSA (compiled Double Gold report)">SOURCE · TOPWINESA (COMPILED DOUBLE GOL…</a></span></div><div class="aw"><span class="y">2025</span><span><b>Veritas</b> — Double Gold — None pts<br><span class="w">Private Bin Semillon 2000</span><br><a class="src mono" href="https://topwinesa.com/veritas-awards-revisited-the-scores-of-all-the-double-golds/" target="_blank" rel="noopener" title="TopWineSA (compiled Double Gold report)">SOURCE · TOPWINESA (COMPILED DOUBLE GOL…</a></span></div><div class="aw"><span class="y">2023</span><span><b>Platter&#x27;s</b> — Winery of the Year (2011 edition)<br><span class="w">Winery</span><br><a class="src mono" href="https://topwinesa.com/2021/11/in-black-and-white-sadie-named-platters-winery-of-the-year-again/" target="_blank" rel="noopener" title="Top Wine SA ledger">SOURCE · TOP WINE SA LEDGER</a></span></div><div class="aw"><span class="y">2026</span><span><b>Trophy Wine Show</b> — Best Shiraz + Discovery of the Show (Best Value Gold Medallist)<br><span class="w">The Winemasters Shiraz 2024</span><br><a class="src mono" href="https://news.wine.co.za/news.aspx?NEWSID=47075" target="_blank" rel="noopener" title="wine.co.za (official results release)">SOURCE · WINE.CO.ZA (OFFICIAL RESULTS R…</a></span></div><div class="aw"><span class="y">2026</span><span><b>Trophy Wine Show</b> — Best Museum Class Dessert Wine + Best Museum Class Wine Overall<br><span class="w">The Winemasters Noble Late Harvest 2018</span><br><a class="src mono" href="https://news.wine.co.za/news.aspx?NEWSID=47075" target="_blank" rel="noopener" title="wine.co.za (official results release)">SOURCE · WINE.CO.ZA (OFFICIAL RESULTS R…</a></span></div><div class="aw"><span class="y">2026</span><span><b>Trophy Wine Show</b> — Gold<br><span class="w">Heritage Heroes The Brew Master 2021</span><br><a class="src mono" href="https://news.wine.co.za/news.aspx?NEWSID=47075" target="_blank" rel="noopener" title="wine.co.za (official results release)">SOURCE · WINE.CO.ZA (OFFICIAL RESULTS R…</a><span class="corr mono">✓✓ CORROBORATED</span></span></div><div class="aw"><span class="y">2023</span><span><b>Platter&#x27;s</b> — Winery of the Year (2017 edition)<br><span class="w">Winery</span><br><a class="src mono" href="https://topwinesa.com/2021/11/in-black-and-white-sadie-named-platters-winery-of-the-year-again/" target="_blank" rel="noopener" title="Top Wine SA ledger">SOURCE · TOP WINE SA LEDGER</a></span></div><div class="aw"><span class="y">2025</span><span><b>Veritas</b> — Gold<br><span class="w">Two Centuries Cabernet Sauvignon 2015</span><br><a class="src mono" href="https://user-hpa96tt.cld.bz/VERITAS-2025/54/" target="_blank" rel="noopener" title="Veritas Awards — official 2025 complete results booklet">SOURCE · VERITAS AWARDS — OFFICIAL 2025…</a></span></div><div class="aw"><span class="y">2025</span><span><b>Veritas</b> — Silver Outstanding<br><span class="w">Heritage Heroes The Brew Master 2021</span><br><a class="src mono" href="https://user-hpa96tt.cld.bz/VERITAS-2025/35/" target="_blank" rel="noopener" title="Veritas Awards — official 2025 complete results booklet">SOURCE · VERITAS AWARDS — OFFICIAL 2025…</a><span class="corr mono">✓✓ CORROBORATED</span></span></div><div class="aw"><span class="y">2025</span><span><b>Veritas</b> — Silver<br><span class="w">Heritage Heroes The Motorcycle Marvel 2022</span><br><a class="src mono" href="https://user-hpa96tt.cld.bz/VERITAS-2025/36/" target="_blank" rel="noopener" title="Veritas Awards — official 2025 complete results booklet">SOURCE · VERITAS AWARDS — OFFICIAL 2025…</a></span></div><div class="aw"><span class="y">2025</span><span><b>Veritas</b> — Silver<br><span class="w">The Winemasters NLH 2024</span><br><a class="src mono" href="https://user-hpa96tt.cld.bz/VERITAS-2025/24/" target="_blank" rel="noopener" title="Veritas Awards — official 2025 complete results booklet">SOURCE · VERITAS AWARDS — OFFICIAL 2025…</a></span></div><div class="aw"><span class="y">2025</span><span><b>IWSC</b> — Gold<br><span class="w">Nederburg Private Bin Two Centuries Cabernet Sauvignon 2021</span><br><a class="src mono" href="https://www.iwsc.net/results/detail/165985/nederburg-private-bin-two-centuries-cabernet-sauvignon" target="_blank" rel="noopener" title="IWSC — 2025 South Africa Global Judging official result">SOURCE · IWSC — 2025 SOUTH AFRICA GLOBA…</a></span></div><div class="aw"><span class="y">2025</span><span><b>IWSC</b> — Silver<br><span class="w">Heritage Heroes The Anchor Man Old Vine Chenin Blanc 2024</span><br><a class="src mono" href="https://www.iwsc.net/results/search/2025/253" target="_blank" rel="noopener" title="IWSC — official 2025 tasting results">SOURCE · IWSC — OFFICIAL 2025 TASTING R…</a><span class="corr mono">✓✓ CORROBORATED</span></span></div><div class="aw"><span class="y">2025</span><span><b>IWSC</b> — Silver<br><span class="w">Nederburg Heritage Heroes The Brew Master 2021</span><br><a class="src mono" href="https://www.iwsc.net/results/search/2025/354" target="_blank" rel="noopener" title="IWSC — official 2025 tasting results">SOURCE · IWSC — OFFICIAL 2025 TASTING R…</a></span></div><div class="aw"><span class="y">2025</span><span><b>IWSC</b> — Silver<br><span class="w">Nederburg The Manor House Cabernet Sauvignon 2022</span><br><a class="src mono" href="https://www.iwsc.net/results/search/2025/354" target="_blank" rel="noopener" title="IWSC — official 2025 tasting results">SOURCE · IWSC — OFFICIAL 2025 TASTING R…</a></span></div><div class="aw"><span class="y">2025</span><span><b>IWSC</b> — Silver<br><span class="w">Nederburg The Winemasters Cabernet Sauvignon 2023</span><br><a class="src mono" href="https://www.iwsc.net/results/search/2025/354" target="_blank" rel="noopener" title="IWSC — official 2025 tasting results">SOURCE · IWSC — OFFICIAL 2025 TASTING R…</a></span></div><div class="aw"><span class="y">2025</span><span><b>IWSC</b> — Silver<br><span class="w">The Winemasters Noble Late Harvest 2024</span><br><a class="src mono" href="https://www.iwsc.net/results/search/2025" target="_blank" rel="noopener" title="IWSC — official 2025 results archive">SOURCE · IWSC — OFFICIAL 2025 RESULTS A…</a></span></div><div class="aw"><span class="y">2025</span><span><b>DWWA</b> — Gold<br><span class="w">Heritage Heroes the Anchor Man Old Vine Chenin Blanc 2024</span><br><a class="src mono" href="https://www.decanter.com/decanter-world-wine-awards/dwwa-results-highlights/south-africa-gold-winning-white-wines/" target="_blank" rel="noopener" title="Decanter — South Africa: Gold-winning white wines (DWWA 2025)">SOURCE · DECANTER — SOUTH AFRICA: GOLD…</a><span class="corr mono">✓✓ CORROBORATED</span></span></div><div class="aw"><span class="y">2025</span><span><b>DWWA</b> — Gold<br><span class="w">Private Bin Two Centuries Cabernet Sauvignon 2021</span><br><a class="src mono" href="https://topwinesa.com/stellenbosch-cab-prevails-again-on-the-international-stage/" target="_blank" rel="noopener" title="TopWineSA — complete South African DWWA 2025 Gold ledger">SOURCE · TOPWINESA — COMPLETE SOUTH AFR…</a></span></div></div>
+          <div class="rec-contact mono"><a href="https://www.nederburg.com" target="_blank" rel="noopener">nederburg.com</a></div>
+        </div></article><article class="rec" id="rec-ridgeback" data-id="ridgeback">
+        <div class="rec-bar mono"><span>$ record.ridgeback</span><span class="term-dots"><span></span><span></span><span></span></span></div>
+        <div class="rec-body">
+          <div class="rec-name display">Ridgeback</div>
+          <div class="rec-meta mono"><span>EST 2000</span><span><span class="ok">WALK-IN TASTING</span></span><span>ROUTE MEMBER</span><span>LOCATION · MEDIUM</span></div>
+          <p class="rec-hist">Noord Agter Paarl Rd, Windmeul, Paarl. Property operated by Vansha Farming (Pty) Ltd; brand name &#x27;Vansha&#x27; from owner&#x27;s children Vanessa and Shaun; Vanessa Cole runs restaurant/guest house; winemaker Toit…</p>
+          <div class="rec-row"><span class="k mono">HOURS</span><span>Variable daily schedule per wine.co.za: 10:00 start, closing 13:00/17:00, one evening slot to 18:00 — exact days not specified; verify directly before visiting</span></div>
+          <div class="rec-row"><span class="k mono">VARIETIES</span><div class="tags mono"><span>Viognier</span><span>Cabernet Franc</span><span>Shiraz</span><span>Merlot</span><span>Cabernet Sauvignon</span><span>Mourvèdre</span><span>Petit Verdot</span><span>Grenache</span><span>Sauvignon Blanc</span></div></div>
+          <div class="rec-row"><span class="k mono">SIGNATURE</span><span>Ridgeback Shiraz · Signature C (Bordeaux blend) · Ridgeback Viognier · Ridgeback Cabernet Franc</span></div>
+          <div class="rec-awards"><div class="aw"><span class="y">2025</span><span><b>IWSC</b> — Silver<br><span class="w">Cabernet Franc 2022</span><br><a class="src mono" href="https://www.iwsc.net/results/search/2025/99" target="_blank" rel="noopener" title="IWSC — official 2025 tasting results">SOURCE · IWSC — OFFICIAL 2025 TASTING R…</a></span></div></div>
+          <div class="rec-contact mono"><a href="https://www.ridgebackwines.co.za" target="_blank" rel="noopener">ridgebackwines.co.za</a></div>
+        </div></article><article class="rec" id="rec-windmeul" data-id="windmeul">
+        <div class="rec-bar mono"><span>$ record.windmeul</span><span class="term-dots"><span></span><span></span><span></span></span></div>
+        <div class="rec-body">
+          <div class="rec-name display">Windmeul</div>
+          <div class="rec-meta mono"><span>EST 1944</span><span><span class="ok">WALK-IN TASTING</span></span><span>ROUTE MEMBER</span><span>LOCATION · MEDIUM</span></div>
+          <p class="rec-hist">Windmeul Kelder cooperative established 1944 (23 founding grape/wine-producer members), confirmed on producer&#x27;s own site and corroborated by sa-venues.com. R44 &amp; Back Paarl Road, Windmeul, Paarl.</p>
+          <div class="rec-row"><span class="k mono">HOURS</span><span>Mon-Fri 08:00-17:00; Sat 09:00-15:00</span></div>
+          <div class="rec-row"><span class="k mono">VARIETIES</span><div class="tags mono"><span>Cabernet Sauvignon</span><span>Shiraz</span><span>Pinotage</span><span>Merlot</span><span>Chenin Blanc</span><span>Sauvignon Blanc</span></div></div>
+          <div class="rec-row"><span class="k mono">SIGNATURE</span><span>2017 Legend Collection Chenin Blanc</span></div>
+          <div class="rec-awards"><div class="aw"><span class="y">2025</span><span><b>Veritas</b> — Gold<br><span class="w">Chenin Blanc 2025</span><br><a class="src mono" href="https://user-hpa96tt.cld.bz/VERITAS-RESULTS/3/" target="_blank" rel="noopener" title="Veritas Awards — official 2025 Gold and Double Gold results booklet">SOURCE · VERITAS AWARDS — OFFICIAL 2025…</a></span></div><div class="aw"><span class="y">2025</span><span><b>Veritas</b> — Gold<br><span class="w">Merlot 2023</span><br><a class="src mono" href="https://user-hpa96tt.cld.bz/VERITAS-RESULTS/10/" target="_blank" rel="noopener" title="Veritas Awards — official 2025 Gold and Double Gold results booklet">SOURCE · VERITAS AWARDS — OFFICIAL 2025…</a></span></div><div class="aw"><span class="y">2025</span><span><b>Veritas</b> — Silver<br><span class="w">Cabernet Sauvignon 2023</span><br><a class="src mono" href="https://user-hpa96tt.cld.bz/VERITAS-2025/41/" target="_blank" rel="noopener" title="Veritas Awards — official 2025 complete results booklet">SOURCE · VERITAS AWARDS — OFFICIAL 2025…</a></span></div><div class="aw"><span class="y">2025</span><span><b>Veritas</b> — Silver Outstanding<br><span class="w">Reserve Pinotage 2022</span><br><a class="src mono" href="https://user-hpa96tt.cld.bz/VERITAS-2025/44/" target="_blank" rel="noopener" title="Veritas Awards — official 2025 complete results booklet">SOURCE · VERITAS AWARDS — OFFICIAL 2025…</a></span></div><div class="aw"><span class="y">2025</span><span><b>Veritas</b> — Silver<br><span class="w">Pinotage 2023</span><br><a class="src mono" href="https://user-hpa96tt.cld.bz/VERITAS-2025/44/" target="_blank" rel="noopener" title="Veritas Awards — official 2025 complete results booklet">SOURCE · VERITAS AWARDS — OFFICIAL 2025…</a></span></div><div class="aw"><span class="y">2025</span><span><b>Veritas</b> — Bronze<br><span class="w">Reserve Cape Blend 2021</span><br><a class="src mono" href="https://user-hpa96tt.cld.bz/VERITAS-2025/36/" target="_blank" rel="noopener" title="Veritas Awards — official 2025 complete results booklet">SOURCE · VERITAS AWARDS — OFFICIAL 2025…</a></span></div><div class="aw"><span class="y">2025</span><span><b>Veritas</b> — Silver<br><span class="w">Sauvignon Blanc 2025</span><br><a class="src mono" href="https://user-hpa96tt.cld.bz/VERITAS-2025/23/" target="_blank" rel="noopener" title="Veritas Awards — official 2025 complete results booklet">SOURCE · VERITAS AWARDS — OFFICIAL 2025…</a></span></div></div>
+          <div class="rec-contact mono"><a href="https://windmeul.com" target="_blank" rel="noopener">windmeul.com</a></div>
+        </div></article><article class="rec" id="rec-pearl-mountain-wines" data-id="pearl-mountain-wines">
+        <div class="rec-bar mono"><span>$ record.pearl-mountain-wines</span><span class="term-dots"><span></span><span></span><span></span></span></div>
+        <div class="rec-body">
+          <div class="rec-name display">Pearl Mountain Wines</div>
+          <div class="rec-meta mono"><span>EST 1747</span><span><span class="ok">WALK-IN TASTING</span></span><span>LOCATION · MEDIUM</span></div>
+          <p class="rec-hist">#9 (no producer site found): after 3 search attempts only a Facebook page (robots-blocked) plus three tourism-directory/wine-portal listings were found; identity facts (Retief family ownership 5 generations,…</p>
+          <div class="rec-row"><span class="k mono">HOURS</span><span>Tue-Sun 11:00-16:00; public holidays 11:00-16:00; closed religious holidays; &#x27;seasonal hours may apply, phone ahead&#x27; per source</span></div>
+          <div class="rec-row"><span class="k mono">VARIETIES</span><div class="tags mono"><span>Cabernet Sauvignon</span><span>Chardonnay</span><span>Chenin Blanc</span><span>Merlot</span><span>Sauvignon Blanc</span><span>Shiraz</span></div></div>
+          
+          <div class="rec-awards"><span class="flag dim mono">NO VERIFIED HONOUR ON FILE</span></div>
+          <div class="rec-contact mono"><a href="http://www.pearlmountain.co.za/" target="_blank" rel="noopener">pearlmountain.co.za</a></div>
+        </div></article><article class="rec" id="rec-brookdale-estate" data-id="brookdale-estate">
+        <div class="rec-bar mono"><span>$ record.brookdale-estate</span><span class="term-dots"><span></span><span></span><span></span></span></div>
+        <div class="rec-body">
+          <div class="rec-name display">Brookdale</div>
+          <div class="rec-meta mono"><span><span class="ok">WALK-IN TASTING</span></span><span>ROUTE MEMBER</span><span>LOCATION · MEDIUM</span></div>
+          <p class="rec-hist">Boutique Winelands estate; Manor House (guest accommodation) opened 2021; Bistro &amp; Tasting Room opened in a newly built cellar (press, Feb 2023). Winemaker Kiara Scott; chef Gary Coetzee (ex-Singita).</p>
+          <div class="rec-row"><span class="k mono">HOURS</span><span>Tasting Room: Tue-Sun 11:00-17:00, closed Mon (dated press, Feb 2023). The Bistro restaurant: Wed 12:00-15:30; Thu-Sat 12:00-21:00; Sun 12:00-15:30 (directory) — restaurant hours never…</span></div>
+          <div class="rec-row"><span class="k mono">VARIETIES</span><div class="tags mono"><span>Chardonnay</span><span>Chenin Blanc</span><span>Grenache</span><span>Mourvèdre</span><span>Syrah</span></div></div>
+          <div class="rec-row"><span class="k mono">SIGNATURE</span><span>Brookdale Chenin Blanc Old Vine (also Magnum/Double Magnum) · Mason Road range</span></div>
+          <div class="rec-awards"><div class="aw"><span class="y">2025</span><span><b>IWSC</b> — Silver<br><span class="w">Mason Road Chenin Blanc 2025</span><br><a class="src mono" href="https://iwsc.net/company/profile/28112/rudd--farms-limited-ta-brookdale-estate" target="_blank" rel="noopener" title="IWSC — official 2025 producer profile">SOURCE · IWSC — OFFICIAL 2025 PRODUCER…</a></span></div></div>
+          <div class="rec-contact mono"><a href="https://brookdale-estate.com/" target="_blank" rel="noopener">brookdale-estate.com</a></div>
+        </div></article><article class="rec" id="rec-kwv" data-id="kwv">
+        <div class="rec-bar mono"><span>$ record.kwv</span><span class="term-dots"><span></span><span></span><span></span></span></div>
+        <div class="rec-body">
+          <div class="rec-name display">KWV</div>
+          <div class="rec-meta mono"><span>EST 1918</span><span><span class="ok">WALK-IN TASTING</span></span><span>ROUTE MEMBER</span><span>LOCATION · MEDIUM</span></div>
+          <p class="rec-hist">Founded 8 Jan 1918 as a wine-farmers cooperative led by Dr Charles Kohler at Suider-Paarl; Kohler Street, Suider Paarl (tourism directory).</p>
+          <div class="rec-row"><span class="k mono">HOURS</span><span>Cellar tours (KWV Wine Emporium / Cathedral Cellar): Mon-Sat 10:00, 10:15 (German), 10:30, 14:15; Sun 11:00 — per tourism directory; exact current schedule not confirmed on producer site</span></div>
+          <div class="rec-row"><span class="k mono">VARIETIES</span><div class="tags mono"><span>Chenin Blanc</span><span>Colombard</span><span>Chardonnay</span><span>Sauvignon Blanc</span><span>Grenache Blanc</span><span>Cabernet Sauvignon</span><span>Merlot</span><span>Petit Verdot</span><span>Pinotage</span><span>Shiraz</span><span>Red Muscadel</span></div></div>
+          <div class="rec-row"><span class="k mono">SIGNATURE</span><span>Roodeberg · The Mentors · KWV Brandy · Laborie · Cathedral Cellar · Classic Collection · Cruxland · Imagin · Wild Africa Cream</span></div>
+          <div class="rec-awards"><div class="aw"><span class="y">2025</span><span><b>Veritas</b> — Double Gold — 93 pts<br><span class="w">The Mentors Petit Verdot 2022</span><br><a class="src mono" href="https://topwinesa.com/veritas-awards-revisited-the-scores-of-all-the-double-golds/" target="_blank" rel="noopener" title="TopWineSA (compiled Double Gold report)">SOURCE · TOPWINESA (COMPILED DOUBLE GOL…</a></span></div><div class="aw"><span class="y">2025</span><span><b>Veritas</b> — Double Gold + Duimpie Bayly Vertex Trophy<br><span class="w">The Mentors Perold 2022</span><br><a class="src mono" href="https://topwinesa.com/veritas-awards-revisited-the-scores-of-all-the-double-golds/" target="_blank" rel="noopener" title="TopWineSA (compiled Double Gold report)">SOURCE · TOPWINESA (COMPILED DOUBLE GOL…</a></span></div><div class="aw"><span class="y">2025</span><span><b>Veritas</b> — Double Gold — 94 pts<br><span class="w">The Mentors Perold 2021</span><br><a class="src mono" href="https://topwinesa.com/veritas-awards-revisited-the-scores-of-all-the-double-golds/" target="_blank" rel="noopener" title="TopWineSA (compiled Double Gold report)">SOURCE · TOPWINESA (COMPILED DOUBLE GOL…</a></span></div><div class="aw"><span class="y">2025</span><span><b>Veritas</b> — Double Gold — 93 pts<br><span class="w">The Mentors Canvas 2021</span><br><a class="src mono" href="https://topwinesa.com/veritas-awards-revisited-the-scores-of-all-the-double-golds/" target="_blank" rel="noopener" title="TopWineSA (compiled Double Gold report)">SOURCE · TOPWINESA (COMPILED DOUBLE GOL…</a></span></div><div class="aw"><span class="y">2025</span><span><b>Veritas</b> — Double Gold — 93 pts<br><span class="w">The Mentors Canvas 2022</span><br><a class="src mono" href="https://topwinesa.com/veritas-awards-revisited-the-scores-of-all-the-double-golds/" target="_blank" rel="noopener" title="TopWineSA (compiled Double Gold report)">SOURCE · TOPWINESA (COMPILED DOUBLE GOL…</a></span></div><div class="aw"><span class="y">2025</span><span><b>Veritas</b> — Double Gold — 93 pts<br><span class="w">Roodeberg Dr Charles Niehaus 2022</span><br><a class="src mono" href="https://topwinesa.com/veritas-awards-revisited-the-scores-of-all-the-double-golds/" target="_blank" rel="noopener" title="TopWineSA (compiled Double Gold report)">SOURCE · TOPWINESA (COMPILED DOUBLE GOL…</a></span></div><div class="aw"><span class="y">2025</span><span><b>Veritas</b> — Double Gold — 93 pts<br><span class="w">Roodeberg Reserve 2022</span><br><a class="src mono" href="https://topwinesa.com/veritas-awards-revisited-the-scores-of-all-the-double-golds/" target="_blank" rel="noopener" title="TopWineSA (compiled Double Gold report)">SOURCE · TOPWINESA (COMPILED DOUBLE GOL…</a></span></div><div class="aw"><span class="y">2025</span><span><b>Veritas</b> — Double Gold — 96 pts<br><span class="w">Cape Tawny NV</span><br><a class="src mono" href="https://topwinesa.com/veritas-awards-revisited-the-scores-of-all-the-double-golds/" target="_blank" rel="noopener" title="TopWineSA (compiled Double Gold report)">SOURCE · TOPWINESA (COMPILED DOUBLE GOL…</a></span></div><div class="aw"><span class="y">2026</span><span><b>Trophy Wine Show</b> — Gold<br><span class="w">Cathedral Cellar Sauvignon Blanc 2024</span><br><a class="src mono" href="https://news.wine.co.za/news.aspx?NEWSID=47075" target="_blank" rel="noopener" title="wine.co.za (official results release)">SOURCE · WINE.CO.ZA (OFFICIAL RESULTS R…</a></span></div><div class="aw"><span class="y">2025</span><span><b>Veritas</b> — Gold<br><span class="w">The Mentors Grenache Blanc 2022</span><br><a class="src mono" href="https://user-hpa96tt.cld.bz/VERITAS-RESULTS/3/" target="_blank" rel="noopener" title="Veritas Awards — official 2025 Gold and Double Gold results booklet">SOURCE · VERITAS AWARDS — OFFICIAL 2025…</a><span class="corr mono">✓✓ CORROBORATED</span></span></div><div class="aw"><span class="y">2025</span><span><b>Veritas</b> — Gold<br><span class="w">Cathedral Cellar Sauvignon Blanc 2023</span><br><a class="src mono" href="https://user-hpa96tt.cld.bz/VERITAS-RESULTS/4/" target="_blank" rel="noopener" title="Veritas Awards — official 2025 Gold and Double Gold results booklet">SOURCE · VERITAS AWARDS — OFFICIAL 2025…</a></span></div><div class="aw"><span class="y">2025</span><span><b>Veritas</b> — Gold<br><span class="w">The Mentors Pinotage 2021</span><br><a class="src mono" href="https://user-hpa96tt.cld.bz/VERITAS-RESULTS/11/" target="_blank" rel="noopener" title="Veritas Awards — official 2025 Gold and Double Gold results booklet">SOURCE · VERITAS AWARDS — OFFICIAL 2025…</a><span class="corr mono">✓✓ CORROBORATED</span></span></div><div class="aw"><span class="y">2025</span><span><b>Veritas</b> — Gold<br><span class="w">The Mentors Pinotage 2022</span><br><a class="src mono" href="https://user-hpa96tt.cld.bz/VERITAS-RESULTS/11/" target="_blank" rel="noopener" title="Veritas Awards — official 2025 Gold and Double Gold results booklet">SOURCE · VERITAS AWARDS — OFFICIAL 2025…</a></span></div><div class="aw"><span class="y">2025</span><span><b>Veritas</b> — Gold<br><span class="w">The Mentors NLH 2015</span><br><a class="src mono" href="https://user-hpa96tt.cld.bz/VERITAS-2025/54/" target="_blank" rel="noopener" title="Veritas Awards — official 2025 complete results booklet">SOURCE · VERITAS AWARDS — OFFICIAL 2025…</a></span></div><div class="aw"><span class="y">2025</span><span><b>Veritas</b> — Gold<br><span class="w">The Mentors NLH 2012</span><br><a class="src mono" href="https://user-hpa96tt.cld.bz/VERITAS-2025/54/" target="_blank" rel="noopener" title="Veritas Awards — official 2025 complete results booklet">SOURCE · VERITAS AWARDS — OFFICIAL 2025…</a></span></div><div class="aw"><span class="y">2025</span><span><b>Veritas</b> — Gold<br><span class="w">The Mentors Orchestra 2014</span><br><a class="src mono" href="https://user-hpa96tt.cld.bz/VERITAS-2025/54/" target="_blank" rel="noopener" title="Veritas Awards — official 2025 complete results booklet">SOURCE · VERITAS AWARDS — OFFICIAL 2025…</a></span></div><div class="aw"><span class="y">2025</span><span><b>Veritas</b> — Gold<br><span class="w">The Mentors Petit Verdot 2015</span><br><a class="src mono" href="https://user-hpa96tt.cld.bz/VERITAS-2025/54/" target="_blank" rel="noopener" title="Veritas Awards — official 2025 complete results booklet">SOURCE · VERITAS AWARDS — OFFICIAL 2025…</a></span></div><div class="aw"><span class="y">2025</span><span><b>Veritas</b> — Gold<br><span class="w">The Mentors Pinotage 2011</span><br><a class="src mono" href="https://user-hpa96tt.cld.bz/VERITAS-2025/54/" target="_blank" rel="noopener" title="Veritas Awards — official 2025 complete results booklet">SOURCE · VERITAS AWARDS — OFFICIAL 2025…</a></span></div><div class="aw"><span class="y">2025</span><span><b>Veritas</b> — Silver<br><span class="w">Cathedral Cellar Chardonnay 2024</span><br><a class="src mono" href="https://user-hpa96tt.cld.bz/VERITAS-2025/18/" target="_blank" rel="noopener" title="Veritas Awards — official 2025 complete results booklet">SOURCE · VERITAS AWARDS — OFFICIAL 2025…</a></span></div><div class="aw"><span class="y">2025</span><span><b>Veritas</b> — Silver Outstanding<br><span class="w">The Mentors Grenache Blanc 2023</span><br><a class="src mono" href="https://user-hpa96tt.cld.bz/VERITAS-2025/21/" target="_blank" rel="noopener" title="Veritas Awards — official 2025 complete results booklet">SOURCE · VERITAS AWARDS — OFFICIAL 2025…</a></span></div><div class="aw"><span class="y">2025</span><span><b>Veritas</b> — Silver<br><span class="w">Cathedral Cellar Pinotage 2022</span><br><a class="src mono" href="https://user-hpa96tt.cld.bz/VERITAS-2025/44/" target="_blank" rel="noopener" title="Veritas Awards — official 2025 complete results booklet">SOURCE · VERITAS AWARDS — OFFICIAL 2025…</a></span></div><div class="aw"><span class="y">2025</span><span><b>Veritas</b> — Silver<br><span class="w">Cathedral Cellar Shiraz 2022</span><br><a class="src mono" href="https://user-hpa96tt.cld.bz/VERITAS-2025/46/" target="_blank" rel="noopener" title="Veritas Awards — official 2025 complete results booklet">SOURCE · VERITAS AWARDS — OFFICIAL 2025…</a></span></div><div class="aw"><span class="y">2025</span><span><b>Veritas</b> — Silver Outstanding<br><span class="w">The Mentors Orchestra 2022</span><br><a class="src mono" href="https://user-hpa96tt.cld.bz/VERITAS-2025/35/" target="_blank" rel="noopener" title="Veritas Awards — official 2025 complete results booklet">SOURCE · VERITAS AWARDS — OFFICIAL 2025…</a></span></div><div class="aw"><span class="y">2025</span><span><b>Veritas</b> — Silver Outstanding<br><span class="w">Classic Collection Cape Blend 2023</span><br><a class="src mono" href="https://user-hpa96tt.cld.bz/VERITAS-2025/36/" target="_blank" rel="noopener" title="Veritas Awards — official 2025 complete results booklet">SOURCE · VERITAS AWARDS — OFFICIAL 2025…</a></span></div><div class="aw"><span class="y">2025</span><span><b>IWSC</b> — Silver<br><span class="w">The Mentors Chenin Blanc</span><br><a class="src mono" href="https://www.iwsc.net/results/search/2025" target="_blank" rel="noopener" title="IWSC — official 2025 results archive">SOURCE · IWSC — OFFICIAL 2025 RESULTS A…</a></span></div><div class="aw"><span class="y">2025</span><span><b>IWSC</b> — Silver<br><span class="w">The Mentors Cabernet Franc 2021</span><br><a class="src mono" href="https://www.iwsc.net/results/search/2025" target="_blank" rel="noopener" title="IWSC — official 2025 results archive">SOURCE · IWSC — OFFICIAL 2025 RESULTS A…</a><span class="corr mono">✓✓ CORROBORATED</span></span></div><div class="aw"><span class="y">2025</span><span><b>IWSC</b> — Silver<br><span class="w">The Mentors Grenache Blanc 2022</span><br><a class="src mono" href="https://www.iwsc.net/results/search/2025" target="_blank" rel="noopener" title="IWSC — official 2025 results archive">SOURCE · IWSC — OFFICIAL 2025 RESULTS A…</a><span class="corr mono">✓✓ CORROBORATED</span></span></div><div class="aw"><span class="y">2025</span><span><b>IWSC</b> — Silver<br><span class="w">The Mentors Perold</span><br><a class="src mono" href="https://www.iwsc.net/results/search/2025" target="_blank" rel="noopener" title="IWSC — official 2025 results archive">SOURCE · IWSC — OFFICIAL 2025 RESULTS A…</a></span></div><div class="aw"><span class="y">2025</span><span><b>DWWA</b> — Bronze<br><span class="w">The Mentors Cabernet Franc 2021</span><br><a class="src mono" href="https://www.stellenboschvisio.co.za/stellenbosch-boasts-with-169-medals-at-2025-decanter-world-wine-awards/" target="_blank" rel="noopener" title="Stellenbosch Visio — 2025 DWWA Stellenbosch-area medal ledger">SOURCE · STELLENBOSCH VISIO — 2025 DWWA…</a><span class="corr mono">✓✓ CORROBORATED</span></span></div><div class="aw"><span class="y">2025</span><span><b>DWWA</b> — Bronze<br><span class="w">The Mentors Pinotage 2021</span><br><a class="src mono" href="https://www.stellenboschvisio.co.za/stellenbosch-boasts-with-169-medals-at-2025-decanter-world-wine-awards/" target="_blank" rel="noopener" title="Stellenbosch Visio — 2025 DWWA Stellenbosch-area medal ledger">SOURCE · STELLENBOSCH VISIO — 2025 DWWA…</a><span class="corr mono">✓✓ CORROBORATED</span></span></div></div>
+          <div class="rec-contact mono"><a href="https://kwv.co.za/" target="_blank" rel="noopener">kwv.co.za</a></div>
+        </div></article><article class="rec" id="rec-niel-joubert" data-id="niel-joubert">
+        <div class="rec-bar mono"><span>$ record.niel-joubert</span><span class="term-dots"><span></span><span></span><span></span></span></div>
+        <div class="rec-body">
+          <div class="rec-name display">Niel Joubert</div>
+          <div class="rec-meta mono"><span>EST 1898</span><span><span class="ok">TASTING BY APPOINTMENT</span></span><span>ROUTE MEMBER</span><span>LOCATION · MEDIUM</span></div>
+          <p class="rec-hist">Joubert family farm on the slopes of the Simonsberg, outskirts of Paarl, since 1898; the wine brand was only named &#x27;Niel Joubert Wines&#x27; in 1994 in honour of the third-generation patriarch (HAZARDS #29-like…</p>
+          <div class="rec-row"><span class="k mono">HOURS</span><span>Tastings by appointment only</span></div>
+          <div class="rec-row"><span class="k mono">VARIETIES</span><div class="tags mono"><span>Cabernet Sauvignon</span><span>Merlot</span><span>Pinotage</span><span>Shiraz</span><span>Tempranillo</span><span>Chenin Blanc</span><span>Sauvignon Blanc</span></div></div>
+          <div class="rec-row"><span class="k mono">SIGNATURE</span><span>Niel Joubert Estate range · Reserve Shiraz · Reserve Tempranillo</span></div>
+          <div class="rec-awards"><span class="flag dim mono">NO VERIFIED HONOUR ON FILE</span></div>
+          <div class="rec-contact mono"><a href="https://nieljoubert.co.za/" target="_blank" rel="noopener">nieljoubert.co.za</a></div>
+        </div></article><article class="rec" id="rec-spice-route" data-id="spice-route">
+        <div class="rec-bar mono"><span>$ record.spice-route</span><span class="term-dots"><span></span><span></span><span></span></span></div>
+        <div class="rec-body">
+          <div class="rec-name display">Spice Route</div>
+          <div class="rec-meta mono"><span>EST 1997</span><span><span class="ok">WALK-IN TASTING</span></span><span>ROUTE MEMBER</span><span>LOCATION · MEDIUM</span></div>
+          <p class="rec-hist">Founded 1997 by Charles Back as a showcase for artisanal producers, named for the historical spice-trading route.</p>
+          <div class="rec-row"><span class="k mono">HOURS</span><span>Mon-Sun 10:00-17:00</span></div>
+          <div class="rec-row"><span class="k mono">VARIETIES</span><div class="tags mono"><span>Sauvignon Blanc</span><span>Chenin Blanc</span><span>Cabernet Sauvignon</span></div></div>
+          <div class="rec-row"><span class="k mono">SIGNATURE</span><span>Flagship range · Obscura · Darling range · Stone Town · Terra De Bron · The Spice Route Journey Range</span></div>
+          <div class="rec-awards"><span class="flag dim mono">NO VERIFIED HONOUR ON FILE</span></div>
+          <div class="rec-contact mono"><a href="https://www.spiceroutewines.co.za/" target="_blank" rel="noopener">spiceroutewines.co.za</a></div>
+        </div></article><article class="rec" id="rec-under-oaks" data-id="under-oaks">
+        <div class="rec-bar mono"><span>$ record.under-oaks</span><span class="term-dots"><span></span><span></span><span></span></span></div>
+        <div class="rec-body">
+          <div class="rec-name display">Under Oaks</div>
+          <div class="rec-meta mono"><span><span class="ok">WALK-IN TASTING</span></span><span>LOCATION · MEDIUM</span></div>
+          <p class="rec-hist">Main Street, Northern Paarl. Estate history traced to 1695 per producer-site content. FOUNDED CONTRADICTION (recorded, not reconciled, founded null): producer-site-derived text says Britz-family winemaking…</p>
+          <div class="rec-row"><span class="k mono">HOURS</span><span>Tue-Sat &amp; public holidays 10:00-17:00 (single tourism-directory source; producer pages unfetchable)</span></div>
+          <div class="rec-row"><span class="k mono">VARIETIES</span><div class="tags mono"><span>Sauvignon Blanc</span><span>Chardonnay</span><span>Chenin Blanc</span><span>Cabernet Sauvignon</span><span>Shiraz</span></div></div>
+          <div class="rec-row"><span class="k mono">SIGNATURE</span><span>Under Oaks Sauvignon Blanc</span></div>
+          <div class="rec-awards"><span class="flag dim mono">NO VERIFIED HONOUR ON FILE</span></div>
+          <div class="rec-contact mono"><a href="https://underoaks.co.za/" target="_blank" rel="noopener">underoaks.co.za</a></div>
+        </div></article><article class="rec" id="rec-black-pearl-wines" data-id="black-pearl-wines">
+        <div class="rec-bar mono"><span>$ record.black-pearl-wines</span><span class="term-dots"><span></span><span></span><span></span></span></div>
+        <div class="rec-body">
+          <div class="rec-name display">Black Pearl Wines</div>
+          <div class="rec-meta mono"><span><span class="ok">TASTING BY APPOINTMENT</span></span><span>LOCATION · MEDIUM</span></div>
+          <p class="rec-hist">240-hectare Rhenosterkop Farm off the R44, Paarl; Nash family (originally New England, US) relocated to South Africa 1995 and took over the farm; all-women winemaking team led by Mary-Lou Nash.</p>
+          <div class="rec-row"><span class="k mono">HOURS</span><span>By appointment only, with Mary-Lou Nash</span></div>
+          <div class="rec-row"><span class="k mono">VARIETIES</span><div class="tags mono"><span>Cabernet Sauvignon</span><span>Shiraz</span><span>Mourvèdre</span><span>Grenache</span><span>Chenin Blanc</span></div></div>
+          <div class="rec-row"><span class="k mono">SIGNATURE</span><span>Black Pearl Cabernet Sauvignon · The Mischief Maker (Shiraz-Grenache-Mourvèdre blend) · Black Pearl Chenin Blanc</span></div>
+          <div class="rec-awards"><span class="flag dim mono">NO VERIFIED HONOUR ON FILE</span></div>
+          <div class="rec-contact mono"><a href="https://blackpearlwines.com/" target="_blank" rel="noopener">blackpearlwines.com</a></div>
+        </div></article><article class="rec" id="rec-glen-carlou" data-id="glen-carlou">
+        <div class="rec-bar mono"><span>$ record.glen-carlou</span><span class="term-dots"><span></span><span></span><span></span></span></div>
+        <div class="rec-body">
+          <div class="rec-name display">Glen Carlou</div>
+          <div class="rec-meta mono"><span><span class="ok">WALK-IN TASTING</span></span><span>LOCATION · MEDIUM</span></div>
+          <p class="rec-hist">SEEDED 2026-08-31 from wined.co.za Paarl-tagged secondary source (surfaced via site: search; the /routes/paarl index itself was robots.txt-blocked).</p>
+          <div class="rec-row"><span class="k mono">HOURS</span><span>Producer site: Mon-Fri 09:00-16:30, weekends/public holidays 10:00-16:40, restaurant daily 12:00-15:30 (last orders). CONFLICTS with winetourism.com: Mon-Fri 09:00-17:00, Sat-Sun…</span></div>
+          <div class="rec-row"><span class="k mono">VARIETIES</span><div class="tags mono"><span>Chardonnay</span><span>Cabernet Sauvignon</span><span>Sauvignon Blanc</span><span>Chenin Blanc</span><span>Pinot Noir</span><span>Merlot</span><span>Syrah</span></div></div>
+          <div class="rec-row"><span class="k mono">SIGNATURE</span><span>Gravel Quarry Chardonnay · Quartz Stone Chardonnay · Blanc de Blancs · Grand Classique</span></div>
+          <div class="rec-awards"><div class="aw"><span class="y">2025</span><span><b>Veritas</b> — Double Gold — 93 pts<br><span class="w">Collection Petit Verdot 2021</span><br><a class="src mono" href="https://topwinesa.com/veritas-awards-revisited-the-scores-of-all-the-double-golds/" target="_blank" rel="noopener" title="TopWineSA (compiled Double Gold report)">SOURCE · TOPWINESA (COMPILED DOUBLE GOL…</a></span></div><div class="aw"><span class="y">2026</span><span><b>Trophy Wine Show</b> — Gold<br><span class="w">Chardonnay 2025</span><br><a class="src mono" href="https://news.wine.co.za/news.aspx?NEWSID=47075" target="_blank" rel="noopener" title="wine.co.za (official results release)">SOURCE · WINE.CO.ZA (OFFICIAL RESULTS R…</a></span></div><div class="aw"><span class="y">2025</span><span><b>Veritas</b> — Gold<br><span class="w">Chardonnay 2024</span><br><a class="src mono" href="https://user-hpa96tt.cld.bz/VERITAS-RESULTS/2/" target="_blank" rel="noopener" title="Veritas Awards — official 2025 Gold and Double Gold results booklet">SOURCE · VERITAS AWARDS — OFFICIAL 2025…</a></span></div><div class="aw"><span class="y">2025</span><span><b>Veritas</b> — Silver Outstanding<br><span class="w">Collection Red Blend 2022</span><br><a class="src mono" href="https://user-hpa96tt.cld.bz/VERITAS-2025/35/" target="_blank" rel="noopener" title="Veritas Awards — official 2025 complete results booklet">SOURCE · VERITAS AWARDS — OFFICIAL 2025…</a></span></div><div class="aw"><span class="y">2025</span><span><b>DWWA</b> — Silver<br><span class="w">Grand Classique 2022</span><br><a class="src mono" href="https://www.south-african-wines.com/glen-carlou-grand-classique-2022" target="_blank" rel="noopener" title="South African Wines — Glen Carlou Grand Classique 2022 awards listing">SOURCE · SOUTH AFRICAN WINES — GLEN CAR…</a></span></div></div>
+          <div class="rec-contact mono"><a href="https://glencarlou.com/" target="_blank" rel="noopener">glencarlou.com</a></div>
+        </div></article><article class="rec" id="rec-druk-my-niet-wine-estate" data-id="druk-my-niet-wine-estate">
+        <div class="rec-bar mono"><span>$ record.druk-my-niet-wine-estate</span><span class="term-dots"><span></span><span></span><span></span></span></div>
+        <div class="rec-body">
+          <div class="rec-name display">Druk-My-Niet Wine Estate</div>
+          <div class="rec-meta mono"><span>EST 1692</span><span><span class="ok">TASTING BY APPOINTMENT</span></span><span>LOCATION · MEDIUM</span></div>
+          <p class="rec-hist">SEEDED 2026-08-31 from wined.co.za Paarl-tagged secondary source (surfaced via site: search; the /routes/paarl index itself was robots.txt-blocked).</p>
+          <div class="rec-row"><span class="k mono">HOURS</span><span>wineinthecape.co.za: &#x27;By Appointment Only&#x27;. wined.co.za: &#x27;Monday to Sunday: By Appointment&#x27; (phone ahead to confirm). Consistent across both sources.</span></div>
+          <div class="rec-row"><span class="k mono">VARIETIES</span><div class="tags mono"><span>Cabernet Franc</span><span>Cabernet Sauvignon</span><span>Chenin Blanc</span><span>Malbec</span><span>Merlot</span><span>Sauvignon Blanc</span><span>Viognier</span></div></div>
+          
+          <div class="rec-awards"><span class="flag dim mono">NO VERIFIED HONOUR ON FILE</span></div>
+          <div class="rec-contact mono"><a href="http://www.dmnwines.co.za/" target="_blank" rel="noopener">dmnwines.co.za</a></div>
+        </div></article><article class="rec" id="rec-kaapse-familie-wingerde" data-id="kaapse-familie-wingerde">
+        <div class="rec-bar mono"><span>$ record.kaapse-familie-wingerde</span><span class="term-dots"><span></span><span></span><span></span></span></div>
+        <div class="rec-body">
+          <div class="rec-name display">Kaapse Familie Wingerde</div>
+          <div class="rec-meta mono"><span><span class="ok">WALK-IN TASTING</span></span><span>LOCATION · MEDIUM</span></div>
+          <p class="rec-hist">SEEDED 2026-08-31 from wined.co.za Paarl-tagged secondary source (surfaced via site: search; the /routes/paarl index itself was robots.txt-blocked).</p>
+          <div class="rec-row"><span class="k mono">HOURS</span><span>wined.co.za: Tue-Fri 11:00-16:00, Sat 10:00-14:00, closed public/religious holidays, &#x27;phone ahead to confirm&#x27;. Tripadvisor snapshot shows &#x27;Closed now&#x27; at time of fetch (2026-08-31) with…</span></div>
+          <div class="rec-row"><span class="k mono">VARIETIES</span><div class="tags mono"><span>Cabernet Sauvignon</span><span>Chardonnay</span><span>Chenin Blanc</span><span>Pinotage</span><span>Sauvignon Blanc</span><span>Shiraz</span></div></div>
+          
+          <div class="rec-awards"><span class="flag dim mono">NO VERIFIED HONOUR ON FILE</span></div>
+          <div class="rec-contact mono"><span>TELEPHONE ON FILE · NOT REPUBLISHED</span></div>
+        </div></article><article class="rec" id="rec-domaine-brahms-wine-estate" data-id="domaine-brahms-wine-estate">
+        <div class="rec-bar mono"><span>$ record.domaine-brahms-wine-estate</span><span class="term-dots"><span></span><span></span><span></span></span></div>
+        <div class="rec-body">
+          <div class="rec-name display">Domaine Brahms Wine Estate</div>
+          <div class="rec-meta mono"><span>EST 1998</span><span><span class="ok">WALK-IN TASTING</span></span><span>LOCATION · MEDIUM</span></div>
+          <p class="rec-hist">SEEDED 2026-08-31 from wined.co.za Paarl-tagged secondary source (surfaced via site: search; the /routes/paarl index itself was robots.txt-blocked).</p>
+          <div class="rec-row"><span class="k mono">HOURS</span><span>sa-venues.com: Tue-Fri 09:00-16:00, Sat 09:00-13:00 (single-source; not listed on producer&#x27;s own homepage)</span></div>
+          <div class="rec-row"><span class="k mono">VARIETIES</span><div class="tags mono"><span>Cabernet Sauvignon</span><span>Merlot</span><span>Pinotage</span><span>Ruby Cabernet</span><span>Shiraz</span><span>Chenin Blanc</span></div></div>
+          
+          <div class="rec-awards"><span class="flag dim mono">NO VERIFIED HONOUR ON FILE</span></div>
+          <div class="rec-contact mono"><a href="https://www.brahms.co.za/" target="_blank" rel="noopener">brahms.co.za</a></div>
+        </div></article><article class="rec" id="rec-mitres-edge-wine-estate" data-id="mitres-edge-wine-estate">
+        <div class="rec-bar mono"><span>$ record.mitres-edge-wine-estate</span><span class="term-dots"><span></span><span></span><span></span></span></div>
+        <div class="rec-body">
+          <div class="rec-name display">Mitre&#x27;s Edge Wine Estate</div>
+          <div class="rec-meta mono"><span><span class="ok">TASTING BY APPOINTMENT</span></span><span>LOCATION · MEDIUM</span></div>
+          <p class="rec-hist">SEEDED 2026-08-31 from wined.co.za Paarl-tagged secondary source (surfaced via site: search; the /routes/paarl index itself was robots.txt-blocked).</p>
+          <div class="rec-row"><span class="k mono">HOURS</span><span>09:00-16:00 daily, tastings by booking only</span></div>
+          <div class="rec-row"><span class="k mono">VARIETIES</span><div class="tags mono"><span>Cabernet Sauvignon</span><span>Malbec</span><span>Cabernet Franc</span><span>Petit Verdot</span><span>Merlot</span><span>Shiraz</span><span>Viognier</span><span>Cinsault</span></div></div>
+          <div class="rec-row"><span class="k mono">SIGNATURE</span><span>Sholto · The Mitre</span></div>
+          <div class="rec-awards"><span class="flag dim mono">NO VERIFIED HONOUR ON FILE</span></div>
+          <div class="rec-contact mono"><a href="https://www.mitres-edge.co.za/" target="_blank" rel="noopener">mitres-edge.co.za</a></div>
+        </div></article><article class="rec" id="rec-eenzaamheid-wines" data-id="eenzaamheid-wines">
+        <div class="rec-bar mono"><span>$ record.eenzaamheid-wines</span><span class="term-dots"><span></span><span></span><span></span></span></div>
+        <div class="rec-body">
+          <div class="rec-name display">Eenzaamheid Wines</div>
+          <div class="rec-meta mono"><span>EST 1693</span><span><span class="ok">WALK-IN TASTING</span></span><span>WARD · AGTER-PAARL</span><span>LOCATION · MEDIUM</span></div>
+          <p class="rec-hist">SEEDED 2026-08-31 from wined.co.za Paarl-tagged secondary source (surfaced via site: search; the /routes/paarl index itself was robots.txt-blocked).</p>
+          
+          <div class="rec-row"><span class="k mono">VARIETIES</span><div class="tags mono"><span>Chenin Blanc</span><span>Shiraz</span><span>Cinsault</span><span>Pinotage</span><span>Mourvèdre</span><span>Grenache Noir</span></div></div>
+          <div class="rec-row"><span class="k mono">SIGNATURE</span><span>Eenzaamheid Chenin Blanc (old dryland/bushvine) · Cinsaut Rosé · Shiraz-Mourvèdre-Cinsault blend</span></div>
+          <div class="rec-awards"><span class="flag dim mono">NO VERIFIED HONOUR ON FILE</span></div>
+          <div class="rec-contact mono"><a href="https://eenzaamheidwines.co.za/" target="_blank" rel="noopener">eenzaamheidwines.co.za</a></div>
+        </div></article><article class="rec" id="rec-laborie" data-id="laborie">
+        <div class="rec-bar mono"><span>$ record.laborie</span><span class="term-dots"><span></span><span></span><span></span></span></div>
+        <div class="rec-body">
+          <div class="rec-name display">Laborie</div>
+          <div class="rec-meta mono"><span>EST 1691</span><span><span class="ok">WALK-IN TASTING</span></span><span>LOCATION · MEDIUM</span></div>
+          <p class="rec-hist">ENTITY LINK (reciprocal to this file&#x27;s kwv record,</p>
+          <div class="rec-row"><span class="k mono">HOURS</span><span>laboriewines.co.za (own site, fetched 2026-09-02) frames visitor tastings as run through &#x27;the KWV Emporium&#x27; -- the same shared visitor facility named on this file&#x27;s kwv record (Kohler…</span></div>
+          <div class="rec-row"><span class="k mono">VARIETIES</span><div class="tags mono"><span>Shiraz</span><span>Merlot</span><span>Sauvignon Blanc</span><span>Chardonnay</span><span>Cabernet Sauvignon</span></div></div>
+          <div class="rec-row"><span class="k mono">SIGNATURE</span><span>Le Traditionnel Cap Classique Blanc de Blancs (MCC)</span></div>
+          <div class="rec-awards"><div class="aw"><span class="y">2026</span><span><b>Trophy Wine Show</b> — Gold<br><span class="w">Le Traditionnel Cap Classique Blanc de Blancs 2020</span><br><a class="src mono" href="https://news.wine.co.za/news.aspx?NEWSID=47075" target="_blank" rel="noopener" title="wine.co.za (official results release)">SOURCE · WINE.CO.ZA (OFFICIAL RESULTS R…</a></span></div><div class="aw"><span class="y">2025</span><span><b>Veritas</b> — Double Gold, Cap Classique class, 93 pts<br><span class="w">Blanc de Blancs 2017</span><br><a class="src mono" href="https://topwinesa.com/veritas-awards-revisited-the-scores-of-all-the-double-golds/" target="_blank" rel="noopener" title="TopWineSA">SOURCE · TOPWINESA</a></span></div><div class="aw"><span class="y">2025</span><span><b>Veritas</b> — Silver<br><span class="w">Signature Shiraz 2022</span><br><a class="src mono" href="https://user-hpa96tt.cld.bz/VERITAS-2025/46/" target="_blank" rel="noopener" title="Veritas Awards — official 2025 complete results booklet">SOURCE · VERITAS AWARDS — OFFICIAL 2025…</a></span></div><div class="aw"><span class="y">2025</span><span><b>IWSC</b> — Silver<br><span class="w">Cap Classique Blanc De Blancs 2019</span><br><a class="src mono" href="https://www.iwsc.net/results/search/2025" target="_blank" rel="noopener" title="IWSC — official 2025 results archive">SOURCE · IWSC — OFFICIAL 2025 RESULTS A…</a></span></div></div>
+          <div class="rec-contact mono"><a href="https://laboriewines.co.za" target="_blank" rel="noopener">laboriewines.co.za</a></div>
+        </div></article><article class="rec" id="rec-bacco-estate" data-id="bacco-estate">
+        <div class="rec-bar mono"><span>$ record.bacco-estate</span><span class="term-dots"><span></span><span></span><span></span></span></div>
+        <div class="rec-body">
+          <div class="rec-name display">Baccō Estate</div>
+          <div class="rec-meta mono"><span>EST 2016</span><span><span class="ok">WALK-IN TASTING</span></span><span>SIMONSVLEI ROAD, PAARL</span><span>LOCATION · MEDIUM</span></div>
+          <p class="rec-hist">REGISTER GAP-FILL (pass 169): data/wo-estate-register.json lists &#x27;Bacco | Paarl | 1 December 2022&#x27; (the WO APPROVAL date, not recorded as founded).</p>
+          <div class="rec-row"><span class="k mono">HOURS</span><span>Daily 11:00-16:30 (directory-sourced; not independently confirmed on producer&#x27;s own hours page)</span></div>
+          <div class="rec-row"><span class="k mono">VARIETIES</span><div class="tags mono"><span>Chardonnay</span><span>Vermentino</span><span>Nero d&#x27;Avola</span><span>Cabernet Sauvignon</span><span>Malbec</span><span>Syrah</span></div></div>
+          <div class="rec-row"><span class="k mono">SIGNATURE</span><span>Baccō Flagship Red Blend · Prelude Vermentino · Baccō Chardonnay</span></div>
+          <div class="rec-awards"><span class="flag dim mono">NO VERIFIED HONOUR ON FILE</span></div>
+          <div class="rec-contact mono"><a href="https://www.baccoestate.co.za" target="_blank" rel="noopener">baccoestate.co.za</a></div>
+        </div></article><article class="rec" id="rec-frater-family-wines" data-id="frater-family-wines">
+        <div class="rec-bar mono"><span>$ record.frater-family-wines</span><span class="term-dots"><span></span><span></span><span></span></span></div>
+        <div class="rec-body">
+          <div class="rec-name display">Frater Family Wines</div>
+          <div class="rec-meta mono"><span>EST 1878</span><span><span class="ok">TASTING BY APPOINTMENT</span></span><span>FRATER STREET, SUIDER PAARL, ON THE BERG RIVER</span><span>LOCATION · MEDIUM</span></div>
+          <p class="rec-hist">REGISTER GAP-FILL (pass 169): data/wo-estate-register.json lists &#x27;De Zoete Inval | Paarl | 1 July 2003&#x27; (WO approval date, not founding).</p>
+          
+          <div class="rec-row"><span class="k mono">VARIETIES</span><div class="tags mono"><span>Pinot Noir</span><span>Chardonnay</span><span>Nebbiolo</span><span>Shiraz</span><span>Merlot</span><span>Petit Verdot</span><span>Cabernet Sauvignon</span></div></div>
+          
+          <div class="rec-awards"><span class="flag dim mono">NO VERIFIED HONOUR ON FILE</span></div>
+          <div class="rec-contact mono"><a href="https://fraterfamilywines.co.za" target="_blank" rel="noopener">fraterfamilywines.co.za</a></div>
+        </div></article><article class="rec" id="rec-fuselage-wines" data-id="fuselage-wines">
+        <div class="rec-bar mono"><span>$ record.fuselage-wines</span><span class="term-dots"><span></span><span></span><span></span></span></div>
+        <div class="rec-body">
+          <div class="rec-name display">Fuselage Wines</div>
+          <div class="rec-meta mono"><span><span class="">ACCESS NOT CONFIRMED</span></span><span>DIEMERSKRAAL FARM, BETWEEN WELLINGTON AND MALMESBURY</span><span>LOCATION NOT YET RESOLVED</span></div>
+          <p class="rec-hist">REGISTER GAP-FILL (pass 169): data/wo-estate-register.json lists &#x27;Fuselage | Paarl | 15 April 2024&#x27; (WO approval date, not founding — this producer&#x27;s founding year could not be pinned to a specific year from…</p>
+          
+          <div class="rec-row"><span class="k mono">VARIETIES</span><div class="tags mono"><span>Grenache Blanc</span><span>Roussanne</span><span>Viognier</span><span>Chenin Blanc</span><span>Muscat Blanc</span><span>Syrah</span><span>Grenache Noir</span><span>Cinsault</span></div></div>
+          <div class="rec-row"><span class="k mono">SIGNATURE</span><span>Staggerwing Old Vines Cinsault · Staggerwing Old Vines Chenin Blanc · Great White · Slide Slip Syrah · Stealth Grenache Noir</span></div>
+          <div class="rec-awards"><div class="aw"><span class="y">2025</span><span><b>IWSC</b> — Silver<br><span class="w">Staggerwing Old Vines Chenin Blanc 2021</span><br><a class="src mono" href="https://www.iwsc.net/results/detail/166348/staggerwing-old-vines-chenin-blanc-2021" target="_blank" rel="noopener" title="IWSC — official 2025 result detail">SOURCE · IWSC — OFFICIAL 2025 RESULT DE…</a></span></div></div>
+          <div class="rec-contact mono"><a href="https://fuselagewines.com" target="_blank" rel="noopener">fuselagewines.com</a></div>
+        </div></article><article class="rec" id="rec-joostenberg" data-id="joostenberg">
+        <div class="rec-bar mono"><span>$ record.joostenberg</span><span class="term-dots"><span></span><span></span><span></span></span></div>
+        <div class="rec-body">
+          <div class="rec-name display">Joostenberg Wine Estate</div>
+          <div class="rec-meta mono"><span><span class="ok">WALK-IN TASTING</span></span><span>JOOSTENBERG FARM, MULDERSVLEI, NEAR KLAPMUTS</span><span>LOCATION · MEDIUM</span></div>
+          <p class="rec-hist">REGISTER GAP-FILL (pass 169): data/wo-estate-register.json lists &#x27;Joostenberg | Paarl | 16 March 2015&#x27; (WO approval date, not founding).</p>
+          
+          <div class="rec-row"><span class="k mono">VARIETIES</span><div class="tags mono"><span>Chenin Blanc</span><span>Syrah</span><span>Roussanne</span><span>Verdelho</span><span>Alvarinho</span><span>Petit Manseng</span><span>Mourvèdre</span><span>Grenache Noir</span><span>Cabernet Sauvignon</span><span>Pontac</span><span>Merlot</span><span>Muscat d&#x27;Alexandrie</span></div></div>
+          <div class="rec-row"><span class="k mono">SIGNATURE</span><span>Bakermat · Die Agteros Chenin Blanc · Klippe Kou Syrah · Philip Albert Cabernet Sauvignon · Fairhead · NIU Methode Cap Classique</span></div>
+          <div class="rec-awards"><span class="flag dim mono">NO VERIFIED HONOUR ON FILE</span></div>
+          <div class="rec-contact mono"><a href="https://joostenberg.co.za" target="_blank" rel="noopener">joostenberg.co.za</a></div>
+        </div></article><article class="rec" id="rec-olsen-private-vineyards" data-id="olsen-private-vineyards">
+        <div class="rec-bar mono"><span>$ record.olsen-private-vineyards</span><span class="term-dots"><span></span><span></span><span></span></span></div>
+        <div class="rec-body">
+          <div class="rec-name display">Olsen Private Vineyards</div>
+          <div class="rec-meta mono"><span>EST 2002</span><span><span class="ok">TASTING BY APPOINTMENT</span></span><span>KLEIN DRAKENSTEIN VALLEY, PAARL</span><span>LOCATION · MEDIUM</span></div>
+          <p class="rec-hist">REGISTER GAP-FILL (pass 169): data/wo-estate-register.json lists &#x27;Olsen Private Vineyards | Paarl | 24 August 2018&#x27; (WO approval date, not founding).</p>
+          
+          <div class="rec-row"><span class="k mono">VARIETIES</span><div class="tags mono"><span>Chardonnay</span><span>Chenin Blanc</span><span>Pinotage</span><span>Merlot</span><span>Shiraz</span><span>Cabernet Sauvignon</span></div></div>
+          
+          <div class="rec-awards"><span class="flag dim mono">NO VERIFIED HONOUR ON FILE</span></div>
+          <div class="rec-contact mono"><a href="https://olsenprivatevineyards.co.za" target="_blank" rel="noopener">olsenprivatevineyards.co.za</a></div>
+        </div></article><article class="rec" id="rec-tempel-wines" data-id="tempel-wines">
+        <div class="rec-bar mono"><span>$ record.tempel-wines</span><span class="term-dots"><span></span><span></span><span></span></span></div>
+        <div class="rec-body">
+          <div class="rec-name display">Tempel Wines</div>
+          <div class="rec-meta mono"><span><span class="ok">TASTING BY APPOINTMENT</span></span><span>ON THE EDGE OF PAARL TOWN, ON THE BERG RIVER</span><span>LOCATION · MEDIUM</span></div>
+          <p class="rec-hist">REGISTER GAP-FILL (pass 169): data/wo-estate-register.json lists &#x27;Tempel | Paarl | 20 June 2011&#x27; (WO approval date, not founding).</p>
+          
+          <div class="rec-row"><span class="k mono">VARIETIES</span><div class="tags mono"><span>Tempranillo</span><span>Grenache</span><span>Mourvèdre</span><span>Cinsault</span><span>Shiraz</span></div></div>
+          <div class="rec-row"><span class="k mono">SIGNATURE</span><span>Skipskoon Pinotage · Sorgvry Cinsaut · Oogwink Shiraz · Tydsaam Tempranillo · Blydskap Red Blend</span></div>
+          <div class="rec-awards"><span class="flag dim mono">NO VERIFIED HONOUR ON FILE</span></div>
+          <div class="rec-contact mono"><a href="https://tempelwines.co.za" target="_blank" rel="noopener">tempelwines.co.za</a></div>
+        </div></article><article class="rec" id="rec-vondeling" data-id="vondeling">
+        <div class="rec-bar mono"><span>$ record.vondeling</span><span class="term-dots"><span></span><span></span><span></span></span></div>
+        <div class="rec-body">
+          <div class="rec-name display">Vondeling Wines</div>
+          <div class="rec-meta mono"><span><span class="ok">WALK-IN TASTING</span></span><span>WARD · VOOR-PAARDEBERG</span><span>LOCATION · MEDIUM</span></div>
+          <p class="rec-hist">17 (2026-09-06) ON THE OWNER&#x27;S INSTRUCTION, and it closes the vrymansfontein question audit round 10 opened.</p>
+          <div class="rec-row"><span class="k mono">HOURS</span><span>Vondeling Tasting Bar at Vrymansfontein: Wednesday &amp; Thursday 10:00-18:00; weekends 10:00-20:00. Farm office: Mon-Fri 08:00-17:00.</span></div>
+          <div class="rec-row"><span class="k mono">VARIETIES</span><div class="tags mono"><span>Chenin Blanc</span><span>Sauvignon Blanc</span><span>Chardonnay</span><span>Shiraz</span><span>Merlot</span><span>Cabernet Sauvignon</span><span>Pinotage</span></div></div>
+          <div class="rec-row"><span class="k mono">SIGNATURE</span><span>Vondeling Babiana · Vondeling Monsonia · Philosophie</span></div>
+          <div class="rec-awards"><div class="aw"><span class="y">2025</span><span><b>Veritas</b> — Silver Outstanding<br><span class="w">Monsonia 2020</span><br><a class="src mono" href="https://user-hpa96tt.cld.bz/VERITAS-2025/36/" target="_blank" rel="noopener" title="Veritas Awards — official 2025 complete results booklet">SOURCE · VERITAS AWARDS — OFFICIAL 2025…</a></span></div></div>
+          <div class="rec-contact mono"><a href="https://www.vondelingwines.co.za/" target="_blank" rel="noopener">vondelingwines.co.za</a></div>
+        </div></article><article class="rec" id="rec-anura-vineyards" data-id="anura-vineyards">
+        <div class="rec-bar mono"><span>$ record.anura-vineyards</span><span class="term-dots"><span></span><span></span><span></span></span></div>
+        <div class="rec-body">
+          <div class="rec-name display">Anura Vineyards</div>
+          <div class="rec-meta mono"><span><span class="ok">WALK-IN TASTING</span></span><span>SIMONDIUM ROAD, KLAPMUTS, ON THE FOOTHILLS OF THE SIMONSBERG</span><span>LOCATION · MEDIUM</span></div>
+          <p class="rec-hist">30 (2026-09-07, HO-230-9c27) from the pass-225 triage (class producer_missing), on the owner&#x27;s ruling.</p>
+          <div class="rec-row"><span class="k mono">HOURS</span><span>Wine tasting centre open Monday–Sunday 10:00–17:00; bookings not required for groups under 8</span></div>
+          <div class="rec-row"><span class="k mono">VARIETIES</span><div class="tags mono"><span>Cabernet Sauvignon</span><span>Chardonnay</span><span>Chenin Blanc</span><span>Grenache Noir</span><span>Malbec</span><span>Merlot</span><span>Mourvèdre</span><span>Petit Verdot</span><span>Pinot Grigio</span><span>Pinotage</span><span>Sauvignon Blanc</span><span>Shiraz</span></div></div>
+          
+          <div class="rec-awards"><div class="aw"><span class="y">2025</span><span><b>Veritas</b> — Gold<br><span class="w">Malbec Reserve 2022</span><br><a class="src mono" href="https://user-hpa96tt.cld.bz/VERITAS-RESULTS/10/" target="_blank" rel="noopener" title="Veritas Awards — official 2025 Gold and Double Gold results booklet">SOURCE · VERITAS AWARDS — OFFICIAL 2025…</a></span></div><div class="aw"><span class="y">2025</span><span><b>Veritas</b> — Silver<br><span class="w">Signature Pinotage 2022</span><br><a class="src mono" href="https://user-hpa96tt.cld.bz/VERITAS-2025/44/" target="_blank" rel="noopener" title="Veritas Awards — official 2025 complete results booklet">SOURCE · VERITAS AWARDS — OFFICIAL 2025…</a></span></div></div>
+          <div class="rec-contact mono"><a href="https://www.anura.co.za/" target="_blank" rel="noopener">anura.co.za</a></div>
+        </div></article><article class="rec" id="rec-klein-parys-vineyards" data-id="klein-parys-vineyards">
+        <div class="rec-bar mono"><span>$ record.klein-parys-vineyards</span><span class="term-dots"><span></span><span></span><span></span></span></div>
+        <div class="rec-body">
+          <div class="rec-name display">Klein Parys Vineyards</div>
+          <div class="rec-meta mono"><span>EST 1692</span><span><span class="ok">WALK-IN TASTING</span></span><span>8 JAN VAN RIEBEECK DRIVE, PAARL, ON THE BERG RIVER BENEATH THE PAARL MOUNTAINS</span><span>LOCATION · MEDIUM</span></div>
+          <p class="rec-hist">30 (2026-09-07, HO-230-9c27) from the pass-225 triage (class producer_missing), on the owner&#x27;s ruling.</p>
+          <div class="rec-row"><span class="k mono">HOURS</span><span>Wine tasting Tue–Thu 08:00–17:00, Fri 08:00–18:00, Sat 09:00–15:00; closed Sunday and Monday (R70 per person)</span></div>
+          <div class="rec-row"><span class="k mono">VARIETIES</span><div class="tags mono"><span>Cabernet Sauvignon</span><span>Chardonnay</span><span>Chenin Blanc</span><span>Merlot</span><span>Pinotage</span><span>Sauvignon Blanc</span><span>Shiraz</span></div></div>
+          
+          <div class="rec-awards"><span class="flag dim mono">NO VERIFIED HONOUR ON FILE</span></div>
+          <div class="rec-contact mono"><a href="https://www.kleinparysvineyards.co.za/" target="_blank" rel="noopener">kleinparysvineyards.co.za</a></div>
+        </div></article><article class="rec" id="rec-simonsvlei" data-id="simonsvlei">
+        <div class="rec-bar mono"><span>$ record.simonsvlei</span><span class="term-dots"><span></span><span></span><span></span></span></div>
+        <div class="rec-body">
+          <div class="rec-name display">Simonsvlei Wine Estate</div>
+          <div class="rec-meta mono"><span><span class="ok">WALK-IN TASTING</span></span><span>OLD PAARL ROAD</span><span>LOCATION · MEDIUM</span></div>
+          <p class="rec-hist">30 (2026-09-07, HO-230-9c27) from the pass-225 triage (class producer_missing), on the owner&#x27;s ruling.</p>
+          <div class="rec-row"><span class="k mono">HOURS</span><span>Summer hours: Mon–Sat 09:00–17:00 (tastings conclude 16:30), Sun 10:00–16:00 (tastings conclude 15:30); may vary on public holidays</span></div>
+          <div class="rec-row"><span class="k mono">VARIETIES</span><div class="tags mono"><span>Cabernet Sauvignon</span><span>Chenin Blanc</span><span>Merlot</span><span>Pinot Grigio</span><span>Pinotage</span><span>Sauvignon Blanc</span><span>Shiraz</span></div></div>
+          
+          <div class="rec-awards"><div class="aw"><span class="y">2025</span><span><b>IWSC</b> — Silver<br><span class="w">Rosé</span><br><a class="src mono" href="https://www.iwsc.net/results/detail/165948/ros" target="_blank" rel="noopener" title="IWSC — official 2025 result detail">SOURCE · IWSC — OFFICIAL 2025 RESULT DE…</a></span></div><div class="aw"><span class="y">2025</span><span><b>IWSC</b> — Silver<br><span class="w">MCC Brut</span><br><a class="src mono" href="https://www.iwsc.net/results/detail/165895/simonsvlei-mcc-brut" target="_blank" rel="noopener" title="IWSC — official 2025 result detail">SOURCE · IWSC — OFFICIAL 2025 RESULT DE…</a></span></div><div class="aw"><span class="y">2025</span><span><b>IWSC</b> — Silver<br><span class="w">Vineyard Selection Merlot 2023</span><br><a class="src mono" href="https://www.iwsc.net/results/detail/166152/vineyard-selection-merlot-2023" target="_blank" rel="noopener" title="IWSC — official 2025 result detail">SOURCE · IWSC — OFFICIAL 2025 RESULT DE…</a></span></div><div class="aw"><span class="y">2025</span><span><b>IWSC</b> — Bronze<br><span class="w">1945 Granite Red 2023</span><br><a class="src mono" href="https://www.iwsc.net/results/detail/166167/1945-granite-red-2023" target="_blank" rel="noopener" title="IWSC — official 2025 result detail">SOURCE · IWSC — OFFICIAL 2025 RESULT DE…</a></span></div><div class="aw"><span class="y">2025</span><span><b>IWSC</b> — Bronze<br><span class="w">Vineyard Selection Cabernet Sauvignon 2023</span><br><a class="src mono" href="https://www.iwsc.net/results/detail/166244/vineyard-selection-cabernet-sauvignon-2023" target="_blank" rel="noopener" title="IWSC — official 2025 result detail">SOURCE · IWSC — OFFICIAL 2025 RESULT DE…</a></span></div><div class="aw"><span class="y">2025</span><span><b>IWSC</b> — Bronze<br><span class="w">Vineyard Selection Pinotage 2024</span><br><a class="src mono" href="https://iwsc.net/results/detail/166095/vineyard-selection-pinotage-2024" target="_blank" rel="noopener" title="IWSC — official 2025 result detail">SOURCE · IWSC — OFFICIAL 2025 RESULT DE…</a></span></div></div>
+          <div class="rec-contact mono"><a href="https://simonsvlei.com/" target="_blank" rel="noopener">simonsvlei.com</a></div>
+        </div></article><article class="rec" id="rec-alinea-wines" data-id="alinea-wines">
+        <div class="rec-bar mono"><span>$ record.alinea-wines</span><span class="term-dots"><span></span><span></span><span></span></span></div>
+        <div class="rec-body">
+          <div class="rec-name display">Alinea Wines</div>
+          <div class="rec-meta mono"><span>EST 2021</span><span><span class="">ACCESS NOT CONFIRMED</span></span><span>LOCATION NOT YET RESOLVED</span></div>
+          <p class="rec-hist">Natasha Jacka began Alinea in 2021; the current Grenache 2023 and Viura 2023 pages identify their vineyard sites in Paarl. Vineyard sourcing is not treated as a visitor venue.</p>
+          
+          <div class="rec-row"><span class="k mono">VARIETIES</span><div class="tags mono"><span>Grenache</span><span>Viura</span></div></div>
+          <div class="rec-row"><span class="k mono">SIGNATURE</span><span>Alinea Grenache 2023 · Alinea Viura 2023</span></div>
+          <div class="rec-awards"><span class="flag warn mono">AWARDS NOT YET RESEARCHED</span></div>
+          <div class="rec-contact mono"><a href="https://alineawines.co.za/" target="_blank" rel="noopener">alineawines.co.za</a></div>
+        </div></article><article class="rec" id="rec-the-ahrens-family" data-id="the-ahrens-family">
+        <div class="rec-bar mono"><span>$ record.the-ahrens-family</span><span class="term-dots"><span></span><span></span><span></span></span></div>
+        <div class="rec-body">
+          <div class="rec-name display">The Ahrens Family</div>
+          <div class="rec-meta mono"><span>EST 2008</span><span><span class="">ACCESS NOT CONFIRMED</span></span><span>THE CHASE ROAD, WILDEPAARDEJACHT, PAARL</span><span>LOCATION NOT YET RESOLVED</span></div>
+          <p class="rec-hist">Small Paarl-valley winery established in 2008 by Albert and Heidi Ahrens; current technical sheets identify address-specific wines from multiple Cape sites. Grower sites are not used as placement proxies.</p>
+          
+          <div class="rec-row"><span class="k mono">VARIETIES</span><div class="tags mono"><span>Roussanne</span><span>Marsanne</span><span>Grenache Blanc</span><span>Grenache</span><span>Syrah</span><span>Cinsault</span><span>Carignan</span><span>Chenin Blanc</span></div></div>
+          
+          <div class="rec-awards"><span class="flag warn mono">AWARDS NOT YET RESEARCHED</span></div>
+          <div class="rec-contact mono"><a href="https://theahrensfamily.co.za/" target="_blank" rel="noopener">theahrensfamily.co.za</a></div>
+        </div></article><article class="rec" id="rec-cape-wine-company" data-id="cape-wine-company">
+        <div class="rec-bar mono"><span>$ record.cape-wine-company</span><span class="term-dots"><span></span><span></span><span></span></span></div>
+        <div class="rec-body">
+          <div class="rec-name display">Cape Wine Company</div>
+          <div class="rec-meta mono"><span>EST 2010</span><span><span class="ok">WALK-IN TASTING</span></span><span>133 MAIN ROAD, PAARL 7646</span><span>LOCATION NOT YET RESOLVED</span></div>
+          <p class="rec-hist">Erlank Erasmus established Cape Wine Company in 2010. Its current own tasting room is at 133 Main Road, Paarl, with published walk-in hours and a broad own portfolio.</p>
+          <div class="rec-row"><span class="k mono">HOURS</span><span>Tue-Wed 11:00-18:00; Thu-Fri 11:00-20:00; Sat &amp; public holidays 10:00-14:00; Sun-Mon closed</span></div>
+          <div class="rec-row"><span class="k mono">VARIETIES</span><div class="tags mono"><span>Shiraz</span><span>Chenin Blanc</span></div></div>
+          <div class="rec-row"><span class="k mono">SIGNATURE</span><span>Erasmus Family Wines Shiraz · Nieuwe Haarlem Chenin Blanc</span></div>
+          <div class="rec-awards"><span class="flag warn mono">AWARDS NOT YET RESEARCHED</span></div>
+          <div class="rec-contact mono"><a href="https://capewinecompany.co.za/" target="_blank" rel="noopener">capewinecompany.co.za</a></div>
+        </div></article><article class="rec" id="rec-denneboom-vineyards" data-id="denneboom-vineyards">
+        <div class="rec-bar mono"><span>$ record.denneboom-vineyards</span><span class="term-dots"><span></span><span></span><span></span></span></div>
+        <div class="rec-body">
+          <div class="rec-name display">Denneboom Vineyards &amp; Wildlife</div>
+          <div class="rec-meta mono"><span><span class="">ACCESS NOT CONFIRMED</span></span><span>DENNEBOOM VINEYARDS, PAARDEBERG ROAD, PAARL</span><span>LOCATION · MEDIUM</span></div>
+          <p class="rec-hist">Denneboom grows its own vineyards and retains selected grapes for a family-label wine while selling most fruit to Boland Cellar.</p>
+          
+          <div class="rec-row"><span class="k mono">VARIETIES</span><div class="tags mono"><span>Cinsault</span><span>Riesling</span><span>Muscat d’Alexandrie</span><span>Shiraz</span><span>Pinotage</span><span>Cabernet Sauvignon</span><span>Mourvèdre</span><span>Nouvelle</span><span>Viognier</span><span>Sauvignon Blanc</span><span>Chenin Blanc</span></div></div>
+          
+          <div class="rec-awards"><span class="flag warn mono">AWARDS NOT YET RESEARCHED</span></div>
+          <div class="rec-contact mono"><a href="https://denneboomvineyardsandwildlife.co.za/" target="_blank" rel="noopener">denneboomvineyardsandwildlife.co.za</a></div>
+        </div></article><article class="rec" id="rec-firstcape" data-id="firstcape">
+        <div class="rec-bar mono"><span>$ record.firstcape</span><span class="term-dots"><span></span><span></span><span></span></span></div>
+        <div class="rec-body">
+          <div class="rec-name display">FirstCape</div>
+          <div class="rec-meta mono"><span>EST 2001</span><span><span class="">ACCESS NOT CONFIRMED</span></span><span>FIRSTCAPE FLAGSHIP WINERY, SIMONDIUM</span><span>LOCATION NOT YET RESOLVED</span></div>
+          <p class="rec-hist">FirstCape was founded in 2001 and says it acquired its own flagship winery in Simondium in 2008. The campaign placement was established by pass 236 and is not re-derived here from the phrase “near Franschhoek”.</p>
+          
+          <div class="rec-row"><span class="k mono">VARIETIES</span><div class="tags mono"><span>Chenin Blanc</span><span>Cabernet Sauvignon</span><span>Chardonnay</span><span>Pinot Noir</span><span>Sauvignon Blanc</span><span>Merlot</span></div></div>
+          
+          <div class="rec-awards"><span class="flag warn mono">AWARDS NOT YET RESEARCHED</span></div>
+          <div class="rec-contact mono"><a href="https://firstcape.com/" target="_blank" rel="noopener">firstcape.com</a></div>
+        </div></article><article class="rec" id="rec-freedom-hill-vineyards" data-id="freedom-hill-vineyards">
+        <div class="rec-bar mono"><span>$ record.freedom-hill-vineyards</span><span class="term-dots"><span></span><span></span><span></span></span></div>
+        <div class="rec-body">
+          <div class="rec-name display">Freedom Hill Vineyards</div>
+          <div class="rec-meta mono"><span>EST 2004</span><span><span class="ok">WALK-IN TASTING</span></span><span>14 WEMMERSHOEK RD, R301, PAARL 7620</span><span>LOCATION · MEDIUM</span></div>
+          <p class="rec-hist">Freedom Hill opened its cellar doors in November 2004. The current site confirms a tasting room, own farm vineyards used for its wines, published trading hours and literal DMS coordinates at the Paarl property.</p>
+          <div class="rec-row"><span class="k mono">HOURS</span><span>Monday-Saturday 10:00-17:00; Sunday and public holidays closed</span></div>
+          <div class="rec-row"><span class="k mono">VARIETIES</span><div class="tags mono"><span>Shiraz</span><span>Cabernet Sauvignon</span><span>Pinotage</span></div></div>
+          
+          <div class="rec-awards"><span class="flag warn mono">AWARDS NOT YET RESEARCHED</span></div>
+          <div class="rec-contact mono"><a href="https://www.freedomhill.co.za/" target="_blank" rel="noopener">freedomhill.co.za</a></div>
+        </div></article><article class="rec" id="rec-lourens-family-wines" data-id="lourens-family-wines">
+        <div class="rec-bar mono"><span>$ record.lourens-family-wines</span><span class="term-dots"><span></span><span></span><span></span></span></div>
+        <div class="rec-body">
+          <div class="rec-name display">Lourens Family Wines</div>
+          <div class="rec-meta mono"><span>EST 2016</span><span><span class="">ACCESS NOT CONFIRMED</span></span><span>193 MAIN ROAD, ROZENFONTEIN, PAARL 7646</span><span>LOCATION NOT YET RESOLVED</span></div>
+          <p class="rec-hist">Small family-owned Paarl wine business established in January 2016. Current own site documents a minimal-intervention philosophy and current range; recent trade release material identifies Franco Lourens and…</p>
+          
+          <div class="rec-row"><span class="k mono">VARIETIES</span><div class="tags mono"><span>Chenin Blanc</span><span>Verdelho</span><span>Grenache Blanc</span><span>Grenache</span><span>Cinsault</span><span>Syrah</span></div></div>
+          <div class="rec-row"><span class="k mono">SIGNATURE</span><span>Lindi Carien · Skuinskap Steen · Howard John · Lua Ilse</span></div>
+          <div class="rec-awards"><span class="flag warn mono">AWARDS NOT YET RESEARCHED</span></div>
+          <div class="rec-contact mono"><a href="https://www.lourensfamilywines.co.za/" target="_blank" rel="noopener">lourensfamilywines.co.za</a></div>
+        </div></article><article class="rec" id="rec-mont-destin-wines" data-id="mont-destin-wines">
+        <div class="rec-bar mono"><span>$ record.mont-destin-wines</span><span class="term-dots"><span></span><span></span><span></span></span></div>
+        <div class="rec-body">
+          <div class="rec-name display">Mont Destin Wines</div>
+          <div class="rec-meta mono"><span>EST 2002</span><span><span class="">TASTING PERMANENTLY CLOSED</span></span><span>FORMER MONT DESTIN FARM, PAARL</span><span>LOCATION NOT YET RESOLVED</span></div>
+          <p class="rec-hist">010. Samantha Bürgin documents building the original farm/vineyards/cellar, the first Shiraz in 2002, and selling the farm in 2017 before moving to Franschhoek while retaining the Mont Destin name.</p>
+          
+          <div class="rec-row"><span class="k mono">VARIETIES</span><div class="tags mono"><span>Shiraz</span></div></div>
+          <div class="rec-row"><span class="k mono">SIGNATURE</span><span>Destiny Shiraz</span></div>
+          <div class="rec-awards"><span class="flag warn mono">AWARDS NOT YET RESEARCHED</span></div>
+          <div class="rec-contact mono"><a href="https://www.destinyshiraz.co.za/" target="_blank" rel="noopener">destinyshiraz.co.za</a></div>
+        </div></article><article class="rec" id="rec-mooi-bly" data-id="mooi-bly">
+        <div class="rec-bar mono"><span>$ record.mooi-bly</span><span class="term-dots"><span></span><span></span><span></span></span></div>
+        <div class="rec-body">
+          <div class="rec-name display">Mooi Bly</div>
+          <div class="rec-meta mono"><span><span class="">ACCESS NOT CONFIRMED</span></span><span>MOOI BLY FARM, KLEINBOSCH ROAD, PAARL 7646</span><span>LOCATION NOT YET RESOLVED</span></div>
+          <p class="rec-hist">Current producer page sells handcrafted Mooi Bly wines from the cellar door, names Jaco Brand as winemaker and publishes the Paarl farm address. Cellar-door sales are not converted into a tasting claim.</p>
+          
+          <div class="rec-row"><span class="k mono">VARIETIES</span><div class="tags mono"><span>Chenin Blanc</span><span>Chardonnay</span><span>Cabernet Sauvignon</span><span>Shiraz</span><span>Malbec</span><span>Tannat</span><span>Muscat d’Alexandrie</span></div></div>
+          
+          <div class="rec-awards"><span class="flag warn mono">AWARDS NOT YET RESEARCHED</span></div>
+          <div class="rec-contact mono"><a href="http://www.mooibly.com/" target="_blank" rel="noopener">mooibly.com</a></div>
+        </div></article><article class="rec" id="rec-nomoya-world" data-id="nomoya-world">
+        <div class="rec-bar mono"><span>$ record.nomoya-world</span><span class="term-dots"><span></span><span></span><span></span></span></div>
+        <div class="rec-body">
+          <div class="rec-name display">Nomoya World</div>
+          <div class="rec-meta mono"><span><span class="ok">WALK-IN TASTING</span></span><span>THE WINE HIVE, 132 MAIN ROAD, PAARL 7646</span><span>LOCATION NOT YET RESOLVED</span></div>
+          <p class="rec-hist">Nomoya World operates The Wine Hive at 132 Main Road, Paarl. The current site offers wines by the glass and themed tasting events and publishes current Nomoya wines.</p>
+          <div class="rec-row"><span class="k mono">HOURS</span><span>Monday 12:00-21:00; Tuesday-Saturday 07:00-21:00; Sunday closed (current home page; event page publishes a narrower tasting-event window)</span></div>
+          <div class="rec-row"><span class="k mono">VARIETIES</span><div class="tags mono"><span>Chenin Blanc</span><span>Grenache Blanc</span><span>Vermentino</span><span>Pinot Blanc</span><span>Cinsault</span><span>Grenache</span></div></div>
+          <div class="rec-row"><span class="k mono">SIGNATURE</span><span>Nomoya Chenin Blanc · Nomoya Grenache Blanc · Nomoya Vermentino · Nomoya Pinot Blanc · Nomoya Cinsault · Nomoya Grenache Noir</span></div>
+          <div class="rec-awards"><span class="flag warn mono">AWARDS NOT YET RESEARCHED</span></div>
+          <div class="rec-contact mono"><a href="https://www.nomoyaworld.com/" target="_blank" rel="noopener">nomoyaworld.com</a></div>
+        </div></article><article class="rec" id="rec-scali-wines" data-id="scali-wines">
+        <div class="rec-bar mono"><span>$ record.scali-wines</span><span class="term-dots"><span></span><span></span><span></span></span></div>
+        <div class="rec-body">
+          <div class="rec-name display">Scali Wines</div>
+          <div class="rec-meta mono"><span>EST 1993</span><span><span class="">ACCESS NOT CONFIRMED</span></span><span>WARD · VOOR-PAARDEBERG</span><span>LOCATION NOT YET RESOLVED</span></div>
+          <p class="rec-hist">Willie and Tania de Waal make and bottle SCALI wines in the cellar at Schoone Oord on the Paardeberg slopes. The producer states family winemaking began with 50 litres in 1993 and now lists eight wines.</p>
+          
+          <div class="rec-row"><span class="k mono">VARIETIES</span><div class="tags mono"><span>Chenin Blanc</span><span>Pinotage</span><span>Shiraz</span><span>Viognier</span><span>Chardonnay</span><span>Roussanne</span><span>Syrah</span></div></div>
+          
+          <div class="rec-awards"><span class="flag warn mono">AWARDS NOT YET RESEARCHED</span></div>
+          <div class="rec-contact mono"><a href="https://scaliwines.wordpress.com/" target="_blank" rel="noopener">scaliwines.wordpress.com</a></div>
+        </div></article><article class="rec" id="rec-the-foundry" data-id="the-foundry">
+        <div class="rec-bar mono"><span>$ record.the-foundry</span><span class="term-dots"><span></span><span></span><span></span></span></div>
+        <div class="rec-body">
+          <div class="rec-name display">The Foundry</div>
+          <div class="rec-meta mono"><span><span class="">ACCESS NOT CONFIRMED</span></span><span>WARD · VOOR-PAARDEBERG</span><span>LOCATION NOT YET RESOLVED</span></div>
+          <p class="rec-hist">The producer locates The Foundry Cellar in Voor-Paardeberg and identifies Chris Williams as winemaker. Current technical material confirms home-farm vineyards and current varietal wines.</p>
+          
+          <div class="rec-row"><span class="k mono">VARIETIES</span><div class="tags mono"><span>Grenache Blanc</span><span>Roussanne</span><span>Viognier</span><span>Grenache</span><span>Syrah</span></div></div>
+          
+          <div class="rec-awards"><span class="flag warn mono">AWARDS NOT YET RESEARCHED</span></div>
+          <div class="rec-contact mono"><a href="https://www.thefoundry.co.za/" target="_blank" rel="noopener">thefoundry.co.za</a></div>
+        </div></article><article class="rec" id="rec-tumbaga-fine-wines" data-id="tumbaga-fine-wines">
+        <div class="rec-bar mono"><span>$ record.tumbaga-fine-wines</span><span class="term-dots"><span></span><span></span><span></span></span></div>
+        <div class="rec-body">
+          <div class="rec-name display">Tumbaga Fine Wines</div>
+          <div class="rec-meta mono"><span><span class="">ACCESS NOT CONFIRMED</span></span><span>PRODUCER VINEYARD/FARM IN PAARL</span><span>LOCATION NOT YET RESOLVED</span></div>
+          <p class="rec-hist">Current public name is Tumbaga Fine Wines; the crawl spelling Tumbago is retained as an alias. The producer names Sandile Mkhwanazi and states the range is made with grapes sourced from its farm in Paarl.</p>
+          
+          <div class="rec-row"><span class="k mono">VARIETIES</span><div class="tags mono"><span>Chenin Blanc</span><span>Pinotage</span><span>Chardonnay</span><span>Cinsault</span></div></div>
+          <div class="rec-row"><span class="k mono">SIGNATURE</span><span>Tumbaga Chenin Blanc · Tumbaga Pinotage · Nantes Elementa · Nantes The Old Faithful Red Blend</span></div>
+          <div class="rec-awards"><span class="flag warn mono">AWARDS NOT YET RESEARCHED</span></div>
+          <div class="rec-contact mono"><a href="https://tumbagafinewines.co.za/" target="_blank" rel="noopener">tumbagafinewines.co.za</a></div>
+        </div></article><article class="rec" id="rec-vilafonte" data-id="vilafonte">
+        <div class="rec-bar mono"><span>$ record.vilafonte</span><span class="term-dots"><span></span><span></span><span></span></span></div>
+        <div class="rec-body">
+          <div class="rec-name display">Vilafonté</div>
+          <div class="rec-meta mono"><span>EST 1997</span><span><span class="">ACCESS NOT CONFIRMED</span></span><span>VILAFONTÉ VINEYARD, PORTION 19, FARM SIMONSVLEI 791; SIMONSBERG BENCH</span><span>LOCATION · MEDIUM</span></div>
+          <p class="rec-hist">Vilafonté states the 42 ha estate was founded in 1997 and publishes the Vilafonté Vineyard identity, cultivars and literal vineyard coordinates.</p>
+          
+          <div class="rec-row"><span class="k mono">VARIETIES</span><div class="tags mono"><span>Cabernet Sauvignon</span><span>Cabernet Franc</span><span>Merlot</span><span>Malbec</span></div></div>
+          <div class="rec-row"><span class="k mono">SIGNATURE</span><span>Series C · Series M · Seriously Old Dirt</span></div>
+          <div class="rec-awards"><span class="flag warn mono">AWARDS NOT YET RESEARCHED</span></div>
+          <div class="rec-contact mono"><a href="https://www.vilafonte.com/" target="_blank" rel="noopener">vilafonte.com</a></div>
+        </div></article><article class="rec" id="rec-kleine-draken" data-id="kleine-draken">
+        <div class="rec-bar mono"><span>$ record.kleine-draken</span><span class="term-dots"><span></span><span></span><span></span></span></div>
+        <div class="rec-body">
+          <div class="rec-name display">Kleine Draken</div>
+          <div class="rec-meta mono"><span>EST 1983</span><span><span class="ok">WALK-IN TASTING</span></span><span>CURRENT TASTING VENUE: BOLAND CELLAR, PAARL; HISTORICAL ORIGIN: ZANDWIJK FARM</span><span>LOCATION · MEDIUM</span></div>
+          <p class="rec-hist">Kleine Draken was established at Zandwijk Farm in 1983. After Zandwijk was sold in 2020, the brand continued under new ownership and now uses Western Cape production cellars.</p>
+          <div class="rec-row"><span class="k mono">HOURS</span><span>Monday-Friday 09:00-17:00; no booking required</span></div>
+          <div class="rec-row"><span class="k mono">VARIETIES</span><div class="tags mono"><span>Chenin Blanc</span><span>Chardonnay</span><span>Gewürztraminer</span><span>Pinotage</span><span>Cabernet Sauvignon</span><span>Merlot</span><span>Shiraz</span></div></div>
+          
+          <div class="rec-awards"><span class="flag warn mono">AWARDS NOT YET RESEARCHED</span></div>
+          <div class="rec-contact mono"><a href="https://kleinedraken.co.za/" target="_blank" rel="noopener">kleinedraken.co.za</a></div>
+        </div></article></div>
+      </section>
+      <section class="rv-block rv-two">
+        <div>
+          <h4 class="mono">THE ROUTE</h4><p><b>Paarl Wine Route</b> — Paarl district — Simonsberg-Paarl, Agter-Paarl, Voor Paardeberg. 19 of 21 members on record; membership confirmed against the route’s own listing.</p><p class="mono" style="font-size:10px;letter-spacing:.12em;color:var(--muted)">SOURCE · <a style="color:inherit" href="https://www.paarlwineroute.co.za/" target="_blank" rel="noopener">paarlwineroute.co.za</a> · CONSULTED 2026-08-31</p>
+          <h4 class="mono" style="margin-top:26px">TOUR OPERATORS SERVING THIS AREA · 3</h4>
+          <div class="rv-note" style="margin-bottom:10px"><b>LISTED, NOT ENDORSED.</b> An operator appears here because it publicly offers winelands tours and we can point to where it says so. Inclusion says nothing about licensing, insurance or safety — please confirm operating permits and current schedules with the operator directly. Details are as published at the source on the day we consulted it.</div>
+          <div class="tour"><b>City Sightseeing Cape Town — wine tours</b> <span class="flag dim mono">NOT YET CONFIRMED</span><span class="t mono">Coach day tours · Cape Town · <a href="https://citysightseeing.co.za/en/cape-town/wine-tours" target="_blank" rel="noopener">citysightseeing.co.za</a></span></div><div class="tour"><b>Wine Tours Cape Town</b> <span class="flag dim mono">NOT YET CONFIRMED</span><span class="t mono">Private &amp; small-group tours · Cape Town · <a href="https://www.winetourscapetown.com" target="_blank" rel="noopener">winetourscapetown.com</a></span></div><div class="tour"><b>Wine in the Cape (Experiences in Africa Pty Ltd)</b><span class="t mono">Small-group and private wine tours · 183 Main Street, Hoog en Droog, Paarl 7646 · <a href="https://wineinthecape.co.za" target="_blank" rel="noopener">wineinthecape.co.za</a></span></div>
+        </div>
+        <div>
+          <h4 class="mono">THE HONOURS LEDGER</h4>
+          <p>40 of the 55 producers here have had their honours researched so far: 113 awards stand verified against their sources. Competitions consulted: Critic reviews 2025 · DWWA 2025 · IWSC 2025 · London Wine Competition 2026 · Platter&#x27;s 2023 · Trophy Wine Show 2026 · Veritas 2025 · Winemag 2025.</p>
+          <h4 class="mono" style="margin-top:26px">HOW TO READ THIS PAGE</h4>
+          <div class="rv-note"><b>NOTHING IS WRITTEN HERE WITHOUT A SOURCE.</b> Every honour links to the page where it was found. Our researchers may only record what they can cite; an entry is promoted to “confirmed” only once a second, independent reviewer has gone back to the source.<br><br><b>“NOT YET RESEARCHED” IS NOT “NO AWARDS”.</b> The atlas is careful to tell “nobody has looked yet” apart from “nothing was won” — many fine producers simply never enter competitions.<br><br><b>WHAT IS HELD BACK.</b> Where a detail rests on a source the atlas is not free to republish, it is withheld until the producer’s own site or an open record confirms it. Claims still under review are counted, never presented as fact.</div>
+          
+        </div>
+      </section>
+      <footer class="rv-foot mono"><span>THE ATLAS RECORD · SEPTEMBER 2026 EDITION</span><span>DATA UNDER ODbL 1.0 · CONTAINS INFORMATION FROM OPENSTREETMAP, © OPENSTREETMAP CONTRIBUTORS</span><span>COASTAL REGION</span><span>RECORDS GATHERED 2026-08-31</span><span>ACROSS THE ATLAS · 644 FARMS · 31 REGIONS · 1133 HONOURS VERIFIED</span></footer></div>
+  </div>
+
+  <!-- ================= LICENCE & CREDITS (opened from the footer) ================= -->
+  <div id="licenceView" role="dialog" aria-label="Licence and credits">
+    <div class="frame"><i class="tl"></i><i class="tr"></i><i class="bl"></i><i class="br"></i></div>
+    <div class="rv-top mono">
+      <div class="crumb"><b>CAPE WINE ATLAS</b><span>/</span><b>LICENCE &amp; CREDITS</b></div>
+      <button id="lvClose" class="mono">[ CLOSE ] ✕</button>
+    </div>
+    <div class="rv-scroll lv-scroll">
+      <header class="lv-head">
+        <div class="rv-eyebrow mono">HOW THIS RECORD MAY BE USED · WHO MADE IT · WHERE ITS PARTS CAME FROM</div>
+        <h2 class="display">Licence<br>&amp; credits</h2>
+        <p class="lv-lede">The Cape Wine Atlas is published by <b>the Cape Wine Atlas project, maintained by MDRF</b>. It is made to be read, questioned, corrected and reused, and its parts carry three different licences because the data carries an obligation that the prose and the code do not.</p>
+      </header>
+
+      <section class="lv-grid">
+        <article class="lv-card">
+          <div class="rec-bar mono"><span>$ licence.data</span><span class="lv-tag">ODbL 1.0</span></div>
+          <div class="lv-body">
+            <h4 class="mono">THE DATA — OPEN DATABASE LICENCE 1.0</h4>
+            <p>Every producer record, region file, award ledger and route roster is offered under the Open Data Commons Open Database License. You may copy, share, adapt and build on the database, provided you attribute it, keep it open, and offer any database you derive from it under the same licence.</p>
+            <p><b>Why this licence:</b> a substantial share of the coordinates in the atlas derive from OpenStreetMap, whose licence is share-alike. That obligation travelled with the coordinates the moment they were adopted, and it is honoured here rather than chosen.</p>
+            <div class="rv-note"><b>CONTAINS INFORMATION FROM OPENSTREETMAP</b>, which is made available under the Open Database License (ODbL). © OpenStreetMap contributors.</div>
+            <p class="lv-small">Works <em>produced</em> from the data — a map image, an article, an analysis — need only the attribution above, not share-alike. Other material in the data: coordinates from <b>Wikidata</b> (CC0, no obligation); producers’ own published statements (facts, each cited to the page they came from); national industry figures relayed from <b>SAWIS</b>, <em>SA Wine Industry Statistics 2024</em>, cited as the primary publication.</p>
+          </div>
+        </article>
+
+        <article class="lv-card">
+          <div class="rec-bar mono"><span>$ licence.prose</span><span class="lv-tag">CC BY 4.0</span></div>
+          <div class="lv-body">
+            <h4 class="mono">THE WRITING — CREATIVE COMMONS ATTRIBUTION 4.0</h4>
+            <p>The prose on this site, the project’s documentation, its method, its recorded decisions and its register of hazards are licensed CC BY 4.0. Quote it, teach from it, translate it or build on the method, with attribution.</p>
+          </div>
+        </article>
+
+        <article class="lv-card">
+          <div class="rec-bar mono"><span>$ licence.code</span><span class="lv-tag">MIT</span></div>
+          <div class="lv-body">
+            <h4 class="mono">THE CODE — MIT LICENCE</h4>
+            <p>The page you are reading, the scripts that build it and the tools that validate the record are released under the MIT licence: reuse them freely, keep the notice.</p>
+          </div>
+        </article>
+
+        <article class="lv-card">
+          <div class="rec-bar mono"><span>$ credits</span><span class="lv-tag">ACKNOWLEDGEMENTS</span></div>
+          <div class="lv-body">
+            <h4 class="mono">CREDITS</h4>
+            <div class="lv-credit"><span class="k mono">TYPEFACES</span><span><b>Orbitron</b> (The Orbitron Project Authors) and <b>JetBrains Mono</b> (JetBrains), both embedded under the SIL Open Font License 1.1.</span></div>
+            <div class="lv-credit"><span class="k mono">DESIGN</span><span>The interface language of this page — the boot screen, the dot-screen rendering, the HUD geometry and the gold closing page — is made after <b>“Neon Grid”</b> by Fernanda Herrera. Everything here was re-implemented from scratch; no code, imagery, type or text was taken from that work.</span></div>
+            <div class="lv-credit"><span class="k mono">HERO IMAGE</span><span>The aerial of Cape Town Stadium and Table Mountain on the opening page was generated from a text prompt (ChatGPT) and then rendered by the atlas as a dot-screen. It is not a photograph and no photographer’s rights attach to it.</span></div>
+            <div class="lv-credit"><span class="k mono">MAPS</span><span>The Western Cape chart and the regional tactical maps are drawn by the atlas from its own coordinates and a hand-plotted coastline; they are not traced from any published map.</span></div>
+          </div>
+        </article>
+      </section>
+
+      <section class="rv-block rv-two">
+        <div>
+          <h4 class="mono">CORRECTIONS &amp; REMOVAL</h4>
+          <p>If you make wine and find your entry wrong, incomplete or out of date, write to <a class="lv-link" href="mailto:capewineatlas@gmail.com">capewineatlas@gmail.com</a>. A correction is made against a source — your own website, a published listing, a competition’s results page — and the record then cites it, with your name beside the change if you wish.</p>
+          <p>Records are corrected on request. A record is removed only where it is wrong beyond correction or where the producer has ceased trading; the atlas does not remove accurate, sourced entries about businesses that make wine under their own name, because a compendium with gaps chosen by its subjects would no longer be a record.</p>
+          <p>Contact details are never republished here. Where the atlas holds a telephone number or an address, the page says so and sends the reader to the producer’s own site.</p>
+        </div>
+        <div>
+          <h4 class="mono">HOW TO ATTRIBUTE</h4>
+          <div class="rv-note lv-attrib">Cape Wine Atlas, maintained by MDRF, 2026. Data under ODbL 1.0; contains information from OpenStreetMap, © OpenStreetMap contributors. Documentation under CC BY 4.0.</div>
+          <h4 class="mono" style="margin-top:26px">TOUR OPERATORS</h4>
+          <p>Operators are <b>listed, not endorsed</b>. An operator appears because it publicly offers winelands tours and the atlas can point to where it says so. Inclusion says nothing about licensing, insurance or safety; confirm operating permits and current schedules with the operator directly.</p>
+        </div>
+      </section>
+
+      <section class="rv-block">
+        <h3 class="mono"><span class="h3l">FULL LICENCE TEXTS</span></h3>
+        <details class="lv-full"><summary class="mono">OPEN DATABASE LICENSE (ODbL) v1.0 — FULL TEXT</summary><pre class="mono">## Open Data Commons Open Database License (ODbL)
+
+### Preamble
+
+The Open Database License (ODbL) is a license agreement intended to
+allow users to freely share, modify, and use this Database while
+maintaining this same freedom for others. Many databases are covered by
+copyright, and therefore this document licenses these rights. Some
+jurisdictions, mainly in the European Union, have specific rights that
+cover databases, and so the ODbL addresses these rights, too. Finally,
+the ODbL is also an agreement in contract for users of this Database to
+act in certain ways in return for accessing this Database.
+
+Databases can contain a wide variety of types of content (images,
+audiovisual material, and sounds all in the same database, for example),
+and so the ODbL only governs the rights over the Database, and not the
+contents of the Database individually. Licensors should use the ODbL
+together with another license for the contents, if the contents have a
+single set of rights that uniformly covers all of the contents. If the
+contents have multiple sets of different rights, Licensors should
+describe what rights govern what contents together in the individual
+record or in some other way that clarifies what rights apply.
+
+Sometimes the contents of a database, or the database itself, can be
+covered by other rights not addressed here (such as private contracts,
+trade mark over the name, or privacy rights / data protection rights
+over information in the contents), and so you are advised that you may
+have to consult other documents or clear other rights before doing
+activities not covered by this License.
+
+------
+
+The Licensor (as defined below)
+
+and
+
+You (as defined below)
+
+agree as follows:
+
+### 1.0 Definitions of Capitalised Words
+
+&quot;Collective Database&quot; – Means this Database in unmodified form as part
+of a collection of independent databases in themselves that together are
+assembled into a collective whole. A work that constitutes a Collective
+Database will not be considered a Derivative Database.
+
+&quot;Convey&quot; – As a verb, means Using the Database, a Derivative Database,
+or the Database as part of a Collective Database in any way that enables
+a Person to make or receive copies of the Database or a Derivative
+Database.  Conveying does not include interaction with a user through a
+computer network, or creating and Using a Produced Work, where no
+transfer of a copy of the Database or a Derivative Database occurs.
+&quot;Contents&quot; – The contents of this Database, which includes the
+information, independent works, or other material collected into the
+Database. For example, the contents of the Database could be factual
+data or works such as images, audiovisual material, text, or sounds.
+
+&quot;Database&quot; – A collection of material (the Contents) arranged in a
+systematic or methodical way and individually accessible by electronic
+or other means offered under the terms of this License.
+
+&quot;Database Directive&quot; – Means Directive 96/9/EC of the European
+Parliament and of the Council of 11 March 1996 on the legal protection
+of databases, as amended or succeeded.
+
+&quot;Database Right&quot; – Means rights resulting from the Chapter III (&quot;sui
+generis&quot;) rights in the Database Directive (as amended and as transposed
+by member states), which includes the Extraction and Re-utilisation of
+the whole or a Substantial part of the Contents, as well as any similar
+rights available in the relevant jurisdiction under Section 10.4.
+
+&quot;Derivative Database&quot; – Means a database based upon the Database, and
+includes any translation, adaptation, arrangement, modification, or any
+other alteration of the Database or of a Substantial part of the
+Contents. This includes, but is not limited to, Extracting or
+Re-utilising the whole or a Substantial part of the Contents in a new
+Database.
+
+&quot;Extraction&quot; – Means the permanent or temporary transfer of all or a
+Substantial part of the Contents to another medium by any means or in
+any form.
+
+&quot;License&quot; – Means this license agreement and is both a license of rights
+such as copyright and Database Rights and an agreement in contract.
+
+&quot;Licensor&quot; – Means the Person that offers the Database under the terms
+of this License.
+
+&quot;Person&quot; – Means a natural or legal person or a body of persons
+corporate or incorporate.
+
+&quot;Produced Work&quot; –  a work (such as an image, audiovisual material, text,
+or sounds) resulting from using the whole or a Substantial part of the
+Contents (via a search or other query) from this Database, a Derivative
+Database, or this Database as part of a Collective Database.
+
+&quot;Publicly&quot; – means to Persons other than You or under Your control by
+either more than 50% ownership or by the power to direct their
+activities (such as contracting with an independent consultant).
+
+&quot;Re-utilisation&quot; – means any form of making available to the public all
+or a Substantial part of the Contents by the distribution of copies, by
+renting, by online or other forms of transmission.
+
+&quot;Substantial&quot; – Means substantial in terms of quantity or quality or a
+combination of both. The repeated and systematic Extraction or
+Re-utilisation of insubstantial parts of the Contents may amount to the
+Extraction or Re-utilisation of a Substantial part of the Contents.
+
+&quot;Use&quot; – As a verb, means doing any act that is restricted by copyright
+or Database Rights whether in the original medium or any other; and
+includes without limitation distributing, copying, publicly performing,
+publicly displaying, and preparing derivative works of the Database, as
+well as modifying the Database as may be technically necessary to use it
+in a different mode or format.
+
+&quot;You&quot; – Means a Person exercising rights under this License who has not
+previously violated the terms of this License with respect to the
+Database, or who has received express permission from the Licensor to
+exercise rights under this License despite a previous violation.
+
+Words in the singular include the plural and vice versa.
+
+### 2.0 What this License covers
+
+2.1. Legal effect of this document. This License is:
+
+  a. A license of applicable copyright and neighbouring rights;
+
+  b. A license of the Database Right; and
+
+  c. An agreement in contract between You and the Licensor.
+
+2.2 Legal rights covered. This License covers the legal rights in the
+Database, including:
+
+  a. Copyright. Any copyright or neighbouring rights in the Database.
+  The copyright licensed includes any individual elements of the
+  Database, but does not cover the copyright over the Contents
+  independent of this Database. See Section 2.4 for details. Copyright
+  law varies between jurisdictions, but is likely to cover: the Database
+  model or schema, which is the structure, arrangement, and organisation
+  of the Database, and can also include the Database tables and table
+  indexes; the data entry and output sheets; and the Field names of
+  Contents stored in the Database;
+
+  b. Database Rights. Database Rights only extend to the Extraction and
+  Re-utilisation of the whole or a Substantial part of the Contents.
+  Database Rights can apply even when there is no copyright over the
+  Database. Database Rights can also apply when the Contents are removed
+  from the Database and are selected and arranged in a way that would
+  not infringe any applicable copyright; and
+
+  c. Contract. This is an agreement between You and the Licensor for
+  access to the Database. In return you agree to certain conditions of
+  use on this access as outlined in this License.
+
+2.3 Rights not covered.
+
+  a. This License does not apply to computer programs used in the making
+  or operation of the Database;
+
+  b. This License does not cover any patents over the Contents or the
+  Database; and
+
+  c. This License does not cover any trademarks associated with the
+  Database.
+
+2.4 Relationship to Contents in the Database. The individual items of
+the Contents contained in this Database may be covered by other rights,
+including copyright, patent, data protection, privacy, or personality
+rights, and this License does not cover any rights (other than Database
+Rights or in contract) in individual Contents contained in the Database.
+For example, if used on a Database of images (the Contents), this
+License would not apply to copyright over individual images, which could
+have their own separate licenses, or one single license covering all of
+the rights over the images.
+
+### 3.0 Rights granted
+
+3.1 Subject to the terms and conditions of this License, the Licensor
+grants to You a worldwide, royalty-free, non-exclusive, terminable (but
+only under Section 9) license to Use the Database for the duration of
+any applicable copyright and Database Rights. These rights explicitly
+include commercial use, and do not exclude any field of endeavour. To
+the extent possible in the relevant jurisdiction, these rights may be
+exercised in all media and formats whether now known or created in the
+future.
+
+The rights granted cover, for example:
+
+  a. Extraction and Re-utilisation of the whole or a Substantial part of
+  the Contents;
+
+  b. Creation of Derivative Databases;
+
+  c. Creation of Collective Databases;
+
+  d. Creation of temporary or permanent reproductions by any means and
+  in any form, in whole or in part, including of any Derivative
+  Databases or as a part of Collective Databases; and
+
+  e. Distribution, communication, display, lending, making available, or
+  performance to the public by any means and in any form, in whole or in
+  part, including of any Derivative Database or as a part of Collective
+  Databases.
+
+3.2 Compulsory license schemes. For the avoidance of doubt:
+
+  a. Non-waivable compulsory license schemes. In those jurisdictions in
+  which the right to collect royalties through any statutory or
+  compulsory licensing scheme cannot be waived, the Licensor reserves
+  the exclusive right to collect such royalties for any exercise by You
+  of the rights granted under this License;
+
+  b. Waivable compulsory license schemes. In those jurisdictions in
+  which the right to collect royalties through any statutory or
+  compulsory licensing scheme can be waived, the Licensor waives the
+  exclusive right to collect such royalties for any exercise by You of
+  the rights granted under this License; and,
+
+  c. Voluntary license schemes. The Licensor waives the right to collect
+  royalties, whether individually or, in the event that the Licensor is
+  a member of a collecting society that administers voluntary licensing
+  schemes, via that society, from any exercise by You of the rights
+  granted under this License.
+
+3.3 The right to release the Database under different terms, or to stop
+distributing or making available the Database, is reserved. Note that
+this Database may be multiple-licensed, and so You may have the choice
+of using alternative licenses for this Database. Subject to Section
+10.4, all other rights not expressly granted by Licensor are reserved.
+
+### 4.0 Conditions of Use
+
+4.1 The rights granted in Section 3 above are expressly made subject to
+Your complying with the following conditions of use. These are important
+conditions of this License, and if You fail to follow them, You will be
+in material breach of its terms.
+
+4.2 Notices. If You Publicly Convey this Database, any Derivative
+Database, or the Database as part of a Collective Database, then You
+must:
+
+  a. Do so only under the terms of this License or another license
+  permitted under Section 4.4;
+
+  b. Include a copy of this License (or, as applicable, a license
+  permitted under Section 4.4) or its Uniform Resource Identifier (URI)
+  with the Database or Derivative Database, including both in the
+  Database or Derivative Database and in any relevant documentation; and
+
+  c. Keep intact any copyright or Database Right notices and notices
+  that refer to this License.
+
+  d. If it is not possible to put the required notices in a particular
+  file due to its structure, then You must include the notices in a
+  location (such as a relevant directory) where users would be likely to
+  look for it.
+
+4.3 Notice for using output (Contents). Creating and Using a Produced
+Work does not require the notice in Section 4.2. However, if you
+Publicly Use a Produced Work, You must include a notice associated with
+the Produced Work reasonably calculated to make any Person that uses,
+views, accesses, interacts with, or is otherwise exposed to the Produced
+Work aware that Content was obtained from the Database, Derivative
+Database, or the Database as part of a Collective Database, and that it
+is available under this License.
+
+  a. Example notice. The following text will satisfy notice under
+  Section 4.3:
+
+        Contains information from DATABASE NAME, which is made available
+        here under the Open Database License (ODbL).
+
+DATABASE NAME should be replaced with the name of the Database and a
+hyperlink to the URI of the Database. &quot;Open Database License&quot; should
+contain a hyperlink to the URI of the text of this License. If
+hyperlinks are not possible, You should include the plain text of the
+required URI&#x27;s with the above notice.
+
+4.4 Share alike.
+
+  a. Any Derivative Database that You Publicly Use must be only under
+  the terms of:
+
+    i. This License;
+
+    ii. A later version of this License similar in spirit to this
+      License; or
+
+    iii. A compatible license.
+
+  If You license the Derivative Database under one of the licenses
+  mentioned in (iii), You must comply with the terms of that license.
+
+  b. For the avoidance of doubt, Extraction or Re-utilisation of the
+  whole or a Substantial part of the Contents into a new database is a
+  Derivative Database and must comply with Section 4.4.
+
+  c. Derivative Databases and Produced Works.  A Derivative Database is
+  Publicly Used and so must comply with Section 4.4. if a Produced Work
+  created from the Derivative Database is Publicly Used.
+
+  d. Share Alike and additional Contents. For the avoidance of doubt,
+  You must not add Contents to Derivative Databases under Section 4.4 a
+  that are incompatible with the rights granted under this License.
+
+  e. Compatible licenses. Licensors may authorise a proxy to determine
+  compatible licenses under Section 4.4 a iii. If they do so, the
+  authorised proxy&#x27;s public statement of acceptance of a compatible
+  license grants You permission to use the compatible license.
+
+
+4.5 Limits of Share Alike.  The requirements of Section 4.4 do not apply
+in the following:
+
+  a. For the avoidance of doubt, You are not required to license
+  Collective Databases under this License if You incorporate this
+  Database or a Derivative Database in the collection, but this License
+  still applies to this Database or a Derivative Database as a part of
+  the Collective Database;
+
+  b. Using this Database, a Derivative Database, or this Database as
+  part of a Collective Database to create a Produced Work does not
+  create a Derivative Database for purposes of  Section 4.4; and
+
+  c. Use of a Derivative Database internally within an organisation is
+  not to the public and therefore does not fall under the requirements
+  of Section 4.4.
+
+4.6 Access to Derivative Databases. If You Publicly Use a Derivative
+Database or a Produced Work from a Derivative Database, You must also
+offer to recipients of the Derivative Database or Produced Work a copy
+in a machine readable form of:
+
+  a. The entire Derivative Database; or
+
+  b. A file containing all of the alterations made to the Database or
+  the method of making the alterations to the Database (such as an
+  algorithm), including any additional Contents, that make up all the
+  differences between the Database and the Derivative Database.
+
+The Derivative Database (under a.) or alteration file (under b.) must be
+available at no more than a reasonable production cost for physical
+distributions and free of charge if distributed over the internet.
+
+4.7 Technological measures and additional terms
+
+  a. This License does not allow You to impose (except subject to
+  Section 4.7 b.)  any terms or any technological measures on the
+  Database, a Derivative Database, or the whole or a Substantial part of
+  the Contents that alter or restrict the terms of this License, or any
+  rights granted under it, or have the effect or intent of restricting
+  the ability of any person to exercise those rights.
+
+  b. Parallel distribution. You may impose terms or technological
+  measures on the Database, a Derivative Database, or the whole or a
+  Substantial part of the Contents (a &quot;Restricted Database&quot;) in
+  contravention of Section 4.74 a. only if You also make a copy of the
+  Database or a Derivative Database available to the recipient of the
+  Restricted Database:
+
+    i. That is available without additional fee;
+
+    ii. That is available in a medium that does not alter or restrict
+    the terms of this License, or any rights granted under it, or have
+    the effect or intent of restricting the ability of any person to
+    exercise those rights (an &quot;Unrestricted Database&quot;); and
+
+    iii. The Unrestricted Database is at least as accessible to the
+    recipient as a practical matter as the Restricted Database.
+
+  c. For the avoidance of doubt, You may place this Database or a
+  Derivative Database in an authenticated environment, behind a
+  password, or within a similar access control scheme provided that You
+  do not alter or restrict the terms of this License or any rights
+  granted under it or have the effect or intent of restricting the
+  ability of any person to exercise those rights.
+
+4.8 Licensing of others. You may not sublicense the Database. Each time
+You communicate the Database, the whole or Substantial part of the
+Contents, or any Derivative Database to anyone else in any way, the
+Licensor offers to the recipient a license to the Database on the same
+terms and conditions as this License. You are not responsible for
+enforcing compliance by third parties with this License, but You may
+enforce any rights that You have over a Derivative Database. You are
+solely responsible for any modifications of a Derivative Database made
+by You or another Person at Your direction. You may not impose any
+further restrictions on the exercise of the rights granted or affirmed
+under this License.
+
+### 5.0 Moral rights
+
+5.1 Moral rights. This section covers moral rights, including any rights
+to be identified as the author of the Database or to object to treatment
+that would otherwise prejudice the author&#x27;s honour and reputation, or
+any other derogatory treatment:
+
+  a. For jurisdictions allowing waiver of moral rights, Licensor waives
+  all moral rights that Licensor may have in the Database to the fullest
+  extent possible by the law of the relevant jurisdiction under Section
+  10.4;
+
+  b. If waiver of moral rights under Section 5.1 a in the relevant
+  jurisdiction is not possible, Licensor agrees not to assert any moral
+  rights over the Database and waives all claims in moral rights to the
+  fullest extent possible by the law of the relevant jurisdiction under
+  Section 10.4; and
+
+  c. For jurisdictions not allowing waiver or an agreement not to assert
+  moral rights under Section 5.1 a and b, the author may retain their
+  moral rights over certain aspects of the Database.
+
+Please note that some jurisdictions do not allow for the waiver of moral
+rights, and so moral rights may still subsist over the Database in some
+jurisdictions.
+
+### 6.0 Fair dealing, Database exceptions, and other rights not affected
+
+6.1 This License does not affect any rights that You or anyone else may
+independently have under any applicable law to make any use of this
+Database, including without limitation:
+
+  a. Exceptions to the Database Right including: Extraction of Contents
+  from non-electronic Databases for private purposes, Extraction for
+  purposes of illustration for teaching or scientific research, and
+  Extraction or Re-utilisation for public security or an administrative
+  or judicial procedure.
+
+  b. Fair dealing, fair use, or any other legally recognised limitation
+  or exception to infringement of copyright or other applicable laws.
+
+6.2 This License does not affect any rights of lawful users to Extract
+and Re-utilise insubstantial parts of the Contents, evaluated
+quantitatively or qualitatively, for any purposes whatsoever, including
+creating a Derivative Database (subject to other rights over the
+Contents, see Section 2.4). The repeated and systematic Extraction or
+Re-utilisation of insubstantial parts of the Contents may however amount
+to the Extraction or Re-utilisation of a Substantial part of the
+Contents.
+
+### 7.0 Warranties and Disclaimer
+
+7.1 The Database is licensed by the Licensor &quot;as is&quot; and without any
+warranty of any kind, either express, implied, or arising by statute,
+custom, course of dealing, or trade usage. Licensor specifically
+disclaims any and all implied warranties or conditions of title,
+non-infringement, accuracy or completeness, the presence or absence of
+errors, fitness for a particular purpose, merchantability, or otherwise.
+Some jurisdictions do not allow the exclusion of implied warranties, so
+this exclusion may not apply to You.
+
+### 8.0 Limitation of liability
+
+8.1 Subject to any liability that may not be excluded or limited by law,
+the Licensor is not liable for, and expressly excludes, all liability
+for loss or damage however and whenever caused to anyone by any use
+under this License, whether by You or by anyone else, and whether caused
+by any fault on the part of the Licensor or not. This exclusion of
+liability includes, but is not limited to, any special, incidental,
+consequential, punitive, or exemplary damages such as loss of revenue,
+data, anticipated profits, and lost business. This exclusion applies
+even if the Licensor has been advised of the possibility of such
+damages.
+
+8.2 If liability may not be excluded by law, it is limited to actual and
+direct financial loss to the extent it is caused by proved negligence on
+the part of the Licensor.
+
+### 9.0 Termination of Your rights under this License
+
+9.1 Any breach by You of the terms and conditions of this License
+automatically terminates this License with immediate effect and without
+notice to You. For the avoidance of doubt, Persons who have received the
+Database, the whole or a Substantial part of the Contents, Derivative
+Databases, or the Database as part of a Collective Database from You
+under this License will not have their licenses terminated provided
+their use is in full compliance with this License or a license granted
+under Section 4.8 of this License.  Sections 1, 2, 7, 8, 9 and 10 will
+survive any termination of this License.
+
+9.2 If You are not in breach of the terms of this License, the Licensor
+will not terminate Your rights under it.
+
+9.3 Unless terminated under Section 9.1, this License is granted to You
+for the duration of applicable rights in the Database.
+
+9.4 Reinstatement of rights. If you cease any breach of the terms and
+conditions of this License, then your full rights under this License
+will be reinstated:
+
+  a. Provisionally and subject to permanent termination until the 60th
+  day after cessation of breach;
+
+  b. Permanently on the 60th day after cessation of breach unless
+  otherwise reasonably notified by the Licensor; or
+
+  c.  Permanently if reasonably notified by the Licensor of the
+  violation, this is the first time You have received notice of
+  violation of this License from  the Licensor, and You cure the
+  violation prior to 30 days after your receipt of the notice.
+
+Persons subject to permanent termination of rights are not eligible to
+be a recipient and receive a license under Section 4.8.
+
+9.5 Notwithstanding the above, Licensor reserves the right to release
+the Database under different license terms or to stop distributing or
+making available the Database. Releasing the Database under different
+license terms or stopping the distribution of the Database will not
+withdraw this License (or any other license that has been, or is
+required to be, granted under the terms of this License), and this
+License will continue in full force and effect unless terminated as
+stated above.
+
+### 10.0 General
+
+10.1 If any provision of this License is held to be invalid or
+unenforceable, that must not affect the validity or enforceability of
+the remainder of the terms and conditions of this License and each
+remaining provision of this License shall be valid and enforced to the
+fullest extent permitted by law.
+
+10.2 This License is the entire agreement between the parties with
+respect to the rights granted here over the Database. It replaces any
+earlier understandings, agreements or representations with respect to
+the Database.
+
+10.3 If You are in breach of the terms of this License, You will not be
+entitled to rely on the terms of this License or to complain of any
+breach by the Licensor.
+
+10.4 Choice of law. This License takes effect in and will be governed by
+the laws of the relevant jurisdiction in which the License terms are
+sought to be enforced. If the standard suite of rights granted under
+applicable copyright law and Database Rights in the relevant
+jurisdiction includes additional rights not granted under this License,
+these additional rights are granted in this License in order to meet the
+terms of this License.
+</pre></details>
+        <details class="lv-full"><summary class="mono">CREATIVE COMMONS ATTRIBUTION 4.0 INTERNATIONAL — FULL TEXT</summary><pre class="mono">Creative Commons Attribution 4.0 International
+
+ Creative Commons Corporation (“Creative Commons”) is not a law firm and does not provide legal services or legal advice. Distribution of Creative Commons public licenses does not create a lawyer-client or other relationship. Creative Commons makes its licenses and related information available on an “as-is” basis. Creative Commons gives no warranties regarding its licenses, any material licensed under their terms and conditions, or any related information. Creative Commons disclaims all liability for damages resulting from their use to the fullest extent possible.
+
+Using Creative Commons Public Licenses
+
+Creative Commons public licenses provide a standard set of terms and conditions that creators and other rights holders may use to share original works of authorship and other material subject to copyright and certain other rights specified in the public license below. The following considerations are for informational purposes only, are not exhaustive, and do not form part of our licenses.
+
+Considerations for licensors: Our public licenses are intended for use by those authorized to give the public permission to use material in ways otherwise restricted by copyright and certain other rights. Our licenses are irrevocable. Licensors should read and understand the terms and conditions of the license they choose before applying it. Licensors should also secure all rights necessary before applying our licenses so that the public can reuse the material as expected. Licensors should clearly mark any material not subject to the license. This includes other CC-licensed material, or material used under an exception or limitation to copyright. More considerations for licensors.
+
+Considerations for the public: By using one of our public licenses, a licensor grants the public permission to use the licensed material under specified terms and conditions. If the licensor’s permission is not necessary for any reason–for example, because of any applicable exception or limitation to copyright–then that use is not regulated by the license. Our licenses grant only permissions under copyright and certain other rights that a licensor has authority to grant. Use of the licensed material may still be restricted for other reasons, including because others have copyright or other rights in the material. A licensor may make special requests, such as asking that all changes be marked or described. Although not required by our licenses, you are encouraged to respect those requests where reasonable. More considerations for the public.
+
+Creative Commons Attribution 4.0 International Public License
+
+By exercising the Licensed Rights (defined below), You accept and agree to be bound by the terms and conditions of this Creative Commons Attribution 4.0 International Public License (&quot;Public License&quot;). To the extent this Public License may be interpreted as a contract, You are granted the Licensed Rights in consideration of Your acceptance of these terms and conditions, and the Licensor grants You such rights in consideration of benefits the Licensor receives from making the Licensed Material available under these terms and conditions.
+
+Section 1 – Definitions.
+
+     a.	Adapted Material means material subject to Copyright and Similar Rights that is derived from or based upon the Licensed Material and in which the Licensed Material is translated, altered, arranged, transformed, or otherwise modified in a manner requiring permission under the Copyright and Similar Rights held by the Licensor. For purposes of this Public License, where the Licensed Material is a musical work, performance, or sound recording, Adapted Material is always produced where the Licensed Material is synched in timed relation with a moving image.
+
+     b.	Adapter&#x27;s License means the license You apply to Your Copyright and Similar Rights in Your contributions to Adapted Material in accordance with the terms and conditions of this Public License.
+
+     c.	Copyright and Similar Rights means copyright and/or similar rights closely related to copyright including, without limitation, performance, broadcast, sound recording, and Sui Generis Database Rights, without regard to how the rights are labeled or categorized. For purposes of this Public License, the rights specified in Section 2(b)(1)-(2) are not Copyright and Similar Rights.
+
+     d.	Effective Technological Measures means those measures that, in the absence of proper authority, may not be circumvented under laws fulfilling obligations under Article 11 of the WIPO Copyright Treaty adopted on December 20, 1996, and/or similar international agreements.
+
+     e.	Exceptions and Limitations means fair use, fair dealing, and/or any other exception or limitation to Copyright and Similar Rights that applies to Your use of the Licensed Material.
+
+     f.	Licensed Material means the artistic or literary work, database, or other material to which the Licensor applied this Public License.
+
+     g.	Licensed Rights means the rights granted to You subject to the terms and conditions of this Public License, which are limited to all Copyright and Similar Rights that apply to Your use of the Licensed Material and that the Licensor has authority to license.
+
+     h.	Licensor means the individual(s) or entity(ies) granting rights under this Public License.
+
+     i.	Share means to provide material to the public by any means or process that requires permission under the Licensed Rights, such as reproduction, public display, public performance, distribution, dissemination, communication, or importation, and to make material available to the public including in ways that members of the public may access the material from a place and at a time individually chosen by them.
+
+     j.	Sui Generis Database Rights means rights other than copyright resulting from Directive 96/9/EC of the European Parliament and of the Council of 11 March 1996 on the legal protection of databases, as amended and/or succeeded, as well as other essentially equivalent rights anywhere in the world.
+
+     k.	You means the individual or entity exercising the Licensed Rights under this Public License. Your has a corresponding meaning.
+
+Section 2 – Scope.
+
+     a.	License grant.
+
+          1. Subject to the terms and conditions of this Public License, the Licensor hereby grants You a worldwide, royalty-free, non-sublicensable, non-exclusive, irrevocable license to exercise the Licensed Rights in the Licensed Material to:
+
+               A. reproduce and Share the Licensed Material, in whole or in part; and
+
+               B. produce, reproduce, and Share Adapted Material.
+
+          2. Exceptions and Limitations. For the avoidance of doubt, where Exceptions and Limitations apply to Your use, this Public License does not apply, and You do not need to comply with its terms and conditions.
+
+          3. Term. The term of this Public License is specified in Section 6(a).
+
+          4. Media and formats; technical modifications allowed. The Licensor authorizes You to exercise the Licensed Rights in all media and formats whether now known or hereafter created, and to make technical modifications necessary to do so. The Licensor waives and/or agrees not to assert any right or authority to forbid You from making technical modifications necessary to exercise the Licensed Rights, including technical modifications necessary to circumvent Effective Technological Measures. For purposes of this Public License, simply making modifications authorized by this Section 2(a)(4) never produces Adapted Material.
+
+          5. Downstream recipients.
+
+               A. Offer from the Licensor – Licensed Material. Every recipient of the Licensed Material automatically receives an offer from the Licensor to exercise the Licensed Rights under the terms and conditions of this Public License.
+
+               B. No downstream restrictions. You may not offer or impose any additional or different terms or conditions on, or apply any Effective Technological Measures to, the Licensed Material if doing so restricts exercise of the Licensed Rights by any recipient of the Licensed Material.
+
+          6.  No endorsement. Nothing in this Public License constitutes or may be construed as permission to assert or imply that You are, or that Your use of the Licensed Material is, connected with, or sponsored, endorsed, or granted official status by, the Licensor or others designated to receive attribution as provided in Section 3(a)(1)(A)(i).
+
+b. Other rights.
+
+          1. Moral rights, such as the right of integrity, are not licensed under this Public License, nor are publicity, privacy, and/or other similar personality rights; however, to the extent possible, the Licensor waives and/or agrees not to assert any such rights held by the Licensor to the limited extent necessary to allow You to exercise the Licensed Rights, but not otherwise.
+
+          2. Patent and trademark rights are not licensed under this Public License.
+
+          3. To the extent possible, the Licensor waives any right to collect royalties from You for the exercise of the Licensed Rights, whether directly or through a collecting society under any voluntary or waivable statutory or compulsory licensing scheme. In all other cases the Licensor expressly reserves any right to collect such royalties.
+
+Section 3 – License Conditions.
+
+Your exercise of the Licensed Rights is expressly made subject to the following conditions.
+
+     a.	Attribution.
+
+          1. If You Share the Licensed Material (including in modified form), You must:
+
+               A. retain the following if it is supplied by the Licensor with the Licensed Material:
+
+                    i. identification of the creator(s) of the Licensed Material and any others designated to receive attribution, in any reasonable manner requested by the Licensor (including by pseudonym if designated);
+
+                    ii. a copyright notice;
+
+                    iii. a notice that refers to this Public License;
+
+                    iv.	a notice that refers to the disclaimer of warranties;
+
+                    v. a URI or hyperlink to the Licensed Material to the extent reasonably practicable;
+
+               B. indicate if You modified the Licensed Material and retain an indication of any previous modifications; and
+
+               C. indicate the Licensed Material is licensed under this Public License, and include the text of, or the URI or hyperlink to, this Public License.
+
+          2. You may satisfy the conditions in Section 3(a)(1) in any reasonable manner based on the medium, means, and context in which You Share the Licensed Material. For example, it may be reasonable to satisfy the conditions by providing a URI or hyperlink to a resource that includes the required information.
+
+          3. If requested by the Licensor, You must remove any of the information required by Section 3(a)(1)(A) to the extent reasonably practicable.
+
+          4. If You Share Adapted Material You produce, the Adapter&#x27;s License You apply must not prevent recipients of the Adapted Material from complying with this Public License.
+
+Section 4 – Sui Generis Database Rights.
+
+Where the Licensed Rights include Sui Generis Database Rights that apply to Your use of the Licensed Material:
+
+     a.	for the avoidance of doubt, Section 2(a)(1) grants You the right to extract, reuse, reproduce, and Share all or a substantial portion of the contents of the database;
+
+     b.	if You include all or a substantial portion of the database contents in a database in which You have Sui Generis Database Rights, then the database in which You have Sui Generis Database Rights (but not its individual contents) is Adapted Material; and
+
+     c.	You must comply with the conditions in Section 3(a) if You Share all or a substantial portion of the contents of the database.
+For the avoidance of doubt, this Section 4 supplements and does not replace Your obligations under this Public License where the Licensed Rights include other Copyright and Similar Rights.
+
+Section 5 – Disclaimer of Warranties and Limitation of Liability.
+
+     a.	Unless otherwise separately undertaken by the Licensor, to the extent possible, the Licensor offers the Licensed Material as-is and as-available, and makes no representations or warranties of any kind concerning the Licensed Material, whether express, implied, statutory, or other. This includes, without limitation, warranties of title, merchantability, fitness for a particular purpose, non-infringement, absence of latent or other defects, accuracy, or the presence or absence of errors, whether or not known or discoverable. Where disclaimers of warranties are not allowed in full or in part, this disclaimer may not apply to You.
+
+     b.	To the extent possible, in no event will the Licensor be liable to You on any legal theory (including, without limitation, negligence) or otherwise for any direct, special, indirect, incidental, consequential, punitive, exemplary, or other losses, costs, expenses, or damages arising out of this Public License or use of the Licensed Material, even if the Licensor has been advised of the possibility of such losses, costs, expenses, or damages. Where a limitation of liability is not allowed in full or in part, this limitation may not apply to You.
+
+     c.	The disclaimer of warranties and limitation of liability provided above shall be interpreted in a manner that, to the extent possible, most closely approximates an absolute disclaimer and waiver of all liability.
+
+Section 6 – Term and Termination.
+
+     a.	This Public License applies for the term of the Copyright and Similar Rights licensed here. However, if You fail to comply with this Public License, then Your rights under this Public License terminate automatically.
+
+     b.	Where Your right to use the Licensed Material has terminated under Section 6(a), it reinstates:
+
+          1. automatically as of the date the violation is cured, provided it is cured within 30 days of Your discovery of the violation; or
+
+          2. upon express reinstatement by the Licensor.
+
+     c.	For the avoidance of doubt, this Section 6(b) does not affect any right the Licensor may have to seek remedies for Your violations of this Public License.
+
+     d.	For the avoidance of doubt, the Licensor may also offer the Licensed Material under separate terms or conditions or stop distributing the Licensed Material at any time; however, doing so will not terminate this Public License.
+
+     e.	Sections 1, 5, 6, 7, and 8 survive termination of this Public License.
+
+Section 7 – Other Terms and Conditions.
+
+     a.	The Licensor shall not be bound by any additional or different terms or conditions communicated by You unless expressly agreed.
+
+     b.	Any arrangements, understandings, or agreements regarding the Licensed Material not stated herein are separate from and independent of the terms and conditions of this Public License.
+
+Section 8 – Interpretation.
+
+     a.	For the avoidance of doubt, this Public License does not, and shall not be interpreted to, reduce, limit, restrict, or impose conditions on any use of the Licensed Material that could lawfully be made without permission under this Public License.
+
+     b.	To the extent possible, if any provision of this Public License is deemed unenforceable, it shall be automatically reformed to the minimum extent necessary to make it enforceable. If the provision cannot be reformed, it shall be severed from this Public License without affecting the enforceability of the remaining terms and conditions.
+
+     c.	No term or condition of this Public License will be waived and no failure to comply consented to unless expressly agreed to by the Licensor.
+
+     d.	Nothing in this Public License constitutes or may be interpreted as a limitation upon, or waiver of, any privileges and immunities that apply to the Licensor or You, including from the legal processes of any jurisdiction or authority.
+
+Creative Commons is not a party to its public licenses. Notwithstanding, Creative Commons may elect to apply one of its public licenses to material it publishes and in those instances will be considered the “Licensor.” Except for the limited purpose of indicating that material is shared under a Creative Commons public license or as otherwise permitted by the Creative Commons policies published at creativecommons.org/policies, Creative Commons does not authorize the use of the trademark “Creative Commons” or any other trademark or logo of Creative Commons without its prior written consent including, without limitation, in connection with any unauthorized modifications to any of its public licenses or any other arrangements, understandings, or agreements concerning use of licensed material. For the avoidance of doubt, this paragraph does not form part of the public licenses.
+
+Creative Commons may be contacted at creativecommons.org.
+</pre></details>
+        <details class="lv-full"><summary class="mono">MIT LICENCE — FULL TEXT</summary><pre class="mono">MIT License
+
+Copyright (c) 2026 Daniel Verwey
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
+associated documentation files (the &quot;Software&quot;), to deal in the Software without restriction, including
+without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the
+following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial
+portions of the Software.
+
+THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT
+LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO
+EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
+USE OR OTHER DEALINGS IN THE SOFTWARE.
+</pre></details>
+      </section>
+
+      <footer class="rv-foot mono">
+        <span>THE CAPE WINE ATLAS PROJECT · MAINTAINED BY MDRF</span><span>SEPTEMBER 2026 EDITION</span><span>CAPEWINEATLAS@GMAIL.COM</span>
+      </footer>
+    </div>
+  </div>
+
+  <!-- ================= FOOTER ================= -->
+  <section id="footer">
+    <canvas id="footerPix"></canvas>
+    <div class="grain"><svg><filter id="grainFooter"><feTurbulence type="fractalNoise" baseFrequency="1.1" numOctaves="3" seed="9" stitchTiles="stitch"/><feColorMatrix type="saturate" values="0"/><feComponentTransfer><feFuncR type="gamma" exponent="0.75"/><feFuncG type="gamma" exponent="0.75"/><feFuncB type="gamma" exponent="0.75"/></feComponentTransfer></filter><rect width="100%" height="100%" filter="url(#grainFooter)"/></svg></div>
+    <div class="f-frame" aria-hidden="true">
+      <div class="edge h top"></div><div class="edge h bottom"></div><div class="edge v left"></div><div class="edge v right"></div>
+      <div class="mk" style="left:0;top:0"></div><div class="mk" style="left:50%;top:0"></div><div class="mk" style="left:100%;top:0"></div>
+      <div class="mk" style="left:0;top:50%"></div><div class="mk" style="left:100%;top:50%"></div>
+      <div class="mk" style="left:0;top:100%"></div><div class="mk" style="left:50%;top:100%"></div><div class="mk" style="left:100%;top:100%"></div>
+      <div class="ret" style="left:8%; top:56%;"><svg viewBox="0 0 28 28"><circle cx="14" cy="14" r="11"/><circle cx="14" cy="14" r="3"/><line x1="14" y1="0" x2="14" y2="7"/><line x1="14" y1="21" x2="14" y2="28"/><line x1="0" y1="14" x2="7" y2="14"/><line x1="21" y1="14" x2="28" y2="14"/></svg></div><div class="ret" style="left:50%; top:24%;"><svg viewBox="0 0 28 28"><circle cx="14" cy="14" r="11"/><circle cx="14" cy="14" r="3"/><line x1="14" y1="0" x2="14" y2="7"/><line x1="14" y1="21" x2="14" y2="28"/><line x1="0" y1="14" x2="7" y2="14"/><line x1="21" y1="14" x2="28" y2="14"/></svg></div><div class="ret" style="left:92%; top:56%;"><svg viewBox="0 0 28 28"><circle cx="14" cy="14" r="11"/><circle cx="14" cy="14" r="3"/><line x1="14" y1="0" x2="14" y2="7"/><line x1="14" y1="21" x2="14" y2="28"/><line x1="0" y1="14" x2="7" y2="14"/><line x1="21" y1="14" x2="28" y2="14"/></svg></div>
+    </div>
+    <div class="footer-inner" id="footerInner">
+      <div class="f-top">
+        <div class="f-contact">
+          <div class="f-h display">Contribute</div>
+          <a class="f-mail mono" href="mailto:capewineatlas@gmail.com">capewineatlas@gmail.com</a>
+          <div class="f-stamp mono">A CORRECTION, A MISSING FARM, A SOURCE WE HAVE NOT SEEN —<br>WRITE, AND IT GOES INTO THE RECORD WITH YOUR NAME BESIDE IT</div>
+        </div>
+      </div>
+      <div class="f-mid">
+        <div class="f-h display">Provenance</div>
+        <p>The Cape Wine Atlas is an open record of South Africa’s wine farms, gathered one estate at a time from the producers’ own pages, the wine routes’ own rosters and the competitions’ own results. Nothing in it was written from memory: every entry points to the place it was found, every honour to the page that announced it, and where the research has not yet reached, the atlas says so rather than pretending.</p>
+        <p>The data is meant to be free — to be read, questioned, corrected and reused. This page is the atlas rendered as a work of art: the valleys drawn in light, the estates as signals on a dark chart, the record itself as something worth looking at as well as looking up.</p>
+        <div class="f-line mono"><span>OPEN DATA · ODbL 1.0</span><span>EVERY ENTRY TRACEABLE TO ITS SOURCE</span><span>144 FURTHER RECORDS HELD BACK UNTIL THEY MEET THE PUBLICATION STANDARD</span><span>SEPTEMBER 2026 EDITION · 644 PRODUCERS · 31 REGIONS</span><span class="credit">INTERFACE AFTER “NEON GRID” BY FERNANDA HERRERA · ORBITRON &amp; JETBRAINS MONO (OFL)</span></div>
+      </div>
+      <div class="f-bottom mono">
+        <div class="l">© 2026 CAPE WINE ATLAS · <a class="f-lic" id="openLicence" href="#licence">LICENCE &amp; CREDITS ▸</a><br>DATA ODbL 1.0 · PROSE CC BY 4.0 · © OPENSTREETMAP CONTRIBUTORS</div>
+        <div class="c"><span class="display">Cape Wine Atlas</span><div class="line"></div></div>
+        <div class="r">644 FARMS · 31 REGIONS · 25 ROUTES<br>31 TOUR OPERATORS · 1133 VERIFIED AWARDS</div>
+      </div>
+    </div>
+  </section>
+
+<script src="/assets/app.js"></script>
+</body>
+</html>

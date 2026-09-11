@@ -1,0 +1,17 @@
+diff --git a/scripts/collate.py b/scripts/collate.py
+--- a/scripts/collate.py
++++ b/scripts/collate.py
+@@ -240,10 +240,9 @@
+             "venue and access statement, a contact route, grape varieties, a location, and a cited source "
+             "for each of those. They are counted here rather than hidden silently, and the criteria each "
+             "one is missing are listed below."),
+-        "buildMode": "preview",
+-        "buildModeNote": ("PREVIEW BUILD. Coordinates and phone numbers whose provenance is "
+-                          "licence-restricted are shown for development only and are marked; "
+-                          "the production gate blocks them from a public release until re-sourced. "
++        "buildMode": "public",
++        "buildModeNote": ("PUBLIC BUILD. Contact details are never included; any field whose provenance "
++                          "names a licence-restricted source withholds its record from this build. "
+                           "Awards shown are confidence medium or higher, each with its source; "
+                           "low-confidence claims are counted but not displayed."),
+         "stats": stats,

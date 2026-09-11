@@ -149,11 +149,28 @@
     }
     size(); window.addEventListener('resize', size);
     const pops = [];
+    // the text that the reveal can run over: while the darkened cells cover it, it switches to a pale tone so it stays legible
+    const litEls = [...footerEl.querySelectorAll('.f-h, .f-mail, .f-stamp, .f-mid p, .f-line span, .f-bottom .l, .f-bottom .r, .f-bottom .c .display')];
+    let litTick = 0;
+    function relight(active){
+      const r = cv.getBoundingClientRect();
+      const cx = r.left + mx * r.width, cy = r.top + my * r.height, rx = R * cw * 0.9, ry = R * chh * 0.9;
+      for(const el of litEls){
+        let on = false;
+        if(active){
+          const b = el.getBoundingClientRect();
+          const nx = Math.max(b.left, Math.min(cx, b.right)), ny = Math.max(b.top, Math.min(cy, b.bottom));   // nearest point of the box to the cursor
+          on = ((nx - cx) / rx) ** 2 + ((ny - cy) / ry) ** 2 <= 1;
+        }
+        el.classList.toggle('lit', on);
+      }
+    }
     function draw(){
       fx.clearRect(0, 0, cv.width, cv.height);
       if(!pattern) return;
       const t = performance.now();
       const fade = Math.max(0, 1 - (t - lastMove) / 900);        // trail lingers ~1s after the cursor stops
+      if(++litTick % 3 === 0) relight(mx >= 0 && fade > 0.15);
       if(mx >= 0 && fade > 0){
         const col = Math.floor(mx * COLS), row = Math.floor(my * ROWS);
         for(let r = Math.max(0, row - R); r <= Math.min(ROWS - 1, row + R); r++){
@@ -1061,6 +1078,7 @@
     opts = opts || {};
     rv.classList.remove('open'); document.body.style.overflow = ''; rvOpen = false; rvKey = null;
     if(!lv.classList.contains('open')) setBehindInert(false);
+    const ex = document.getElementById('explore'); if(ex) ex.scrollIntoView({ block: 'start', behavior: 'auto' });   // back to the chart, exactly, on every screen
     document.title = 'Cape Wine Atlas';
     const back = rvOpener && document.contains(rvOpener) && rvOpener !== document.body ? rvOpener : document.querySelector('#regionList .rl');
     if(back) back.focus({ preventScroll: true });

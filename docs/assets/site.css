@@ -305,17 +305,21 @@
   }
   .f-top{ display:flex; flex-direction:column; align-items:flex-end; }
   .f-contact{ text-align:right; }
-  .f-h{ font-size:clamp(22px,3vw,34px); color:#0b0a06; letter-spacing:.04em; margin-bottom:10px; opacity:0; transform:translateY(14px); transition:opacity .5s ease .45s, transform .5s ease .45s; }
-  .f-mail{ display:inline-block; font-size:13px; letter-spacing:.16em; color:#0b0a06; text-decoration:none; border-bottom:1px solid rgba(20,16,4,0.6); padding-bottom:2px; margin-bottom:14px; opacity:0; transform:translateY(14px); transition:opacity .5s ease .58s, transform .5s ease .58s; }
+  .f-h{ font-size:clamp(22px,3vw,34px); color:#0b0a06; letter-spacing:.04em; margin-bottom:10px; opacity:0; transform:translateY(14px); transition:opacity .5s ease .45s, transform .5s ease .45s, color .22s ease; }
+  .f-mail{ display:inline-block; font-size:13px; letter-spacing:.16em; color:#0b0a06; text-decoration:none; border-bottom:1px solid rgba(20,16,4,0.6); padding-bottom:2px; margin-bottom:14px; opacity:0; transform:translateY(14px); transition:opacity .5s ease .58s, transform .5s ease .58s, color .22s ease; }
   .f-mail:hover{ color:#fff; border-color:#fff; }
   .f-mid{ max-width:640px; margin:0 auto; text-align:center; padding:0 20px; opacity:0; transform:translateY(20px); transition:opacity .7s ease .9s, transform .7s ease .9s; }
   .f-mid p{ font-size:14px; line-height:1.8; color:rgba(20,16,4,0.88); margin-bottom:14px; }
-  .f-mid .f-h{ opacity:1; transform:none; transition:none; margin-bottom:16px; }
+  .f-mid .f-h{ opacity:1; transform:none; transition:color .22s ease; margin-bottom:16px; }
   .f-line{ display:flex; justify-content:center; gap:26px; flex-wrap:wrap; font-size:9.5px; letter-spacing:.16em; color:rgba(20,16,4,0.75); margin-top:18px; }
   #footer.visible .f-h, #footer.visible .f-mail, #footer.visible .f-mid{ opacity:1; transform:none; }
-  .f-stamp{ font-size:10px; letter-spacing:.16em; color:rgba(20,16,4,0.85); margin-bottom:8px; opacity:0; transform:translateY(14px); transition:opacity .5s ease, transform .5s ease; }
+  .f-stamp{ font-size:10px; letter-spacing:.16em; color:rgba(20,16,4,0.85); margin-bottom:8px; opacity:0; transform:translateY(14px); transition:opacity .5s ease, transform .5s ease, color .22s ease; }
   #footer.visible .f-stamp{ opacity:1; transform:none; transition-delay:.7s; }
   .f-contact .f-stamp{ line-height:1.7; }
+  /* where the halftone reveal darkens the gold, the text under it turns pale so it still reads */
+  .f-mid p, .f-line span, .f-bottom .l, .f-bottom .r, .f-bottom .c .display{ transition:color .22s ease; }
+  #footer .lit{ color:#fff4cf !important; text-shadow:0 0 10px rgba(20,16,4,.55); }
+  #footer .lit a, #footer a.lit{ color:#fff4cf; border-color:rgba(255,244,207,.7); }
   .cta-wrap{ display:flex; align-items:center; gap:0; margin-bottom:26px; }
   .cta-wrap svg{ width:46px; height:46px; overflow:visible; opacity:0; transition:opacity .5s ease .55s; }
   .cta-wrap svg path{ fill:none; stroke:rgba(20,16,4,0.85); stroke-width:1.4; stroke-dasharray:3 2.5; }

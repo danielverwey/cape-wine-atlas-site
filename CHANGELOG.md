@@ -2,6 +2,12 @@
 
 Newest first. Each entry is one sync to `production site/`.
 
+## v0.13.2 — 2026-09-11 — September 2026 edition
+`versions/cape-wine-atlas_2026-09-11_v0.13.2_september-2026-edition.html`
+
+- Closing a region page returns the reader to the top of the chart, exactly, on every screen size — whether closed with the button, Escape or the browser's back button.
+- Closing page: where the halftone reveal darkens the gold around the cursor, the text beneath it turns pale (with a soft shadow) so it stays legible, and returns to ink as the trail fades.
+
 ## v0.13.1 — 2026-09-11 — September 2026 edition
 `versions/cape-wine-atlas_2026-09-11_v0.13.1_september-2026-edition.html`
 

@@ -31,15 +31,16 @@
   const ST = ATLAS.stats;
   const compShort = { 'Critic reviews':'CRITICS', 'London Wine Competition':'LONDON', "Platter's":'PLATTER’S', 'Trophy Wine Show':'TROPHY WINE SHOW' };
   const compList = (ST.competitions || []).map(c => (compShort[c.body] || c.body).toUpperCase()).join(' · ');
+  const ld = n => `<i class="ld">${'.'.repeat(n)}</i>`;   // dotted leader — hidden on phones, where each result takes its own line
   const logLines = [
-    "&gt;&gt; LINKING CAPE WINE ATLAS ............ <span class='g'>DONE</span>",
-    `&gt;&gt; OPENING THE ATLAS RECORD ........... <span class='g'>${ST.farms} FARMS · ${ST.regions} REGIONS</span>`,
-    `&gt;&gt; WINE ROUTES ......................... <span class='g'>${ST.routes} ON FILE</span>`,
-    `&gt;&gt; TOUR OPERATORS ...................... <span class='g'>${ST.tours} LISTED</span>`,
-    `&gt;&gt; HONOURS LEDGER ...................... <span class='g'>${ST.verifiedAwards} VERIFIED · ${ST.pendingClaims} UNDER REVIEW</span>`,
-    `&gt;&gt; COMPETITIONS CONSULTED .............. <span class='g'>${compList}</span>`,
-    "&gt;&gt; PROVENANCE CHECK .................... <span class='g'>EVERY ENTRY TRACEABLE TO ITS SOURCE</span>",
-    "&gt;&gt; ATLAS READY ......................... <span class='g'>OPEN</span>"
+    `&gt;&gt; LINKING CAPE WINE ATLAS ${ld(12)} <span class='g'>DONE</span>`,
+    `&gt;&gt; OPENING THE ATLAS RECORD ${ld(11)} <span class='g'>${ST.farms} FARMS · ${ST.regions} REGIONS</span>`,
+    `&gt;&gt; WINE ROUTES ${ld(25)} <span class='g'>${ST.routes} ON FILE</span>`,
+    `&gt;&gt; TOUR OPERATORS ${ld(22)} <span class='g'>${ST.tours} LISTED</span>`,
+    `&gt;&gt; HONOURS LEDGER ${ld(22)} <span class='g'>${ST.verifiedAwards} VERIFIED · ${ST.pendingClaims} UNDER REVIEW</span>`,
+    `&gt;&gt; COMPETITIONS CONSULTED ${ld(14)} <span class='g'>${compList}</span>`,
+    `&gt;&gt; PROVENANCE CHECK ${ld(20)} <span class='g'>EVERY ENTRY TRACEABLE TO ITS SOURCE</span>`,
+    `&gt;&gt; ATLAS READY ${ld(25)} <span class='g'>OPEN</span>`
   ];
   const plLog = document.getElementById('plLog');
   const plPct = document.getElementById('plPct');
@@ -377,10 +378,19 @@
   function bake(){
     LW = Math.ceil(W * OVERSCAN); LH = Math.ceil(H * OVERSCAN);
     const aspect = tex.width / tex.height;
-    const ny = GRID_ROWS, nx = Math.round(ny * aspect);
     // reference: the 162-row grid spans ~89% of the visible height; on wide screens the picture
-    // sits inside the frame (its edges are black anyway), on narrow screens it crops horizontally
-    const pitch = (H * 0.98) / ny;
+    // sits inside the frame (its edges are black anyway). A phone held upright would crop it to a
+    // third, so there the picture is fitted a little wider than the screen instead — stadium and
+    // mountain both kept — with fewer, never finer, dots so the screen still reads as dots.
+    let ny, nx, pitch;
+    if (H > W * 1.05){
+      const gwT = W * 1.4, ghT = gwT / aspect;
+      pitch = Math.max(3.2, ghT / GRID_ROWS);
+      ny = Math.round(ghT / pitch); nx = Math.round(ny * aspect);
+    } else {
+      ny = GRID_ROWS; nx = Math.round(ny * aspect);
+      pitch = (H * 0.98) / ny;
+    }
     const gw = nx * pitch, gh = ny * pitch;
     const ox = (LW - gw) / 2, oy = (LH - gh) / 2;
 

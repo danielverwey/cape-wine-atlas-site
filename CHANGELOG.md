@@ -2,6 +2,14 @@
 
 Newest first. Each entry is one sync to `production site/`.
 
+## v0.11.1 — 2026-09-11 — September 2026 edition
+`versions/cape-wine-atlas_2026-09-11_v0.11.1_september-2026-edition.html`
+
+Phone review of v0.11.0 (Android, upright): three pages tidied.
+- **Boot screen.** Counter top right; the log sits in the lower half with each result on its own gold line (the dotted leaders are dropped on phones); the button is a full-width pill along the bottom, so nothing overlaps.
+- **Hero.** A phone held upright was cropping the picture to a third. It is now fitted a little wider than the screen — stadium and mountain both kept — with fewer, never finer, dots. Landscape and desktop unchanged.
+- **Closing page.** Contribute block centred on the same line as Provenance; the stamp wraps naturally.
+
 ## v0.11.0 — 2026-09-11 — September 2026 edition
 `versions/cape-wine-atlas_2026-09-11_v0.11.0_september-2026-edition.html`
 

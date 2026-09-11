@@ -112,7 +112,7 @@
     border:1px solid var(--line);
     padding:8px 12px;
     background:rgba(10,10,10,0.4);
-    backdrop-filter: blur(2px);
+    -webkit-backdrop-filter: blur(2px); backdrop-filter: blur(2px);
     font-size:10px; color:var(--muted);
     cursor:pointer;
   }
@@ -602,4 +602,68 @@
   @media (max-width:640px){
     .caption-box{ left:20px; right:20px; max-width:none; bottom:60px; }
     #menuToggle, #soundToggle{ padding:6px 10px; font-size:9px; }
+  }
+
+  /* ---------- PHONES & SMALL TABLETS ---------- */
+  /* Everything above is the desktop composition; these rules re-stack it for a hand-held screen without
+     changing the look: same type, same geometry, same gold — just one column and reachable targets. */
+  @media (max-width:900px){
+    /* explore: title, then the chart, then the full index beneath it */
+    #explore{ min-height:100vh; overflow:hidden; padding-bottom:64px; }
+    .ex-head{ padding:84px 20px 0; align-items:flex-start; }
+    .ex-title{ font-size:clamp(26px, 8vw, 72px); }
+    .compass{ width:64px; height:64px; margin-top:0; flex:none; }
+    .map-stage{ flex:none; min-height:0; height:50vw; margin:0; perspective:900px; perspective-origin:50% 30%; }
+    .map-plane{ left:49%; top:-8vw; width:92vw; transform:translateX(-50%) rotateX(56deg) rotateZ(-3deg); }
+    .orb{ transform:translate(-50%,-50%) scale(calc(var(--sc,1) * .72)); }
+    .orb.live::after{ display:none; }
+    .map-card{ display:none; }
+    .region-list{ display:block; position:static; width:auto; margin:0 20px; padding:8px 10px; font-size:10px; line-height:2.3; background:rgba(6,6,6,0.5); }
+    .region-list .rl{ padding:1px 6px; margin:0 -6px; }
+    .map-hint{ position:static; margin:14px 20px 0; font-size:9px; line-height:1.8; }
+  }
+
+  @media (max-width:760px){
+    #hero .hero-inner{ left:20px; right:20px; top:clamp(96px, 16vh, 160px); }
+    #hero h1{ font-size:clamp(38px, 11vw, 112px); }
+    #hero .byline{ font-size:10px; line-height:1.7; }
+    .caption-box{ font-size:13px; padding:14px 16px; bottom:56px; }
+    #title-card .tc-inner{ padding:0 22px; }
+    #title-card p{ font-size:15px; }
+    #terminal{ padding:84px 0 60px; align-items:flex-start; }
+    .term-window{ width:min(740px, calc(100vw - 32px)); }
+    .term-body{ padding:16px 14px; font-size:11px; line-height:1.9; min-height:0; }
+    .scroll-down{ right:20px; bottom:22px; font-size:10px; }
+
+    /* footer */
+    #footer .footer-inner{ padding:84px 22px 40px; gap:36px; }
+    .f-top{ align-items:flex-start; }
+    .f-contact{ text-align:left; }
+    .f-mid{ padding:0; }
+    .f-mid p{ font-size:13px; }
+  }
+
+  @media (max-width:640px){
+    /* region readout */
+    .rv-boot{ padding:0 16px 40px 16px; }
+    .rv-boot .lines{ font-size:10px; }
+    .rv-top{ padding:16px 16px 0; gap:12px; }
+    .rv-top .crumb{ min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+    #rvClose, #lvClose{ white-space:nowrap; flex:none; padding:8px 10px; }
+    .rv-scroll{ padding:20px 16px 48px; }
+    .rv-head{ grid-template-columns:minmax(0,1fr); gap:24px; margin-top:12px; }
+    .rv-head h2, .lv-head h2{ font-size:clamp(28px, 8.4vw, 104px); overflow-wrap:anywhere; }
+    .rv-lede, .lv-lede{ font-size:14px; min-height:0; }
+    .rv-stats{ grid-template-columns:repeat(2, minmax(0,1fr)); max-width:none; }
+    .rv-map{ max-width:none; max-height:none; aspect-ratio:1/1; justify-self:stretch; }
+    .rv-block{ margin-top:40px; }
+    .rv-block > h3{ flex-direction:column; align-items:stretch; }
+    .h3r{ flex-wrap:wrap; }
+    #recFilter{ width:100%; }
+    .rv-grid{ grid-template-columns:minmax(0,1fr); gap:14px; }
+    .rec-body{ padding:14px 14px 16px; }
+    .rec-row{ grid-template-columns:60px minmax(0,1fr); }
+    .rv-two{ gap:28px; }
+    .lv-credit{ grid-template-columns:72px minmax(0,1fr); }
+    .lv-full pre{ font-size:10px; padding:0 12px 14px; }
   }

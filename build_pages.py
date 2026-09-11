@@ -29,8 +29,22 @@ HERE = Path(__file__).resolve().parent
 SRC = HERE / 'src'
 
 # ---------------------------------------------------------------- arguments
-args = [a for a in sys.argv[1:] if not a.startswith('--')]
-opts = {a.split('=')[0]: (a.split('=', 1)[1] if '=' in a else True) for a in sys.argv[1:] if a.startswith('--')}
+# accepts both `--out docs` and `--out=docs`; `--allow-preview` is a bare flag
+args, opts, VALUED = [], {}, ('--root', '--domain', '--out')
+_argv = sys.argv[1:]
+i = 0
+while i < len(_argv):
+    a = _argv[i]
+    if a.startswith('--'):
+        if '=' in a:
+            k, v = a.split('=', 1); opts[k] = v
+        elif a in VALUED and i + 1 < len(_argv) and not _argv[i + 1].startswith('--'):
+            opts[a] = _argv[i + 1]; i += 1
+        else:
+            opts[a] = True
+    else:
+        args.append(a)
+    i += 1
 if not args:
     sys.exit(__doc__)
 PROJECT = Path(args[0]).resolve()

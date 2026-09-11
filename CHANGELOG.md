@@ -2,6 +2,16 @@
 
 Newest first. Each entry is one sync to `production site/`.
 
+## v0.11.0 — 2026-09-11 — September 2026 edition
+`versions/cape-wine-atlas_2026-09-11_v0.11.0_september-2026-edition.html`
+
+Launch items 4 and 5 closed — Safari and hand-held screens. Site live at capewineatlas.co.za since v0.10.0.
+- **Safari.** WebKit has never enabled canvas filters (every iPhone and iPad, Mac Safari included), so the brightness/contrast and bloom passes in the hero, chart and closing-page bakes now take a pixel path where the filter API is absent: a tone lookup for brightness and contrast, and a successive-halving downscale with a smooth upscale for the glow. Same picture, one-time cost at bake; verified against Chromium with the filter API removed. `-webkit-backdrop-filter` added for the corner boxes.
+- **Phones and small tablets.** One-column composition below 900 px for the chart (title, chart scaled to the width, the full region index beneath it) and below 760 px for the rest (hero, terminal window, closing page); region readout and licence page re-stacked below 640 px (single column of records, two-column stats, square tactical map, full-width filter). Nothing changes above those widths.
+- **Marker selection.** A press on the chart now opens the marker nearest the finger or pointer, measured on screen after the 3-D projection, so the dense Stellenbosch–Cape Town cluster and a phone-sized chart open the region you aimed at. The chart hint reads "select" rather than "hover … click".
+- `build_pages.py` accepts `--out docs` as well as `--out=docs` (the bare form previously wrote to a folder named `True`).
+- Rebuilt against the same 10 September atlas build (gate: 644 records, 0 contact keys, 0 restricted, public).
+
 ## v0.10.0 — 2026-09-11 — September 2026 edition
 `versions/cape-wine-atlas_2026-09-11_v0.10.0_september-2026-edition.html`
 

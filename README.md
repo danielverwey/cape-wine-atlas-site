@@ -40,7 +40,7 @@ A first visit downloads about 560 KB; a region's records arrive only when that r
 ## File naming for frozen versions
 
 `cape-wine-atlas_<sync date>_v<major.minor.patch>_<edition>.html`, e.g.
-`cape-wine-atlas_2026-09-11_v0.10.0_september-2026-edition.html`.
+`cape-wine-atlas_2026-09-11_v0.11.0_september-2026-edition.html`.
 The date is ISO so the folder sorts; the version stays at 0.x until public launch (patch rises
 with every sync, minor with a new structure or atlas edition, major to 1.0.0 at launch); the
 edition is the one the page carries, derived from the atlas build date.

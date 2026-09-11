@@ -1,9 +1,6 @@
 
 (async function(){
 
-  /* Hero source photo — Cape Winelands estate ("landing page" image), embedded
-     as a data URI so the file stays a single self-contained .html with zero
-     external requests. */
   /* ---- assets & data ----
      In the published site everything is fetched relative to ROOT; the archival
      single-file build sets window.__CWA with the same things inlined. */
@@ -303,6 +300,63 @@
     if (texReady) bake();
   }
 
+  // ---------- WebKit-safe filtering ----------
+  // Safari (every iPhone and iPad, and Mac Safari) does not expose CanvasRenderingContext2D.filter, so the
+  // brightness/contrast and bloom-blur passes below take a pixel path there: a LUT for tone, and a
+  // successive-halving downscale + smooth upscale for the blur. Same look, one-time cost at bake.
+  const HAS_FILTER = (() => { try { return typeof document.createElement('canvas').getContext('2d').filter === 'string'; } catch(e){ return false; } })();
+  function tone(cnv, brightness, contrast){
+    if (brightness === 1 && contrast === 1) return cnv;
+    const c = cnv.getContext('2d'), img = c.getImageData(0, 0, cnv.width, cnv.height), d = img.data;
+    const lut = new Uint8ClampedArray(256);
+    for (let i = 0; i < 256; i++) lut[i] = (i * brightness - 128) * contrast + 128;
+    for (let i = 0; i < d.length; i += 4){ d[i] = lut[d[i]]; d[i+1] = lut[d[i+1]]; d[i+2] = lut[d[i+2]]; }
+    c.putImageData(img, 0, 0);
+    return cnv;
+  }
+  function blurred(src, radius, outW, outH){
+    // halve until the image is about `radius` times smaller (each halving box-averages 2×2), then upscale smoothly
+    let cur = src, w = src.width, h = src.height;
+    const target = Math.max(1, Math.round(w / Math.max(2, radius * 2)));   // a Gaussian of σ=r spreads about 2r
+    while (w / 2 >= target){
+      const nw = Math.max(1, Math.round(w / 2)), nh = Math.max(1, Math.round(h / 2));
+      const c = document.createElement('canvas'); c.width = nw; c.height = nh;
+      const cc = c.getContext('2d'); cc.imageSmoothingEnabled = true; cc.imageSmoothingQuality = 'high';
+      cc.drawImage(cur, 0, 0, nw, nh);
+      cur = c; w = nw; h = nh;
+    }
+    const mid = document.createElement('canvas'); mid.width = Math.max(1, w * 2); mid.height = Math.max(1, h * 2);
+    const mc = mid.getContext('2d'); mc.imageSmoothingEnabled = true; mc.imageSmoothingQuality = 'high';
+    mc.drawImage(cur, 0, 0, mid.width, mid.height);
+    const out = document.createElement('canvas'); out.width = outW; out.height = outH;
+    const oc = out.getContext('2d'); oc.imageSmoothingEnabled = true; oc.imageSmoothingQuality = 'high';
+    oc.drawImage(mid, 0, 0, outW, outH);
+    return out;
+  }
+  // draw `src` into ctx with a filter string, or the pixel-path equivalent: {brightness, contrast, blur}
+  function drawFiltered(ctx, src, f, dx, dy, dw, dh){
+    dw = dw === undefined ? src.width : dw; dh = dh === undefined ? src.height : dh;
+    if (HAS_FILTER){
+      ctx.filter = (f.contrast && f.contrast !== 1 ? `contrast(${f.contrast}) ` : '') + (f.brightness && f.brightness !== 1 ? `brightness(${f.brightness}) ` : '') + (f.blur ? `blur(${f.blur}px)` : '') || 'none';
+      ctx.drawImage(src, dx, dy, dw, dh);
+      ctx.filter = 'none';
+      return;
+    }
+    let img = src;
+    if (f.blur){
+      img = blurred(src, f.blur, Math.max(1, Math.round(src.width / 2)), Math.max(1, Math.round(src.height / 2)));
+      tone(img, f.brightness || 1, f.contrast || 1);
+    } else if ((f.brightness && f.brightness !== 1) || (f.contrast && f.contrast !== 1)){
+      const t = ctx.getTransform();   // size the tone buffer at device pixels so nothing is resampled twice
+      const c = document.createElement('canvas'); c.width = Math.max(1, Math.round(dw * (t.a || 1))); c.height = Math.max(1, Math.round(dh * (t.d || 1)));
+      const cc = c.getContext('2d'); cc.imageSmoothingEnabled = true; cc.imageSmoothingQuality = 'high';
+      cc.drawImage(src, 0, 0, c.width, c.height);
+      tone(c, f.brightness || 1, f.contrast || 1);
+      img = c;
+    }
+    ctx.drawImage(img, dx, dy, dw, dh);
+  }
+
   function makeDisc(dPx){
     // soft-edged disc sprite, like the shader's circle(): solid core, short alpha ramp at the rim, faint rim highlight
     const s = document.createElement('canvas');
@@ -372,9 +426,7 @@
     const lctx = layer.getContext('2d');
     lctx.setTransform(DPR, 0, 0, DPR, 0, 0);
     lctx.imageSmoothingEnabled = true;
-    lctx.filter = 'brightness(1.2) contrast(1.12)';
-    lctx.drawImage(tex, ox, oy, gw, gh);
-    lctx.filter = 'none';
+    drawFiltered(lctx, tex, { brightness: 1.2, contrast: 1.12 }, ox, oy, gw, gh);
     lctx.setTransform(1, 0, 0, 1, 0, 0);
     lctx.globalCompositeOperation = 'destination-in';
     lctx.drawImage(mask, 0, 0);
@@ -384,9 +436,7 @@
     bloom = document.createElement('canvas');
     bloom.width = Math.round(layer.width / 2); bloom.height = Math.round(layer.height / 2);
     const bctx = bloom.getContext('2d');
-    bctx.filter = `contrast(1.6) brightness(0.9) blur(${Math.max(2, pitch * 0.9 * DPR / 2)}px)`;
-    bctx.drawImage(layer, 0, 0, bloom.width, bloom.height);
-    bctx.filter = 'none';
+    drawFiltered(bctx, layer, { contrast: 1.6, brightness: 0.9, blur: Math.max(2, pitch * 0.9 * DPR / 2) }, 0, 0, bloom.width, bloom.height);
 
     // --- 5. lens buffers for the hover bulge
     lens = document.createElement('canvas'); lens.width = canvas.width; lens.height = canvas.height;
@@ -566,15 +616,14 @@
       // layer = texture × mask, then a bloom pass
       const layer = document.createElement('canvas'); layer.width = mc.width; layer.height = mc.height;
       const lc = layer.getContext('2d'); lc.setTransform(dpr, 0, 0, dpr, 0, 0);
-      lc.filter = 'brightness(1.25) contrast(1.1)'; lc.drawImage(mtex, 0, 0, cw, ch); lc.filter = 'none';
+      drawFiltered(lc, mtex, { brightness: 1.25, contrast: 1.1 }, 0, 0, cw, ch);
       lc.setTransform(1, 0, 0, 1, 0, 0); lc.globalCompositeOperation = 'destination-in'; lc.drawImage(mask, 0, 0);
       mctx.setTransform(1, 0, 0, 1, 0, 0);
       mctx.fillStyle = '#000'; mctx.fillRect(0, 0, mc.width, mc.height);
       mctx.drawImage(layer, 0, 0);
       mctx.globalCompositeOperation = 'lighter'; mctx.globalAlpha = 0.55;
-      mctx.filter = `blur(${Math.max(2, pitch * 0.8 * dpr)}px) contrast(1.5)`;
-      mctx.drawImage(layer, 0, 0);
-      mctx.filter = 'none'; mctx.globalAlpha = 1; mctx.globalCompositeOperation = 'source-over';
+      drawFiltered(mctx, layer, { blur: Math.max(2, pitch * 0.8 * dpr), contrast: 1.5 }, 0, 0);
+      mctx.globalAlpha = 1; mctx.globalCompositeOperation = 'source-over';
     }
     window.addEventListener('resize', bakeMap);
     setTimeout(bakeMap, 50);
@@ -646,8 +695,19 @@
       };
       o.addEventListener('mouseenter', show); o.addEventListener('mouseleave', hide);
       li.addEventListener('mouseenter', show); li.addEventListener('mouseleave', hide);
-      o.addEventListener('click', e => { e.stopPropagation(); openRegion(r.key); });
       li.addEventListener('click', () => openRegion(r.key));
+    });
+    // A press on the chart opens the marker nearest the finger or pointer, measured on screen after the
+    // 3-D projection — so in the dense Stellenbosch / Cape Town cluster, and on a phone-sized chart,
+    // the marker you aimed at wins rather than whichever overlapping hit-area happens to sit on top.
+    plane.addEventListener('click', e => {
+      let best = null, bd = Infinity;
+      plane.querySelectorAll('.orb').forEach(o => {
+        const b = o.getBoundingClientRect();
+        const dx = b.left + b.width / 2 - e.clientX, dy = b.top + b.height / 2 - e.clientY, d = dx * dx + dy * dy;
+        if (d < bd){ bd = d; best = o; }
+      });
+      if (best && bd <= 44 * 44){ e.stopPropagation(); openRegion(best.dataset.key); }
     });
     card.addEventListener('mouseenter', () => clearTimeout(hideTimer));
     card.addEventListener('mouseleave', () => { if(!pinnedKey) hideTimer = setTimeout(() => card.classList.remove('show'), 380); });
@@ -763,12 +823,13 @@
     }
     const layer = document.createElement('canvas'); layer.width = cv.width; layer.height = cv.height;
     const lc = layer.getContext('2d'); lc.setTransform(dpr,0,0,dpr,0,0);
-    lc.filter = 'brightness(1.6) contrast(1.15)'; lc.drawImage(tex, 0, 0, cw, ch); lc.filter = 'none';
+    drawFiltered(lc, tex, { brightness: 1.6, contrast: 1.15 }, 0, 0, cw, ch);
     lc.setTransform(1,0,0,1,0,0); lc.globalCompositeOperation = 'destination-in'; lc.drawImage(mask, 0, 0);
     x.fillStyle = '#000'; x.fillRect(0,0,cv.width,cv.height);
     x.drawImage(layer, 0, 0);
-    x.globalCompositeOperation = 'lighter'; x.globalAlpha = 0.65; x.filter = `blur(${Math.max(2, pitch*0.8*dpr)}px) contrast(1.5)`;
-    x.drawImage(layer, 0, 0); x.filter = 'none'; x.globalAlpha = 1; x.globalCompositeOperation = 'source-over';
+    x.globalCompositeOperation = 'lighter'; x.globalAlpha = 0.65;
+    drawFiltered(x, layer, { blur: Math.max(2, pitch*0.8*dpr), contrast: 1.5 }, 0, 0);
+    x.globalAlpha = 1; x.globalCompositeOperation = 'source-over';
     const kmAcross = (tacticalBox.lon1 - tacticalBox.lon0) * 111.32 * Math.cos(33.9*Math.PI/180);
     const sb = document.querySelector('#rvMap .scale'); if(sb){ const km = kmAcross > 40 ? 10 : kmAcross > 12 ? 5 : 1; sb.querySelector('i').style.width = (cw * km / kmAcross).toFixed(1) + 'px'; sb.querySelector('span').textContent = `≈ ${km} KM`; }
   }

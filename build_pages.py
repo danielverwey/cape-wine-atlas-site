@@ -107,25 +107,13 @@ SHORT = {
  "Lambert's Bay": ("Lambert's Bay", 18.31, -32.09),
 }
 SLUG = {(d['region'].get('name') or d['region'].get('wo_district')): k for k, d in region_files.items()}
-PROC = re.compile(r'pass \d|fetch|recorded|tranche|member page|roster|unverified|conflated|association claims|atlas holds|held at', re.I)
-
-def clean(t, n=380):
-    t = (t or '').replace('--', '—').strip(); t = re.sub(r'\s+', ' ', t)
-    t = re.split(r'\s(?:PASS \d|HAZARDS|ADR-|\|\||data/|docs/|queuedFarmId|unmatched|this pass|This pass)', t)[0].strip()
-    if len(t) > n:
-        cut = t[:n]; k = max(cut.rfind('. '), cut.rfind('; '))
-        t = (cut[:k+1] if k > n*0.45 else cut.rsplit(' ', 1)[0] + '…')
-    return t
-def hist(n):
-    cut = re.split(r'\s(?:AUDIT PASS|PASS \d|HAZARDS|ADR-|\|\||ENTITY:|EXISTENCE CONFIRMED|MYSTERY RESOLVED[^:]*:|wineOrigin|WARD:|NAME CAUTION)', n or '')
-    t = [x for x in cut if len(x.strip()) > 40]; t = (t[0] if t else '').strip()
-    t = re.sub(r'^(EXISTENCE CONFIRMED[^.]*\.\s*|MYSTERY RESOLVED[^:]*:\s*|CONFIRMED[^.]*\.\s*)', '', t)
-    t = re.sub(r'\s*\([^)]*(?:route profile|\.co\.za|\.com|sa-venues|wine\.co)[^)]*\)', '', t)
-    t = t.replace('--', '—').replace(' [number withheld]', '').replace('[number withheld]', '')
-    if re.match(r'^[A-Z ]{6,}:', t): t = t.split(':', 1)[1].strip()
-    if len(t) > 210:
-        cut = t[:210]; k = cut.rfind('. '); t = (cut[:k+1] if k > 90 else cut.rsplit(' ', 1)[0] + '…')
-    return t
+# Publication copy: every free-text field the atlas carries is a working note, so the page runs it through
+# copytext.history(), which keeps the facts and drops the method (see copytext.py).
+from copytext import history as _copy, lowercase_vocabulary
+VOCAB = lowercase_vocabulary(
+    [f.get('note') for r in atlas['regions'] for f in r['farms']] + [f.get('family') for r in atlas['regions'] for f in r['farms']]
+    + [r['meta'].get('terroir') for r in atlas['regions']] + [rt.get('blurb') for rt in atlas['routes']])
+def copy(t, budget): return _copy(t, VOCAB, budget)
 def intornull(v): return v if isinstance(v, int) else None
 
 routes_by = {}
@@ -153,21 +141,22 @@ for r in atlas['regions']:
     for f in r['farms']:
         rec = {k: f.get(k) for k in ('id','name','ward','lat','lng','geoConfidence','founded','hours','venue','access','varieties','signatureWines','web','routeMember','oldVineFlag','awardsCollected','pendingClaims','locality','contactHeld')}
         rec['awards'] = [{k: aw.get(k) for k in ('body','year','wine','award','sourceUrl','sourceName')} | {'corr': bool(aw.get('_corroborated'))} for aw in f['awards']]
-        rec['history'] = hist(f['note'])
-        if rec['hours'] and len(rec['hours']) > 190: rec['hours'] = rec['hours'][:187].rsplit(' ', 1)[0] + '…'
+        rec['history'] = copy(f.get('note'), 230)
+        rec['people'] = copy(f.get('family'), 150)
+        rec['hours'] = _copy(rec['hours'], VOCAB, 190, mode='hours') if rec['hours'] else rec['hours']
         farms.append(rec)
     rts = []
     for rt in routes_by.get(key, []):
-        b = clean(rt.get('blurb'), 300)
-        segs = [x for x in re.split(r'(?<=[;.])\s+', b) if not PROC.search(x)]
-        b = ' '.join(segs).strip()
+        b = copy(rt.get('blurb'), 300)
         rts.append({k: rt.get(k) for k in ('id','name','area','status','web','sourceUrl','retrieved')} | {'blurb': b if len(b) >= 60 else '', 'membersRecorded': intornull(rt.get('membersRecorded')), 'membersExpected': intornull(rt.get('membersExpected'))})
     tours = [{k: t.get(k) for k in ('name','type','base','web','verified')} for t in atlas['tourOperators'] if key in tour_regions(t)]
     district = (m.get('wo_district') or '').split(' (')[0].strip() or None
     ward = (m.get('wo_ward') or '').split(' (')[0].split(' | ')[0].strip() or None
     withheld = atlas.get('withheld', {}).get('byRegion', {}).get(name, 0)
-    terroir = clean(m.get('terroir'))
-    lede = terroir or (rts[0]['blurb'] if rts else '') or f"{len(r['farms'])} producers on record in the {district or short} district of the {m.get('wo_region') or 'Cape'}."
+    terroir = copy(m.get('terroir'), 380)
+    n_f = len(r['farms']); where = f"the {district or short} district of the {m.get('wo_region') or 'Cape'}"
+    fallback = (f"No producer is yet on record in {where}." if n_f == 0 else f"One producer on record in {where}." if n_f == 1 else f"{n_f} producers on record in {where}.")
+    lede = terroir or (rts[0]['blurb'] if rts else '') or fallback
     regions[key] = {'key': key, 'name': short, 'full': name, 'woRegion': m.get('wo_region') or '—', 'district': district or '—', 'ward': ward,
                     'withheld': withheld, 'status': m['status'], 'collected': m.get('collected'), 'expected': intornull(m.get('producer_count_expected')),
                     'terroir': terroir, 'lede': lede, 'routes': rts, 'tours': tours, 'farms': farms}
@@ -240,6 +229,7 @@ def prerender(R):
           <div class="rec-name display">{esc(f['name'])}</div>
           <div class="rec-meta mono">{''.join(f'<span>{x}</span>' for x in meta)}</div>
           {f'<p class="rec-hist">{esc(f["history"])}</p>' if f['history'] else ''}
+          {f'<div class="rec-row"><span class="k mono">PEOPLE</span><span>{esc(f["people"])}</span></div>' if f.get('people') else ''}
           {f'<div class="rec-row"><span class="k mono">HOURS</span><span>{esc(f["hours"])}</span></div>' if f['hours'] else ''}
           {('<div class="rec-row"><span class="k mono">VARIETIES</span><div class="tags mono">' + ''.join(f'<span>{esc(v)}</span>' for v in f['varieties']) + '</div></div>') if f['varieties'] else ''}
           {('<div class="rec-row"><span class="k mono">SIGNATURE</span><span>' + ' · '.join(esc(x) for x in f['signatureWines']) + '</span></div>') if f['signatureWines'] else ''}
@@ -282,7 +272,7 @@ def prerender(R):
           <div class="scale mono"><i style="width:60px"></i><span>≈ 1 KM</span></div></div>
       </header>
       <section class="rv-block">
-        <h3 class="mono"><span class="h3l">PRODUCER RECORDS <span>{len(farms)}{f" OF {R['expected']} EXPECTED" if R['expected'] else " ON RECORD"} · {esc(STATUS.get(R['status'], R['status']).upper())}</span></span></h3>
+        <h3 class="mono"><span class="h3l">PRODUCER RECORDS <span>{len(farms)} ON RECORD · {esc(STATUS.get(R['status'], R['status']).upper())}</span></span></h3>
         <div class="rv-grid" id="recGrid">{''.join(recs)}</div>
       </section>
       <section class="rv-block rv-two">

@@ -899,6 +899,7 @@
           <div class="rec-name display">${esc(f.name)}</div>
           <div class="rec-meta mono">${meta}</div>
           ${f.history ? `<p class="rec-hist">${esc(f.history)}</p>` : ''}
+          ${f.people ? `<div class="rec-row"><span class="k mono">PEOPLE</span><span>${esc(f.people)}</span></div>` : ''}
           ${f.hours ? `<div class="rec-row"><span class="k mono">HOURS</span><span>${esc(f.hours)}</span></div>` : ''}
           ${f.varieties && f.varieties.length ? `<div class="rec-row"><span class="k mono">VARIETIES</span><div class="tags mono">${f.varieties.map(v=>`<span>${esc(v)}</span>`).join('')}</div></div>` : ''}
           ${f.signatureWines && f.signatureWines.length ? `<div class="rec-row"><span class="k mono">SIGNATURE</span><span>${f.signatureWines.map(esc).join(' · ')}</span></div>` : ''}
@@ -944,7 +945,7 @@
       </header>
 
       <section class="rv-block">
-        <h3 class="mono"><span class="h3l">PRODUCER RECORDS <span>${farms.length}${R.expected ? ` OF ${R.expected} EXPECTED` : ' ON RECORD'} · ${esc((STATUS_LABEL_RV[R.status]||R.status).toUpperCase())}</span></span>
+        <h3 class="mono"><span class="h3l">PRODUCER RECORDS <span>${farms.length} ON RECORD · ${esc((STATUS_LABEL_RV[R.status]||R.status).toUpperCase())}</span></span>
           <span class="h3r"><input class="mono" id="recFilter" placeholder="FILTER · NAME, WARD, GRAPE" autocomplete="off"><label class="mono"><input type="checkbox" id="recAwarded"> HONOURS ONLY</label></span></h3>
         <div class="rv-grid" id="recGrid">${recs}</div>
         <div class="rv-empty mono" id="recEmpty" hidden>NO RECORD MATCHES THAT FILTER</div>

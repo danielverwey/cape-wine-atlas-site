@@ -8,7 +8,7 @@ The public face of the Cape Wine Atlas, built for GitHub Pages at **https://cape
 |---|---|
 | `docs/` | **the built site** — what GitHub Pages serves. Never edit by hand; rebuild it. |
 | `src/` | the sources the build reads: `index.template.html`, `app.js`, `site.css`, `geo.json`, `assets/` (typefaces, textures, share image) |
-| `build_pages.py` | the build: publication gate → data extraction → `docs/` + the archival single file |
+| `build_pages.py` (with `copytext.py`, the publication-copy filter) | the build: publication gate → data extraction → `docs/` + the archival single file |
 | `cape-wine-atlas.html` | the current page as **one self-contained file** (for offline use and for `versions/`) |
 | `versions/` | a frozen single-file copy of every synced version, never edited |
 | `patches/` | one-off changes to the atlas project's own scripts, as unified diffs |
@@ -40,7 +40,7 @@ A first visit downloads about 560 KB; a region's records arrive only when that r
 ## File naming for frozen versions
 
 `cape-wine-atlas_<sync date>_v<major.minor.patch>_<edition>.html`, e.g.
-`cape-wine-atlas_2026-09-11_v0.11.1_september-2026-edition.html`.
+`cape-wine-atlas_2026-09-11_v0.12.0_september-2026-edition.html`.
 The date is ISO so the folder sorts; the version stays at 0.x until public launch (patch rises
 with every sync, minor with a new structure or atlas edition, major to 1.0.0 at launch); the
 edition is the one the page carries, derived from the atlas build date.

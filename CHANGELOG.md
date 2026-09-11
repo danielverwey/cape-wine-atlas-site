@@ -2,6 +2,17 @@
 
 Newest first. Each entry is one sync to `production site/`.
 
+## v0.12.0 — 2026-09-11 — September 2026 edition
+`versions/cape-wine-atlas_2026-09-11_v0.12.0_september-2026-edition.html`
+
+Copy pass over every producer record.
+- **History lines.** The atlas's note on each producer is a working log — facts about the farm interleaved with how they were found, checked and ruled on. The page used to show its first 210 characters, so 251 lines ended mid-phrase and about 260 carried research vocabulary. `copytext.py` now splits each note into sentences and clauses, drops every clause that speaks about the method (a blocklist of some 300 terms), keeps the leading run of clean clauses, un-shouts capitalised words using the corpus's own casing, and cuts only at a sentence or clause boundary. 473 producers keep a history line (median 131 characters, none truncated); 171 whose note holds nothing publishable yet show none rather than a fragment.
+- **People.** A new PEOPLE row on the record, from the atlas's family field, cleaned the same way — 301 producers.
+- **Hours** go through the same filter in an hours-aware mode, so "(route member listing)" and the like are gone and nothing is cut with an ellipsis.
+- **Region ledes and route paragraphs** cleaned likewise; the fallback sentence handles none/one/many correctly ("No producer is yet on record…").
+- **"55 of 48 expected" retired.** The record header now reads "PRODUCER RECORDS 55 ON RECORD · <status>"; the expected count was a planning estimate and confused more than it explained.
+- Review sheet of every published line delivered alongside this sync (not part of the repository).
+
 ## v0.11.1 — 2026-09-11 — September 2026 edition
 `versions/cape-wine-atlas_2026-09-11_v0.11.1_september-2026-edition.html`
 

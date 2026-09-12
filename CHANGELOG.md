@@ -2,6 +2,15 @@
 
 Newest first. Each entry is one sync to `production site/`.
 
+## v0.16.0 — 2026-09-12 — September 2026 edition
+`versions/cape-wine-atlas_2026-09-12_v0.16.0_september-2026-edition.html`
+
+Built against the atlas export of 12 September (evening): 644 producers · **2,668 verified honours** (up from 1,326; Michelangelo and the National Wine Challenge join the competitions consulted, Platter's and Veritas deepen) · 24 under review · 144 held back · and, for the first time, **the producers' own wine lists: 1,685 names and 797 range labels across 523 producers**, each read from the producer's own pages and cited.
+- **The wines, as the producer prints them.** THE WINES on a producer page now opens with the range labels (RANGES · Kadette Range · Estate Range) and lists every wine the producer names on its own site, marked ON THE PRODUCER'S OWN LIST. Where the honours ledger names one of them, the honours sit under it — and a ledger entry such as "Kanonkop Black Label Pinotage 2017" is recognised as the listed "Black Label", the producer's name lifted off the front and the vintage folded in. A range label becomes a card of its own only when an honour names it (Simonsig's Kaapse Vonkel). Signature wines follow, then wines only the ledger names, marked as such. Where the producer gives its own account of a name, it is quoted on the card in the producer's words: "— THE PRODUCER'S OWN ACCOUNT OF THE NAME".
+- **Saying where the list came from.** The note under the wines states the reading, not a promise: "THE RANGE AS THE PRODUCER PRINTS IT, READ FROM KANONKOP.CO.ZA ON 2026-09-12 · 2 NAMES IN 2 RANGES". For the 97 producers whose own pages name no wines it says so and why that is a finding, not a gap ("some sell by grape variety alone and do so deliberately; the atlas does not guess"); for the 24 with no readable page on their own domain it says that. PROVENANCE gains a **Wines** line with the same facts in prose. The working note behind each reading stays in the atlas and is never published.
+- **Counted on the home page.** The boot log, the live terminal and the footer now carry WINES ON RECORD (1,685 names · 523 producers); the page description says so too. Search knows every listed wine name (2,483 entries now), so "john x merriman" opens Rustenberg's page.
+- Region cards show the new honours in their summaries; the lenses count them.
+
 ## v0.15.0 — 2026-09-12 — September 2026 edition
 `versions/cape-wine-atlas_2026-09-12_v0.15.0_september-2026-edition.html`
 

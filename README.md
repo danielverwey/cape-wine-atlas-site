@@ -32,7 +32,7 @@ Options: `--root /` (use `--root /repo-name/` for a project page without the dom
     docs/region/<key>/index.html      one page per region with its own address, pre-rendered
     docs/producer/<id>/index.html     one page per producer with its own address, pre-rendered (644 pages)
     docs/data/index.json              region index, statistics, map geometry, lens figures, producer list (72 KB)
-    docs/data/search.json             search index — producers, regions, wards, grapes, wines (175 KB, fetched on first use)
+    docs/data/search.json             search index — producers, regions, wards, grapes, the producers' own wine names (≈250 KB, fetched on first use)
     docs/data/regions/<key>.json      one file per region, fetched only when it is opened
     docs/assets/                      site.css, app.js, three typefaces, three textures, og.jpg
     docs/sitemap.xml · robots.txt · CNAME · 404.html · .nojekyll
@@ -42,7 +42,7 @@ A first visit downloads about 560 KB; a region's records arrive only when that r
 ## File naming for frozen versions
 
 `cape-wine-atlas_<sync date>_v<major.minor.patch>_<edition>.html`, e.g.
-`cape-wine-atlas_2026-09-12_v0.15.0_september-2026-edition.html`.
+`cape-wine-atlas_2026-09-12_v0.16.0_september-2026-edition.html`.
 The date is ISO so the folder sorts; the version stays at 0.x until public launch (patch rises
 with every sync, minor with a new structure or atlas edition, major to 1.0.0 at launch); the
 edition is the one the page carries, derived from the atlas build date.

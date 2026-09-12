@@ -39,6 +39,7 @@
     `&gt;&gt; WINE ROUTES ${ld(25)} <span class='g'>${ST.routes} ON FILE</span>`,
     `&gt;&gt; TOUR OPERATORS ${ld(22)} <span class='g'>${ST.tours} LISTED</span>`,
     `&gt;&gt; HONOURS LEDGER ${ld(22)} <span class='g'>${ST.verifiedAwards} VERIFIED · ${ST.pendingClaims} UNDER REVIEW</span>`,
+    ...(ST.wines && ST.wines.brands ? [`&gt;&gt; WINES ON RECORD ${ld(21)} <span class='g'>${ST.wines.brands} NAMES · ${ST.wines.producersWithBrands} PRODUCERS</span>`] : []),
     `&gt;&gt; COMPETITIONS CONSULTED ${ld(14)} <span class='g'>${compList}</span>`,
     `&gt;&gt; PROVENANCE CHECK ${ld(20)} <span class='g'>EVERY ENTRY TRACEABLE TO ITS SOURCE</span>`,
     `&gt;&gt; ATLAS READY ${ld(25)} <span class='g'>OPEN</span>`
@@ -1174,6 +1175,7 @@
         `<div>&gt; REGIONS INDEXED ............. <span id="tb2">${bar(0)}</span> <span class="gold" id="tc2">0</span> OF ${S.regions}</div>`,
         `<div>&gt; WINE ROUTES · TOUR OPERATORS  <span class="gold" id="tc3">0</span> · <span class="gold" id="tc4">0</span></div>`,
         `<div>&gt; HONOURS VERIFIED ............ <span id="tb3">${bar(0)}</span> <span class="gold" id="tc5">0</span> · <span id="tc6">0</span> UNDER REVIEW</div>`,
+        ...(S.wines && S.wines.brands ? [`<div>&gt; WINES ON RECORD ............. <span id="tb4">${bar(0)}</span> <span class="gold" id="tc8">0</span> NAMES · ${S.wines.producersWithBrands} PRODUCERS</div>`] : []),
         `<div>&gt; HELD BACK UNTIL THEY MEET THE STANDARD <span class="gold" id="tc7">0</span> RECORDS</div>`,
         `<div class="grey">// EVERY ENTRY TRACEABLE TO ITS SOURCE</div>`,
         `<div class="warn">NOTICE: DETAILS AWAITING A PUBLISHABLE SOURCE ARE HELD BACK</div>`,
@@ -1188,6 +1190,7 @@
       animBar('tb2', 1200, 800); setTimeout(() => countTo(document.getElementById('tc2'), S.regions, 1200, n => n), 800);
       setTimeout(() => { countTo(document.getElementById('tc3'), S.routes, 900, n=>n); countTo(document.getElementById('tc4'), S.tours, 900, n=>n); }, 1100);
       setTimeout(() => countTo(document.getElementById('tc7'), S.withheld, 1200, n=>n), 1500);
+      if(S.wines && S.wines.brands){ animBar('tb4', 1300, 1450); setTimeout(() => countTo(document.getElementById('tc8'), S.wines.brands, 1300, n=>n), 1450); }
       animBar('tb3', 1400, 1300); setTimeout(() => { countTo(document.getElementById('tc5'), S.verifiedAwards, 1400, n=>n); countTo(document.getElementById('tc6'), S.pendingClaims, 1400, n=>n); }, 1300);
       // scanning ticker
       let i = 0; const tk = () => { const r = ATLAS.idx[i % ATLAS.idx.length]; const el = document.getElementById('ticker'); if(el) el.textContent = `SCANNING ▸ ${r.name.toUpperCase()} · ${r.farms} PRODUCERS · ${r.awards} HONOURS`; i++; };
@@ -1411,12 +1414,43 @@
   const km = (a, b) => { const R = 6371, dLat = (b.lat - a.lat) * Math.PI/180, dLng = (b.lng - a.lng) * Math.PI/180; const x = Math.sin(dLat/2)**2 + Math.cos(a.lat*Math.PI/180) * Math.cos(b.lat*Math.PI/180) * Math.sin(dLng/2)**2; return 2 * R * Math.asin(Math.sqrt(x)); };
   const VENUE = { hosted:'TASTED AT A HOST VENUE', outlet:'TASTED AT AN OUTLET', none:'NO TASTING VENUE' };
   const stripVintage = w => String(w || '').replace(/\s+(19|20)\d\d\s*$/, '').replace(/\s+\((19|20)\d\d\)$/, '').trim();
-  function winesOf(f){
-    const map = new Map();
-    (f.signatureWines || []).forEach(w => { const k = stripVintage(w); if(k) map.set(k.toLowerCase(), { name: k, signature: true, honours: [] }); });
-    f.awards.forEach(a => { if(!a.wine || /^winery$/i.test(a.wine)) return; const k = stripVintage(a.wine), id = k.toLowerCase(); if(!map.has(id)) map.set(id, { name: k, signature: false, honours: [] }); map.get(id).honours.push(a); });
-    return [...map.values()].sort((a, b) => b.honours.length - a.honours.length || (b.signature - a.signature) || a.name.localeCompare(b.name));
+  const foldName = w => stripVintage(w).toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
+  const SHORT_SUFFIX = / (Estate|Vineyards|Wines|Wine Estate|Wine Cellar|Organic Wine Estate|Family Wines|Winery|Wine Farm|Private Cellar)$/;
+  function producerPrefixes(f){
+    const short = f.name.replace(/ \(.*\)$/, '').replace(SHORT_SUFFIX, '');
+    const c = new Set([foldName(f.name), foldName(short)]); const first = (foldName(short).split(' ')[0] || '');
+    if(first.length >= 5) c.add(first);
+    return [...c].filter(Boolean).sort((a, b) => b.length - a.length);
   }
+  // a wine's name folded, with the producer's own name lifted off the front ('Kanonkop Black Label' is 'Black Label')
+  function foldWine(name, pre){ const k = foldName(name); for(const p of pre){ if(k === p) return ''; if(k.startsWith(p + ' ')) return k.slice(p.length + 1); } return k; }
+  function tidyName(n, pre){
+    n = stripVintage(n);
+    for(const p of pre){ const m = new RegExp('^' + p.split(' ').map(x => x.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('\\W+') + '\\W+(?=\\S)', 'i').exec(n); if(m){ n = n.slice(m[0].length); break; } }
+    if(n.length > 3 && n === n.toUpperCase()) n = n.split(' ').map(w => w.length <= 2 ? w : w[0] + w.slice(1).toLowerCase()).join(' ');
+    return n;
+  }
+  const SRC_LABEL = { list: 'ON THE PRODUCER’S OWN LIST', range: 'A RANGE ON THE PRODUCER’S OWN LIST', signature: 'SIGNATURE WINE', ledger: 'NAMED IN THE HONOURS LEDGER' };
+  function winesOf(f){
+    // the producer's own list, each with the honours the ledger names for it (a range label becomes a card only
+    // when an honour names it), then the signature wines, then wines only the ledger names
+    const pre = producerPrefixes(f), wines = new Map(); let order = 0;
+    const put = (k, name, src) => { if(!wines.has(k)) wines.set(k, { name: tidyName(name, pre), src, honours: [], note: null, order: order++ }); return wines.get(k); };
+    const find = k => { if(wines.has(k)) return wines.get(k); for(const x of [...wines.keys()].sort((a, b) => b.length - a.length)){ if(x.length >= 4 && (k.startsWith(x + ' ') || (x.length >= 5 && (' ' + k + ' ').includes(' ' + x + ' ')))) return wines.get(x); } return null; };
+    const ranges = new Map(); (f.wines || []).forEach(w => { if(w.kind === 'range'){ const k = foldWine(w.name, pre); if(k) ranges.set(k, w.name); } });
+    (f.wines || []).forEach(w => { const k = foldWine(w.name, pre); if(w.kind === 'wine' && k) put(k, w.name, 'list'); });
+    (f.signatureWines || []).forEach(w => { const k = foldWine(w, pre); if(k) put(k, w, 'signature'); });
+    f.awards.forEach(a => {
+      if(!a.wine || /^winery$/i.test(a.wine)) return; const k = foldWine(a.wine, pre); if(!k) return;
+      let hit = find(k);
+      if(!hit){ const r = [...ranges.keys()].sort((a, b) => b.length - a.length).find(x => k === x || k.startsWith(x + ' ')); hit = r ? put(r, ranges.get(r), 'range') : put(k, a.wine, 'ledger'); }
+      hit.honours.push(a);
+    });
+    (f.wineNotes || []).forEach(n => { const hit = find(foldWine(n.wine, pre)); if(hit && !hit.note) hit.note = n.note; });
+    const rank = { list: 0, range: 0, signature: 1, ledger: 2 };
+    return [...wines.values()].sort((a, b) => rank[a.src] - rank[b.src] || b.honours.length - a.honours.length || a.order - b.order);
+  }
+  const rangesOf = f => (f.wines || []).filter(w => w.kind === 'range').map(w => tidyName(w.name, []));
   function neighboursOf(f){
     if(f.lat == null) return [];
     return PRODUCERS.filter(p => p[0] !== f.id && p[3] != null).map(p => ({ id: p[0], key: p[1], name: p[2], lat: p[3], lng: p[4], d: km(f, { lat: p[3], lng: p[4] }) })).sort((a, b) => a.d - b.d).slice(0, 6);
@@ -1469,7 +1503,18 @@
       f.awardsCollected ? '' : '<span class="flag warn mono">AWARD RESEARCH NOT YET REACHED</span>',
       f.pendingClaims ? `<span class="flag warn mono">${f.pendingClaims} CLAIM${f.pendingClaims === 1 ? '' : 'S'} UNDER REVIEW</span>` : ''
     ].filter(Boolean).join('');
-    const wineCard = w => { const hs = w.honours; return `<div class="pv-wine"><div class="n display">${esc(w.name)}</div><div class="m mono">${w.signature ? 'SIGNATURE WINE' : 'NAMED IN THE HONOURS LEDGER'}${hs.length ? ` · <span class="g">${hs.length} HONOUR${hs.length === 1 ? '' : 'S'}</span>` : ''}</div>${hs.length ? `<ul>${hs.slice(0, 4).map(a => { const m = /(19|20)\d\d/.exec(a.wine || ''); return `<li><span class="y mono">${esc(a.year || '')}</span><span><b>${esc(a.body)}</b> — ${esc(awardOf(a))}${m ? ` <span class="vint">(${m[0]})</span>` : ''}</span></li>`; }).join('')}${hs.length > 4 ? `<li><span class="y"></span><span class="vint">and ${hs.length - 4} more in the ledger below</span></li>` : ''}</ul>` : ''}</div>`; };
+    const wineCard = w => { const hs = w.honours; const note = w.note ? `<div class="note">“${esc(w.note.trim().replace(/\.$/, ''))}.” <span class="mono">— THE PRODUCER’S OWN ACCOUNT OF THE NAME</span></div>` : ''; return `<div class="pv-wine"><div class="n display">${esc(w.name)}</div><div class="m mono">${SRC_LABEL[w.src]}${hs.length ? ` · <span class="g">${hs.length} HONOUR${hs.length === 1 ? '' : 'S'}</span>` : ''}</div>${note}${hs.length ? `<ul>${hs.slice(0, 4).map(a => { const m = /(19|20)\d\d/.exec(a.wine || ''); return `<li><span class="y mono">${esc(a.year || '')}</span><span><b>${esc(a.body)}</b> — ${esc(awardOf(a))}${m ? ` <span class="vint">(${m[0]})</span>` : ''}</span></li>`; }).join('')}${hs.length > 4 ? `<li><span class="y"></span><span class="vint">and ${hs.length - 4} more in the ledger below</span></li>` : ''}</ul>` : ''}</div>`; };
+    const ranges = rangesOf(f), nListed = wines.filter(w => w.src === 'list' || w.src === 'range').length, readOn = esc(f.winesRead || '');
+    const pl = n => n === 1 ? '' : 'S', when = readOn ? ' ON ' + readOn : '';
+    const srcLinks = [...new Map((f.winesUrls || []).map(u => [host(u), u])).entries()].map(([h, u]) => `<a href="${esc(u)}" target="_blank" rel="noopener">${esc(h.toUpperCase())}</a>`).join(' · ');
+    const winesSrc = nListed ? `THE RANGE AS THE PRODUCER PRINTS IT, READ FROM ${srcLinks || 'ITS OWN PAGES'}${when} · ${nListed} NAME${pl(nListed)}${ranges.length ? ` IN ${ranges.length} RANGE${pl(ranges.length)}` : ''}`
+      : f.winesAbsent ? `NO READABLE PAGE ON THE PRODUCER’S OWN DOMAIN${when} · ${wines.length ? 'THE WINES ABOVE ARE THOSE THE HONOURS LEDGER NAMES' : 'THE HONOURS LEDGER NAMES NONE EITHER'}`
+      : f.winesCollected ? `THE PRODUCER’S OWN PAGES (${srcLinks || 'ITS OWN SITE'}${readOn ? ', READ ON ' + readOn : ''}) PUBLISH NO WINE NAMES — SOME SELL BY GRAPE VARIETY ALONE AND DO SO DELIBERATELY; THE ATLAS DOES NOT GUESS${wines.length ? '' : '. THE HONOURS LEDGER NAMES NONE EITHER'}`
+      : `THE PRODUCER’S OWN RANGE HAS NOT YET BEEN READ${wines.length ? '; THE WINES ABOVE ARE THOSE THE HONOURS LEDGER NAMES' : ''}`;
+    const nMore = wines.length - nListed;
+    let winesProv = nListed ? `${nListed} name${pl(nListed).toLowerCase()}${ranges.length ? ` and ${ranges.length} range label${pl(ranges.length).toLowerCase()}` : ''} read from the producer’s own pages${readOn ? ' on ' + readOn : ''}` : f.winesAbsent ? 'no readable page on the producer’s own domain' : f.winesCollected ? 'the producer publishes no wine names on its own site' : 'range not yet read';
+    if(nMore) winesProv += `; ${nMore} further name${pl(nMore).toLowerCase()} from the honours ledger`;
+    const rangesHtml = ranges.length ? `<div class="pv-ranges mono"><span class="k">RANGES</span>${ranges.map(r => `<span>${esc(r)}</span>`).join('')}</div>` : '';
     const row = (k, v) => `<div class="pv-row"><span class="k mono">${k}</span><span>${v}</span></div>`;
     const pc = f.pendingClaims || 0, nAw = f.awards.length;
     pvScroll.innerHTML = `
@@ -1509,8 +1554,9 @@
       </section>
       <section class="rv-block pv-wines-block">
         <h3 class="mono"><span class="h3l">THE WINES</span><span>${wines.length} ON RECORD</span></h3>
+        ${rangesHtml}
         ${wines.length ? `<div class="pv-wines">${wines.map(wineCard).join('')}</div>` : '<p class="pv-prov">No wines are named on this record yet.</p>'}
-        <div class="pv-soon mono">THE FULL RANGE — EVERY LABEL THE PRODUCER SELLS, WITH STYLE AND VINTAGE — WILL FOLLOW AS THE ATLAS GATHERS IT. UNTIL THEN THIS LIST IS BUILT FROM THE SIGNATURE WINES AND THE HONOURS LEDGER ONLY.</div>
+        <div class="pv-soon mono">${winesSrc}</div>
       </section>
       <section class="rv-block pv-ledger">
         <h3 class="mono"><span class="h3l">THE HONOURS LEDGER</span><span>${nAw} VERIFIED · EACH WITH ITS SOURCE${pc ? ` · ${pc} UNDER REVIEW, NOT SHOWN` : ''}</span></h3>
@@ -1522,6 +1568,7 @@
           <p class="pv-prov"><b>Record</b> · ${esc(region)}${f.ward ? ', ' + esc(f.ward) + ' ward' : ''} · gathered ${esc(R.collected || '—')}.<br>
           <b>Position</b> · ${located ? `published, confidence ${esc(String(f.geoConfidence || '—'))}` : 'none published by the producer or an association; the atlas does not invent one'}.<br>
           <b>Honours</b> · ${f.awardsCollected ? `research complete · ${nAw} verified, each cited to the page that announced it` : 'research not yet reached'}${pc ? ` · ${pc} claim${pc === 1 ? '' : 's'} awaiting a publishable source` : ''}.<br>
+          <b>Wines</b> · ${winesProv}.<br>
           <b>Contact</b> · ${f.contactHeld ? 'held on file, never republished' : 'not held'}.</p>
         </div>
         <div>

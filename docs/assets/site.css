@@ -860,6 +860,13 @@
   .pv-wine li .y{ color:var(--gold); font-size:10px; letter-spacing:.12em; padding-top:2px; }
   .pv-wine li b{ color:#eaeaea; font-weight:400; }
   .pv-wine .vint{ color:var(--muted); }
+  .pv-ranges{ display:flex; flex-wrap:wrap; gap:6px; align-items:center; margin-bottom:14px; }
+  .pv-ranges .k{ font-size:9px; letter-spacing:.14em; color:var(--muted); margin-right:6px; }
+  .pv-ranges span:not(.k){ font-size:9.5px; letter-spacing:.12em; border:1px solid var(--line); padding:3px 8px; color:#bdbdbd; text-transform:uppercase; }
+  .pv-wine .note{ margin-top:8px; font-size:11.5px; line-height:1.6; color:#a8a8a8; font-style:italic; }
+  .pv-wine .note .mono{ font-style:normal; font-size:8.5px; letter-spacing:.12em; color:var(--muted); white-space:nowrap; }
+  .pv-soon a{ color:#cfcfcf; text-decoration:none; border-bottom:1px dotted #555; }
+  .pv-soon a:hover{ color:var(--gold); }
   .pv-soon{ border:1px dashed var(--line); padding:12px 14px; font-size:10px; letter-spacing:.14em; color:var(--muted); line-height:1.7; margin-top:12px; }
   .pv-ledger .yr{ margin-top:18px; font-size:10px; letter-spacing:.2em; color:var(--gold); border-bottom:1px dashed var(--line); padding-bottom:6px; margin-bottom:8px; }
   .pv-ledger-grid{ grid-template-columns:repeat(auto-fill, minmax(300px, 1fr)); gap:14px 24px; }

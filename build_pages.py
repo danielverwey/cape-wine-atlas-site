@@ -143,6 +143,15 @@ for r in atlas['regions']:
     for f in r['farms']:
         rec = {k: f.get(k) for k in ('id','name','ward','lat','lng','geoConfidence','founded','hours','venue','access','varieties','signatureWines','web','routeMember','oldVineFlag','awardsCollected','pendingClaims','locality','contactHeld')}
         rec['awards'] = [{k: aw.get(k) for k in ('body','year','wine','award','sourceUrl','sourceName')} | {'corr': bool(aw.get('_corroborated'))} for aw in f['awards']]
+        # the producer's own range, as printed on its own pages: names and range labels, the producer's own
+        # account of a name where it gives one, and where and when the atlas read it. The working note behind
+        # the reading stays in the atlas.
+        ws = f.get('winesSource') or {}
+        rec['wines'] = [{'name': w['name'], 'kind': w.get('kind') or 'wine'} for w in (f.get('wines') or []) if isinstance(w, dict) and w.get('name')]
+        rec['wineNotes'] = [{'wine': n['wine'], 'note': n['note']} for n in (f.get('wineNotes') or []) if isinstance(n, dict) and n.get('wine') and n.get('note')]
+        rec['winesRead'] = ws.get('read'); rec['winesUrls'] = [u for u in (ws.get('urls') or []) if isinstance(u, str)]
+        rec['winesAbsent'] = not rec['wines'] and not rec['winesUrls'] and bool(f.get('winesCollected'))   # nothing readable on the producer's own domain
+        rec['winesCollected'] = bool(f.get('winesCollected'))
         rec['history'] = copy(f.get('note'), 230)
         rec['people'] = copy(f.get('family'), 150)
         rec['hours'] = _copy(rec['hours'], VOCAB, 190, mode='hours') if rec['hours'] else rec['hours']
@@ -171,6 +180,8 @@ stats.update({'regions': len(atlas['regions']), 'routes': len(atlas['routes']), 
               'competitions': [{'body': x['body'], 'year': x['year'], 'records': x['records']} for x in atlas['competitions']],
               'tourDisclaimer': atlas['tourOperatorDisclaimer'], 'withheld': atlas.get('withheld', {}).get('total', 0),
               'industry': {'cellars': atlas.get('industry', {}).get('cellarsCrushing2024', {}).get('total'), 'source': 'SAWIS, SA Wine Industry Statistics 2024'}})
+_w = atlas['stats'].get('wines') or {}
+stats['wines'] = {k: _w.get(k) for k in ('brands', 'ranges', 'notes', 'producersWithBrands', 'namelessByChoice')}
 LON0, LON1, LAT0, LAT1 = 17.6, 23.75, 31.25, 35.05        # the Western Cape chart's bounding box
 marks = {r['key']: [(r['lng']-LON0)/(LON1-LON0), (-r['lat']-LAT0)/(LAT1-LAT0)] for r in idx}
 geo = json.loads((SRC / 'geo.json').read_text())
@@ -178,6 +189,8 @@ geo = json.loads((SRC / 'geo.json').read_text())
 # ---------------------------------------------------------------- lenses & search
 # Lenses re-weight the chart by one attribute; the per-region figures are counted here so the chart page
 # needs nothing but the index. Everything is counted from the record as it stands — nothing inferred.
+def strip_vintage(w): return re.sub(r'\s+\((19|20)\d\d\)$', '', re.sub(r'\s+(19|20)\d\d\s*$', '', str(w or ''))).strip()
+def fold_name(w): return re.sub(r'[^a-z0-9]+', ' ', strip_vintage(w).lower()).strip()
 def norm_grape(v):
     v = re.sub(r'\s+', ' ', str(v or '').strip())
     if re.fullmatch(r'(?i)syrah|shiraz', v): return 'Shiraz / Syrah'
@@ -200,7 +213,65 @@ def lens_of(farms):
 for r in idx: r['lens'] = lens_of(regions[r['key']]['farms'])
 ALL_FARMS = [f for R in regions.values() for f in R['farms']]
 lens_totals = lens_of(ALL_FARMS) | {'farms': len(ALL_FARMS), 'withheld': sum(r['withheld'] for r in idx)}
-# the search index: producers, regions, wards, grapes and signature wines, with the region key to open
+SHORT_SUFFIX = re.compile(r' (Estate|Vineyards|Wines|Wine Estate|Wine Cellar|Organic Wine Estate|Family Wines|Winery|Wine Farm|Private Cellar)$')
+def producer_prefixes(f):
+    short = SHORT_SUFFIX.sub('', re.sub(r' \(.*\)$', '', f['name']))
+    cands = {fold_name(f['name']), fold_name(short)}
+    first = fold_name(short).split(' ')[0] if fold_name(short) else ''
+    if len(first) >= 5: cands.add(first)
+    return sorted((c for c in cands if c), key=len, reverse=True)
+def fold_wine(name, prefixes):
+    """A wine's name as the ledger or the list gives it, folded, with the producer's own name lifted off the front
+    ('Kanonkop Black Label' and 'Black Label' are the same wine)."""
+    k = fold_name(name)
+    for p in prefixes:
+        if k == p: return ''
+        if k.startswith(p + ' '): return k[len(p) + 1:]
+    return k
+def tidy_name(n, prefixes=()):
+    n = strip_vintage(n)
+    for p in prefixes:   # the producer's own name lifted off the front, as printed
+        m = re.match(r'(?i)^' + r'\W+'.join(map(re.escape, p.split(' '))) + r'\W+(?=\S)', n)
+        if m: n = n[m.end():]; break
+    if len(n) > 3 and n.isupper(): n = ' '.join(w if len(w) <= 2 else w.title() for w in n.split(' '))
+    return n
+def wines_of(f):
+    """The wines on record: the producer's own list, each with the honours the ledger names for it (a range label
+    becomes a card only when an honour names it), then the signature wines, then wines only the ledger names."""
+    pre = producer_prefixes(f)
+    wines, order = {}, 0
+    def put(k, name, src):
+        nonlocal order
+        if k not in wines: wines[k] = {'name': tidy_name(name, pre), 'src': src, 'honours': [], 'note': None, 'order': order}; order += 1
+        return wines[k]
+    def find(k):
+        if k in wines: return wines[k]
+        for x in sorted(wines, key=len, reverse=True):
+            if len(x) >= 4 and (k.startswith(x + ' ') or (len(x) >= 5 and ' ' + x + ' ' in ' ' + k + ' ')): return wines[x]
+        return None
+    ranges = {fold_wine(w['name'], pre): w['name'] for w in (f.get('wines') or []) if w['kind'] == 'range' and fold_wine(w['name'], pre)}
+    for w in (f.get('wines') or []):
+        k = fold_wine(w['name'], pre)
+        if w['kind'] == 'wine' and k: put(k, w['name'], 'list')
+    for w in (f['signatureWines'] or []):
+        k = fold_wine(w, pre)
+        if k: put(k, w, 'signature')
+    for a in f['awards']:
+        if not a['wine'] or re.fullmatch(r'(?i)winery', a['wine']): continue
+        k = fold_wine(a['wine'], pre)
+        if not k: continue
+        hit = find(k)
+        if not hit:
+            r = next((x for x in sorted(ranges, key=len, reverse=True) if k == x or k.startswith(x + ' ')), None)
+            hit = put(r, ranges[r], 'range') if r else put(k, a['wine'], 'ledger')
+        hit['honours'].append(a)
+    for n in (f.get('wineNotes') or []):
+        hit = find(fold_wine(n['wine'], pre))
+        if hit and not hit['note']: hit['note'] = n['note']
+    rank_src = {'list': 0, 'range': 0, 'signature': 1, 'ledger': 2}
+    return sorted(wines.values(), key=lambda w: (rank_src[w['src']], -len(w['honours']), w['order']))
+def ranges_of(f): return [tidy_name(w['name']) for w in (f.get('wines') or []) if w['kind'] == 'range']
+# the search index: producers, regions, wards, grapes and the producers' own wine names, with the region key to open
 search = []
 name_of = {r['key']: r['name'] for r in idx}
 for r in idx: search.append({'t': 'REGION', 'l': r['name'], 's': f"{r['farms']} producers", 'k': r['key']})
@@ -209,7 +280,11 @@ for key, R in regions.items():
     for f in R['farms']:
         search.append({'t': 'PRODUCER', 'l': f['name'], 's': name_of[key], 'k': key, 'id': f['id']})
         if f.get('ward'): wards.setdefault(f['ward'], {'n': 0, 'k': key}); wards[f['ward']]['n'] += 1
-        for w in (f.get('signatureWines') or []): search.append({'t': 'WINE', 'l': w, 's': f['name'], 'k': key, 'id': f['id']})
+        seen = set(); pre = producer_prefixes(f)
+        for w in [x['name'] for x in (f.get('wines') or []) if x['kind'] == 'wine'] + list(f.get('signatureWines') or []):
+            k = fold_wine(w, pre)
+            if not k or k in seen: continue
+            seen.add(k); search.append({'t': 'WINE', 'l': tidy_name(w, pre), 's': f['name'], 'k': key, 'id': f['id']})
 for w, x in wards.items(): search.append({'t': 'WARD', 'l': w, 's': f"{x['n']} producers · {name_of[x['k']]}", 'k': x['k']})
 for g, n in sorted(grape_count.items(), key=lambda x: -x[1]): search.append({'t': 'GRAPE', 'l': g, 's': f"{n} producers grow it", 'g': g})
 # every producer, compactly, so the producer page can find its region and its neighbours across region borders
@@ -234,16 +309,6 @@ def rank(a):
     if re.search(r'silver|9[0-4]', t): return 3
     if re.search(r'bronze', t): return 2
     return 1
-def strip_vintage(w): return re.sub(r'\s+\((19|20)\d\d\)$', '', re.sub(r'\s+(19|20)\d\d\s*$', '', str(w or ''))).strip()
-def wines_of(f):
-    wines = {}
-    for w in (f['signatureWines'] or []):
-        k = strip_vintage(w)
-        if k: wines[k.lower()] = {'name': k, 'signature': True, 'honours': []}
-    for a in f['awards']:
-        if not a['wine'] or re.fullmatch(r'(?i)winery', a['wine']): continue
-        k = strip_vintage(a['wine']); wines.setdefault(k.lower(), {'name': k, 'signature': False, 'honours': []})['honours'].append(a)
-    return sorted(wines.values(), key=lambda w: (-len(w['honours']), -int(w['signature']), w['name']))
 PAREN = re.compile(r'\s*\(.*?\)\s*')
 def award_of(a):
     # some sources name the critic in both fields; the ledger says it once
@@ -393,12 +458,35 @@ def prerender_producer(R, f):
         f'<span class="flag dim mono">LOCATION · {esc(str(f["geoConfidence"] or "on record").upper()) if located else "AWAITING A PUBLISHED POSITION"}</span>',
         '' if f['awardsCollected'] else '<span class="flag warn mono">AWARD RESEARCH NOT YET REACHED</span>',
         f'<span class="flag warn mono">{f["pendingClaims"]} CLAIM{"" if f["pendingClaims"] == 1 else "S"} UNDER REVIEW</span>' if f['pendingClaims'] else ''] if x)
+    SRC_LABEL = {'list': 'ON THE PRODUCER’S OWN LIST', 'range': 'A RANGE ON THE PRODUCER’S OWN LIST', 'signature': 'SIGNATURE WINE', 'ledger': 'NAMED IN THE HONOURS LEDGER'}
     def wine_card(w):
         hs = w['honours']
         li = ''.join(f'<li><span class="y mono">{esc(a["year"] or "")}</span><span><b>{esc(a["body"])}</b> — {esc(award_of(a))}' + (f' <span class="vint">({m.group(0)})</span>' if (m := re.search(r'(19|20)\d\d', a['wine'] or '')) else '') + '</span></li>' for a in hs[:4])
         more = f'<li><span class="y"></span><span class="vint">and {len(hs) - 4} more in the ledger below</span></li>' if len(hs) > 4 else ''
-        return (f'<div class="pv-wine"><div class="n display">{esc(w["name"])}</div><div class="m mono">{"SIGNATURE WINE" if w["signature"] else "NAMED IN THE HONOURS LEDGER"}'
-                + (f' · <span class="g">{len(hs)} HONOUR{"" if len(hs) == 1 else "S"}</span>' if hs else '') + '</div>' + (f'<ul>{li}{more}</ul>' if hs else '') + '</div>')
+        note = f'<div class="note">“{esc(w["note"].strip().rstrip(".") )}.” <span class="mono">— THE PRODUCER’S OWN ACCOUNT OF THE NAME</span></div>' if w['note'] else ''
+        return (f'<div class="pv-wine"><div class="n display">{esc(w["name"])}</div><div class="m mono">{SRC_LABEL[w["src"]]}'
+                + (f' · <span class="g">{len(hs)} HONOUR{"" if len(hs) == 1 else "S"}</span>' if hs else '') + '</div>' + note + (f'<ul>{li}{more}</ul>' if hs else '') + '</div>')
+    ranges = ranges_of(f)
+    n_listed = sum(1 for w in wines if w['src'] in ('list', 'range'))
+    read_on = esc(f.get('winesRead') or '')
+    src_links = ' · '.join(f'<a href="{esc(u)}" target="_blank" rel="noopener">{esc(h.upper())}</a>' for h, u in {host(u): u for u in reversed(f.get('winesUrls') or [])}.items())
+    n_r = len(ranges); pl = lambda n: '' if n == 1 else 'S'
+    when = (' ON ' + read_on) if read_on else ''
+    in_ranges = f' IN {n_r} RANGE{pl(n_r)}' if ranges else ''
+    if n_listed:
+        wines_src = f'THE RANGE AS THE PRODUCER PRINTS IT, READ FROM {src_links or "ITS OWN PAGES"}{when} · {n_listed} NAME{pl(n_listed)}{in_ranges}'
+    elif f.get('winesAbsent'):
+        wines_src = f'NO READABLE PAGE ON THE PRODUCER’S OWN DOMAIN{when} · ' + ('THE WINES ABOVE ARE THOSE THE HONOURS LEDGER NAMES' if wines else 'THE HONOURS LEDGER NAMES NONE EITHER')
+    elif f.get('winesCollected'):
+        wines_src = f'THE PRODUCER’S OWN PAGES ({src_links or "ITS OWN SITE"}{", READ ON " + read_on if read_on else ""}) PUBLISH NO WINE NAMES — SOME SELL BY GRAPE VARIETY ALONE AND DO SO DELIBERATELY; THE ATLAS DOES NOT GUESS' + ('' if wines else '. THE HONOURS LEDGER NAMES NONE EITHER')
+    else:
+        wines_src = 'THE PRODUCER’S OWN RANGE HAS NOT YET BEEN READ' + ('; THE WINES ABOVE ARE THOSE THE HONOURS LEDGER NAMES' if wines else '')
+    n_more = len(wines) - n_listed
+    range_txt = f' and {n_r} range label{pl(n_r).lower()}' if ranges else ''
+    wines_prov = (f'{n_listed} name{pl(n_listed).lower()}{range_txt} read from the producer’s own pages' + ((' on ' + read_on) if read_on else '')) if n_listed else \
+                 ('no readable page on the producer’s own domain' if f.get('winesAbsent') else ('the producer publishes no wine names on its own site' if f.get('winesCollected') else 'range not yet read'))
+    if n_more: wines_prov += f'; {n_more} further name{pl(n_more).lower()} from the honours ledger'
+    ranges_html = ('<div class="pv-ranges mono"><span class="k">RANGES</span>' + ''.join(f'<span>{esc(r)}</span>' for r in ranges) + '</div>') if ranges else ''
     lede = esc(f['history']) if f['history'] else f'A producer on the {esc(region)} record. The atlas holds its hours, varieties and honours; a history line will follow when the record has one that meets the publication standard.'
     row = lambda k, v: f'<div class="pv-row"><span class="k mono">{k}</span><span>{v}</span></div>'
     visit = ''.join([
@@ -445,8 +533,9 @@ def prerender_producer(R, f):
       </section>
       <section class="rv-block pv-wines-block">
         <h3 class="mono"><span class="h3l">THE WINES</span><span>{len(wines)} ON RECORD</span></h3>
+        {ranges_html}
         {('<div class="pv-wines">' + ''.join(wine_card(w) for w in wines) + '</div>') if wines else '<p class="pv-prov">No wines are named on this record yet.</p>'}
-        <div class="pv-soon mono">THE FULL RANGE — EVERY LABEL THE PRODUCER SELLS, WITH STYLE AND VINTAGE — WILL FOLLOW AS THE ATLAS GATHERS IT. UNTIL THEN THIS LIST IS BUILT FROM THE SIGNATURE WINES AND THE HONOURS LEDGER ONLY.</div>
+        <div class="pv-soon mono">{wines_src}</div>
       </section>
       <section class="rv-block pv-ledger">
         <h3 class="mono"><span class="h3l">THE HONOURS LEDGER</span><span>{n_aw} VERIFIED · EACH WITH ITS SOURCE{f' · {pc} UNDER REVIEW, NOT SHOWN' if pc else ''}</span></h3>
@@ -458,6 +547,7 @@ def prerender_producer(R, f):
           <p class="pv-prov"><b>Record</b> · {esc(region)}{', ' + esc(f['ward']) + ' ward' if f['ward'] else ''} · gathered {esc(R['collected'] or '—')}.<br>
           <b>Position</b> · {f'published, confidence {esc(str(f["geoConfidence"] or "—"))}' if located else 'none published by the producer or an association; the atlas does not invent one'}.<br>
           <b>Honours</b> · {f'research complete · {n_aw} verified, each cited to the page that announced it' if f['awardsCollected'] else 'research not yet reached'}{f' · {pc} claim{"" if pc == 1 else "s"} awaiting a publishable source' if pc else ''}.<br>
+          <b>Wines</b> · {wines_prov}.<br>
           <b>Contact</b> · {'held on file, never republished' if f['contactHeld'] else 'not held'}.</p>
         </div>
         <div>
@@ -502,7 +592,7 @@ S = stats
 COMMON = {
     'ROOT': ROOT, 'BUILT': S['built'], 'EDITION': EDITION, 'EDITION_LOWER': EDITION.lower(),
     'FARMS': S['farms'], 'REGIONS': S['regions'], 'ROUTES': S['routes'], 'TOURS': S['tours'],
-    'AWARDS': S['verifiedAwards'], 'PENDING': S['pendingClaims'], 'WITHHELD': S['withheld'],
+    'AWARDS': S['verifiedAwards'], 'PENDING': S['pendingClaims'], 'WITHHELD': S['withheld'], 'WINES': (S.get('wines') or {}).get('brands') or 0,
     'OG_IMAGE': BASE_URL + 'assets/img/og.jpg',
 }
 PV_BLANK = {'PRODUCER': '', 'PV_OPEN': '', 'PV_CRUMB': '', 'PV_PRERENDER': '', 'JSONLD': ''}
@@ -514,7 +604,7 @@ def render(page):
     if leftover: sys.exit(f'unfilled placeholders: {sorted(set(leftover))}')
     return out
 
-site_desc = f"An open record of South Africa’s wine farms — {S['farms']} producers across {S['regions']} regions, every entry traceable to its source. {EDITION.title()}."
+site_desc = f"An open record of South Africa’s wine farms — {S['farms']} producers across {S['regions']} regions, {S['verifiedAwards']} honours and {(S.get('wines') or {}).get('brands') or 0} wines on record, every entry traceable to its source. {EDITION.title()}."
 
 # ---------------------------------------------------------------- write the site
 if OUT.exists(): shutil.rmtree(OUT)
@@ -541,7 +631,8 @@ for key, R in regions.items():
     for f in R['farms']:
         pd = OUT / 'producer' / f['id']; pd.mkdir(parents=True)
         n_aw = len(f['awards'])
-        pdesc = f"{f['name']} — wine producer in {R['name']}{', ' + f['ward'] + ' ward' if f['ward'] else ''}. {n_aw} honour{'' if n_aw == 1 else 's'} verified against {'its source' if n_aw == 1 else 'their sources'}. {(f['history'] or '')[:150]}".strip()
+        n_w = len(wines_of(f))
+        pdesc = f"{f['name']} — wine producer in {R['name']}{', ' + f['ward'] + ' ward' if f['ward'] else ''}. {n_aw} honour{'' if n_aw == 1 else 's'} verified against {'its source' if n_aw == 1 else 'their sources'}{(', ' + str(n_w) + ' wine' + ('' if n_w == 1 else 's') + ' on record') if n_w else ''}. {(f['history'] or '')[:150]}".strip()
         (pd / 'index.html').write_text(render({'TITLE': f"{f['name']} — {R['name']} · Cape Wine Atlas", 'DESCRIPTION': pdesc, 'CANONICAL': f'{BASE_URL}producer/{f["id"]}/', 'REGION': key, 'RV_OPEN': '', 'CRUMB': crumb_html(R), 'PRERENDER': '',
                                                 'PRODUCER': f['id'], 'PV_OPEN': 'open', 'PV_CRUMB': pv_crumb_html(R, f), 'PV_PRERENDER': prerender_producer(R, f), 'JSONLD': ld_producer(R, f)}), encoding='utf-8')
         urls.append(f'{BASE_URL}producer/{f["id"]}/'); n_pv += 1

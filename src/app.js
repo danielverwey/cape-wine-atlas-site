@@ -735,7 +735,7 @@
         clearTimeout(hideTimer);
         document.querySelectorAll('.orb.hi, .rl.hi').forEach(e => e.classList.remove('hi'));
         o.classList.add('hi'); li.classList.add('hi');
-        document.getElementById('mcEyebrow').textContent = `${r.woRegion.toUpperCase()} · ${r.district.toUpperCase()}${/DISTRICT|REGION|—/.test(r.district.toUpperCase()) ? '' : ' DISTRICT'}`;
+        document.getElementById('mcEyebrow').textContent = r.district && r.district !== '—' ? `${r.woRegion.toUpperCase()} · ${r.district.toUpperCase()}${/DISTRICT|REGION/.test(r.district.toUpperCase()) ? '' : ' DISTRICT'}` : r.woRegion.toUpperCase();
         document.getElementById('mcName').textContent = r.name;
         document.getElementById('mcText').innerHTML = `<div class="stat mono">
           <span>PRODUCERS ON RECORD</span><b>${r.farms}</b>
@@ -744,7 +744,7 @@
           <span>CLAIMS UNDER REVIEW</span><b>${r.pending}</b>
           <span>AWARD RESEARCH</span><b>${r.researched} / ${r.farms}</b>
           ${r.withheld ? `<span>HELD BACK UNTIL THEY MEET THE STANDARD</span><b>${r.withheld}</b>` : ''}
-          <span>STATUS</span><b>${STATUS_LABEL[r.status] || r.status.toUpperCase()}</b>
+          <span class="wide">STATUS</span><b class="wide">${STATUS_LABEL[r.status] || r.status.toUpperCase()}</b>
         </div><div class="cta mono">OPEN THE REGION ▸</div>`;
         document.getElementById('mcTags').innerHTML = '';
         card.classList.add('show');

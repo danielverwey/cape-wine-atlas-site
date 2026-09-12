@@ -5,7 +5,7 @@ Newest first. Each entry is one sync to `production site/`.
 ## v0.14.1 — 2026-09-12 — September 2026 edition
 `versions/cape-wine-atlas_2026-09-12_v0.14.1_september-2026-edition.html`
 
-- The hover card on the chart now sizes to its longest line (340–560 px) instead of a fixed width, so a long status such as "RECORDED · AWAITING INDEPENDENT REVIEW" sits on one line rather than stacking four deep.
+- Hover card on the chart: the status is a phrase, not a figure, so it now sits on its own line under its label instead of being squeezed into the figures column (where it stacked four deep, or, in the first attempt at a fix, stretched the card to 560 px). The card sizes to its text between 340 and 460 px; a region with no district no longer shows a stray dash.
 
 ## v0.14.0 — 2026-09-12 — September 2026 edition
 `versions/cape-wine-atlas_2026-09-12_v0.14.0_september-2026-edition.html`

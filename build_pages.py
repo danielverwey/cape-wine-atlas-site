@@ -10,7 +10,8 @@ publication gate, and writes a static site to <out>/ (GitHub Pages serves it):
 
     <out>/index.html                   the atlas
     <out>/region/<key>/index.html      one pre-rendered page per region, with a real URL
-    <out>/data/index.json              region index, statistics, map geometry
+    <out>/data/index.json              region index, statistics, map geometry, lens figures
+    <out>/data/search.json             the search index (producers, regions, wards, grapes, wines)
     <out>/data/regions/<key>.json      one file per region, fetched when opened
     <out>/assets/…                     stylesheet, script, typefaces, textures
     <out>/sitemap.xml  robots.txt  CNAME  404.html  .nojekyll
@@ -172,7 +173,45 @@ stats.update({'regions': len(atlas['regions']), 'routes': len(atlas['routes']), 
 LON0, LON1, LAT0, LAT1 = 17.6, 23.75, 31.25, 35.05        # the Western Cape chart's bounding box
 marks = {r['key']: [(r['lng']-LON0)/(LON1-LON0), (-r['lat']-LAT0)/(LAT1-LAT0)] for r in idx}
 geo = json.loads((SRC / 'geo.json').read_text())
-index = {'idx': idx, 'stats': stats, 'geo': geo, 'marks': marks}
+
+# ---------------------------------------------------------------- lenses & search
+# Lenses re-weight the chart by one attribute; the per-region figures are counted here so the chart page
+# needs nothing but the index. Everything is counted from the record as it stands — nothing inferred.
+def norm_grape(v):
+    v = re.sub(r'\s+', ' ', str(v or '').strip())
+    if re.fullmatch(r'(?i)syrah|shiraz', v): return 'Shiraz / Syrah'
+    return ' '.join(w[:1].upper() + w[1:].lower() for w in v.split(' '))
+grape_count = {}
+for R in regions.values():
+    for f in R['farms']:
+        for g in {norm_grape(v) for v in (f['varieties'] or []) if v}: grape_count[g] = grape_count.get(g, 0) + 1
+LENS_GRAPES = [g for g, _ in sorted(grape_count.items(), key=lambda x: -x[1])[:12]]
+def lens_of(farms):
+    fs = farms
+    founded = [f['founded'] for f in fs if f.get('founded')]
+    return {'honours': sum(len(f['awards']) for f in fs), 'pending': sum(f['pendingClaims'] or 0 for f in fs),
+            'grapes': {g: sum(1 for f in fs if g in {norm_grape(v) for v in (f['varieties'] or [])}) for g in LENS_GRAPES},
+            'withVar': sum(1 for f in fs if f['varieties']), 'walkIn': sum(1 for f in fs if f.get('access') == 'walk_in'),
+            'appt': sum(1 for f in fs if f.get('access') == 'appointment'), 'unknownAccess': sum(1 for f in fs if not f.get('access') or f.get('access') == 'unknown'),
+            'pre1900': sum(1 for y in founded if y < 1900), 'withFounded': len(founded), 'oldest': min(founded) if founded else None,
+            'oldVines': sum(1 for f in fs if f.get('oldVineFlag')), 'researched': sum(1 for f in fs if f['awardsCollected']),
+            'pinned': sum(1 for f in fs if f['lat'] is not None)}
+for r in idx: r['lens'] = lens_of(regions[r['key']]['farms'])
+ALL_FARMS = [f for R in regions.values() for f in R['farms']]
+lens_totals = lens_of(ALL_FARMS) | {'farms': len(ALL_FARMS), 'withheld': sum(r['withheld'] for r in idx)}
+# the search index: producers, regions, wards, grapes and signature wines, with the region key to open
+search = []
+name_of = {r['key']: r['name'] for r in idx}
+for r in idx: search.append({'t': 'REGION', 'l': r['name'], 's': f"{r['farms']} producers", 'k': r['key']})
+wards = {}
+for key, R in regions.items():
+    for f in R['farms']:
+        search.append({'t': 'PRODUCER', 'l': f['name'], 's': name_of[key], 'k': key, 'id': f['id']})
+        if f.get('ward'): wards.setdefault(f['ward'], {'n': 0, 'k': key}); wards[f['ward']]['n'] += 1
+        for w in (f.get('signatureWines') or []): search.append({'t': 'WINE', 'l': w, 's': f['name'], 'k': key, 'id': f['id']})
+for w, x in wards.items(): search.append({'t': 'WARD', 'l': w, 's': f"{x['n']} producers · {name_of[x['k']]}", 'k': x['k']})
+for g, n in sorted(grape_count.items(), key=lambda x: -x[1]): search.append({'t': 'GRAPE', 'l': g, 's': f"{n} producers grow it", 'g': g})
+index = {'idx': idx, 'stats': stats, 'geo': geo, 'marks': marks, 'lensGrapes': LENS_GRAPES, 'lensTotals': lens_totals}
 
 built = datetime.date.fromisoformat(stats['built'])
 EDITION = built.strftime('%B %Y').upper() + ' EDITION'
@@ -322,6 +361,7 @@ if OUT.exists(): shutil.rmtree(OUT)
 for f in (SRC / 'assets' / 'fonts').iterdir(): shutil.copy(f, OUT / 'assets' / 'fonts' / f.name)
 for f in (SRC / 'assets' / 'img').iterdir(): shutil.copy(f, OUT / 'assets' / 'img' / f.name)
 (OUT / 'data' / 'index.json').write_text(json.dumps(index, ensure_ascii=False, separators=(',', ':')), encoding='utf-8')
+(OUT / 'data' / 'search.json').write_text(json.dumps(search, ensure_ascii=False, separators=(',', ':')), encoding='utf-8')
 for key, R in regions.items():
     (OUT / 'data' / 'regions' / f'{key}.json').write_text(json.dumps(R, ensure_ascii=False, separators=(',', ':')), encoding='utf-8')
 
@@ -356,7 +396,7 @@ assets_inline = {f'img/{n}': data_uri(SRC / 'assets' / 'img' / n, 'image/jpeg') 
 single = render({'TITLE': 'Cape Wine Atlas', 'DESCRIPTION': site_desc, 'CANONICAL': BASE_URL, 'REGION': '', 'RV_OPEN': '', 'CRUMB': '', 'PRERENDER': ''})
 single = single.replace(f'<link rel="stylesheet" href="{ROOT}assets/site.css">', '<style>' + css_inline + '</style>')
 single = single.replace(f'<script src="{ROOT}assets/app.js"></script>',
-    '<script>window.__CWA = ' + json.dumps({'index': index, 'regions': regions, 'assets': assets_inline}, ensure_ascii=False) + ';</script>\n<script>' + app_js + '</script>')
+    '<script>window.__CWA = ' + json.dumps({'index': index, 'regions': regions, 'search': search, 'assets': assets_inline}, ensure_ascii=False) + ';</script>\n<script>' + app_js + '</script>')
 single = single.replace('<html lang="en" data-root="/" data-region="">', '<html lang="en" data-root="./" data-region="">')
 single_path = HERE / 'cape-wine-atlas.html'
 single_path.write_text(single, encoding='utf-8')

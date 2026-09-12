@@ -62,7 +62,7 @@
 
   enterBtn.addEventListener('click', () => {
     document.getElementById('preloader').classList.add('hide');
-    document.getElementById('chrome').classList.add('show');
+    document.getElementById('chrome').classList.add('show'); document.getElementById('searchToggle').classList.add('show');
     startParticles();
   });
 
@@ -1061,6 +1061,7 @@
       document.getElementById('recEmpty').hidden = n > 0;
     };
     fi.addEventListener('input', applyFilter); fa.addEventListener('change', applyFilter);
+    if(window.__applyLensToRegion) window.__applyLensToRegion(R);
   }
 
   window.addEventListener('resize', () => { if(rv.classList.contains('open') && currentRegion) bakeMini(currentRegion); });
@@ -1124,7 +1125,7 @@
     const back = rvOpener && document.contains(rvOpener) && rvOpener !== document.body ? rvOpener : document.querySelector('#regionList .rl');
     if(back) back.focus({ preventScroll: true });
     rvOpener = null;
-    if(!opts.fromHistory && location.pathname !== ROOT){ push({}, ROOT + '#explore'); }
+    if(!opts.fromHistory && location.pathname !== ROOT){ push({}, ROOT + (window.__lensHash ? window.__lensHash() : '#explore')); }
   }
   window.addEventListener('popstate', e => {
     const m = location.pathname.match(/\/region\/([a-z0-9-]+)\/?$/);
@@ -1136,7 +1137,7 @@
   function openLicence(){ if(!lv.classList.contains('open')) lvOpener = document.activeElement; lv.classList.add('open'); setBehindInert(true); document.body.style.overflow = 'hidden'; lv.querySelector('.rv-scroll').scrollTop = 0; if(location.hash !== '#licence') push({ licence: true }, ROOT + '#licence'); const t = document.getElementById('lvTitle'); if(t) t.focus({ preventScroll: true }); }
   function closeLicence(){ lv.classList.remove('open'); if(!rvOpen){ document.body.style.overflow = ''; setBehindInert(false); } if(location.hash === '#licence') push({}, ROOT + '#explore'); const back = lvOpener && document.contains(lvOpener) ? lvOpener : document.getElementById('openLicence'); if(back) back.focus({ preventScroll: true }); lvOpener = null; }
   trapTab(lv);
-  window.addEventListener('hashchange', () => { if(location.hash === '#licence'){ if(!lv.classList.contains('open')) openLicence(); } else if(lv.classList.contains('open')) closeLicence(); });
+  window.addEventListener('hashchange', () => { if(location.hash === '#licence'){ if(!lv.classList.contains('open')) openLicence(); } else if(lv.classList.contains('open')) closeLicence(); if(window.__lensFromHash) window.__lensFromHash(); });
   document.getElementById('openLicence').addEventListener('click', e => { e.preventDefault(); openLicence(); });
   document.getElementById('lvClose').addEventListener('click', closeLicence);
   window.addEventListener('keydown', e => { if(e.key === 'Escape' && lv.classList.contains('open')) closeLicence(); });
@@ -1188,10 +1189,210 @@
 
 
   /* ---- arriving on /region/<key>/: no boot sequence, straight onto the record ---- */
+  /* =========================================================
+     10. LENSES & SEARCH
+        A lens re-weights the chart by one attribute — honours, a grape, tasting rooms, age, old vines,
+        research coverage — from figures the build counted into the index; it carries into any region
+        opened while it is active. Search covers producers, regions, wards, grapes and wines in one box,
+        forgiving of spelling, from a strip on the chart page and a corner control on every page.
+        Everything shown is counted from the record as it stands; nothing is inferred.
+     ========================================================= */
+  (function(){
+    const rail = document.getElementById('lensRail'), explore = document.getElementById('explore');
+    if(!rail || !explore) return;
+    const GRAPES = ATLAS.lensGrapes || [], TOT = ATLAS.lensTotals || {};
+    const normGrape = v => { v = String(v || '').trim().replace(/\s+/g, ' '); if(/^(syrah|shiraz)$/i.test(v)) return 'Shiraz / Syrah'; return v.replace(/\w\S*/g, w => w[0].toUpperCase() + w.slice(1).toLowerCase()); };
+    const LENSES = {
+      honours:  { label: 'HONOURS',   unit: 'HONOURS',    metric: L => L.honours,           hit: f => f.awards.length > 0,
+                  legend: (m, T) => `HONOURS · marker size = verified honours on record · <span class="n">${m}</span> in the atlas · ${T.pending} under review, not counted` },
+      grape:    { label: 'GRAPE',     unit: 'GROW IT',    metric: (L, g) => (L.grapes || {})[g] || 0, hit: (f, g) => (f.varieties || []).some(v => normGrape(v) === g),
+                  legend: (m, T, g) => `GRAPE · ${esc(g.toUpperCase())} · <span class="n">${m}</span> producers grow it, of ${T.withVar} with varieties on record` },
+      tasting:  { label: 'TASTING',   unit: 'WALK-IN',    metric: L => L.walkIn,            hit: f => f.access === 'walk_in',
+                  legend: (m, T) => `TASTING · walk-in tasting rooms · <span class="n">${m}</span> of ${T.farms} producers · ${T.appt} by appointment · ${T.unknownAccess} not yet confirmed` },
+      age:      { label: 'AGE',       unit: 'PRE-1900',   metric: L => L.pre1900,           hit: f => f.founded && f.founded < 1900,
+                  legend: (m, T) => `AGE · estates founded before 1900 · <span class="n">${m}</span> of ${T.withFounded} with a founding year on record · oldest ${T.oldest}` },
+      oldvines: { label: 'OLD VINES', unit: 'OLD VINES',  metric: L => L.oldVines,          hit: f => !!f.oldVineFlag,
+                  legend: (m, T) => `OLD VINES · producers with old-vine bottlings on record · <span class="n">${m}</span> in the atlas` },
+      coverage: { label: 'COVERAGE',  unit: 'RESEARCHED', metric: L => L.researched,        hit: f => !!f.awardsCollected,
+                  legend: (m, T) => `COVERAGE · how far the research has reached · <span class="n">${m}</span> of ${T.farms} award records complete · ${T.pinned} positions located · ${T.withheld} records held back` }
+    };
+    const grapesEl = document.getElementById('lensGrapes');
+    grapesEl.innerHTML = GRAPES.map(g => `<button type="button" data-grape="${esc(g)}" aria-pressed="false">${esc(g.toUpperCase())}</button>`).join('');
+    const hint = document.querySelector('.map-hint'), hintDefault = hint ? hint.innerHTML : '';
+    const maxFarms = Math.max(...ATLAS.idx.map(x => x.farms));
+    let lens = '', grape = GRAPES[0] || '';
+    const lensHash = () => lens ? '#lens=' + lens + (lens === 'grape' ? ':' + encodeURIComponent(grape) : '') : '#explore';
+    window.__lensHash = lensHash;
+    function metricFor(r){ return lens ? LENSES[lens].metric(r.lens || {}, grape) : r.farms; }
+    function apply(fromHash){
+      rail.querySelectorAll('[data-lens]').forEach(b => { const on = b.dataset.lens === lens; b.classList.toggle('on', on); b.setAttribute('aria-pressed', on); });
+      rail.querySelectorAll('[data-grape]').forEach(b => { const on = b.dataset.grape === grape; b.classList.toggle('on', on); b.setAttribute('aria-pressed', on); });
+      grapesEl.classList.toggle('show', lens === 'grape');
+      explore.classList.toggle('lensed', !!lens);
+      const vals = {}; let max = 0;
+      ATLAS.idx.forEach(r => { const m = metricFor(r); vals[r.key] = m; if(m > max) max = m; });
+      ATLAS.idx.forEach(r => {
+        const m = vals[r.key];
+        const o = document.querySelector(`#mapPlane .orb[data-key="${r.key}"]`), li = document.querySelector(`#regionList .rl[data-key="${r.key}"]`);
+        const sc = lens ? (m ? 0.62 + 0.62 * Math.sqrt(m / (max || 1)) : 0.5) : 0.72 + 0.55 * Math.sqrt(r.farms / maxFarms);
+        if(o){ o.style.setProperty('--sc', sc.toFixed(2)); o.classList.toggle('lens-hit', !!lens && m > 0); o.classList.toggle('dormant', !!lens && m === 0);
+               o.setAttribute('aria-label', `${r.name} — ${m} ${lens ? LENSES[lens].unit.toLowerCase() : 'producer' + (m === 1 ? '' : 's')}. Open the region`); }
+        if(li){ li.querySelector('.c').textContent = m; li.classList.toggle('lens-zero', !!lens && m === 0); }
+      });
+      const headRow = document.querySelector('#regionList .rl-head span:last-child'); if(headRow) headRow.textContent = lens ? LENSES[lens].unit : 'FARMS';
+      if(hint){
+        if(!lens) hint.innerHTML = hintDefault;
+        else { const total = Object.values(vals).reduce((x, y) => x + y, 0); hint.innerHTML = `<span class="lens-legend">${LENSES[lens].legend(total, TOT, grape)}</span><br>` + hintDefault.split('<br>')[1]; }
+      }
+      if(!fromHash && canRoute && !rvOpen){ try { history.replaceState(history.state, '', ROOT + lensHash()); } catch(e){} }
+      if(currentRegion) applyToRegion(currentRegion);
+    }
+    rail.addEventListener('click', e => {
+      const b = e.target.closest('button'); if(!b) return;
+      if(b.dataset.lens !== undefined) lens = b.dataset.lens;
+      if(b.dataset.grape){ grape = b.dataset.grape; lens = 'grape'; }
+      apply();
+    });
+    function fromHash(){
+      const m = location.hash.match(/^#lens=([a-z]+)(?::([^&]+))?/);
+      if(m && LENSES[m[1]]){ lens = m[1]; if(m[2]){ const g = decodeURIComponent(m[2]); if(GRAPES.includes(g)) grape = g; } apply(true); }
+      else if(!m && lens && location.hash === '#explore'){ lens = ''; apply(true); }
+    }
+    window.__lensFromHash = fromHash;
+    // the same lens inside a region: pins dim and records hide for producers that do not qualify
+    function applyToRegion(R){
+      if(!rvScroll || !R) return;
+      const byId = {}; R.farms.forEach(f => byId[f.id] = f);
+      let note = rvScroll.querySelector('.rv-lens');
+      if(!lens){ rvScroll.querySelectorAll('.pin.lens-off, .rec.lens-off').forEach(el => el.classList.remove('lens-off')); if(note) note.remove(); return; }
+      const L = LENSES[lens]; let hits = 0;
+      rvScroll.querySelectorAll('.rec[data-id]').forEach(el => { const f = byId[el.dataset.id]; const ok = f ? !!L.hit(f, grape) : true; el.classList.toggle('lens-off', !ok); if(ok) hits++; });
+      rvScroll.querySelectorAll('.pin[data-id]').forEach(el => { const f = byId[el.dataset.id]; el.classList.toggle('lens-off', !(f && L.hit(f, grape))); });
+      if(!note){ note = document.createElement('div'); note.className = 'rv-lens mono'; const h3 = rvScroll.querySelector('.rv-block > h3'); if(h3) h3.after(note); }
+      note.innerHTML = `LENS · ${L.label}${lens === 'grape' ? ' · ' + esc(grape.toUpperCase()) : ''} · <span class="n">${hits}</span> of ${R.farms.length} producers shown · <a href="#explore" class="lens-clear">CLEAR ▸</a>`;
+      note.querySelector('.lens-clear').addEventListener('click', ev => { ev.preventDefault(); lens = ''; apply(); });
+    }
+    window.__applyLensToRegion = applyToRegion;
+    // the hover card sits below the rail, never over it (desktop layout only)
+    const card = document.getElementById('mapCard');
+    function placeCard(){ if(!card) return; if(window.innerWidth <= 900){ card.style.top = ''; return; } card.style.top = (rail.offsetTop + rail.offsetHeight + 14) + 'px'; }
+    placeCard(); window.addEventListener('resize', placeCard); setTimeout(placeCard, 800);
+    fromHash();
+
+    /* ---- search ---- */
+    let SEARCH = INLINE.search || null, loading = null;
+    const loadSearch = () => SEARCH ? Promise.resolve(SEARCH) : (loading = loading || fetch(ROOT + 'data/search.json', { cache: 'force-cache' }).then(r => r.json()).then(d => { SEARCH = d.map(it => ({ ...it, f: fold(it.l), toks: fold(it.l).split(' ') })); return SEARCH; }));
+    const fold = s => String(s || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/[’'`]/g, '').replace(/[^a-z0-9 ]+/g, ' ').replace(/\s+/g, ' ').trim();
+    if(SEARCH) SEARCH = SEARCH.map(it => ({ ...it, f: fold(it.l), toks: fold(it.l).split(' ') }));
+    const lev = (x, y) => {   // edit distance, with a swapped pair of letters counted as one slip
+      const m = x.length, n = y.length; if(!m) return n; if(!n) return m;
+      const d = Array.from({ length: m + 1 }, (_, i) => { const r = new Array(n + 1).fill(0); r[0] = i; return r; });
+      for(let j = 1; j <= n; j++) d[0][j] = j;
+      for(let i = 1; i <= m; i++) for(let j = 1; j <= n; j++){
+        const c = x[i-1] === y[j-1] ? 0 : 1;
+        d[i][j] = Math.min(d[i-1][j] + 1, d[i][j-1] + 1, d[i-1][j-1] + c);
+        if(i > 1 && j > 1 && x[i-1] === y[j-2] && x[i-2] === y[j-1]) d[i][j] = Math.min(d[i][j], d[i-2][j-2] + 1);
+      }
+      return d[m][n];
+    };
+    const tri = s => { const t = new Set(); const p = `  ${s} `; for(let i = 0; i < p.length - 2; i++) t.add(p.slice(i, i + 3)); return t; };
+    const dice = (x, y) => { const A = tri(x), B = tri(y); let c = 0; A.forEach(q => { if(B.has(q)) c++; }); return 2 * c / (A.size + B.size); };
+    const ratio = (x, y) => 1 - lev(x, y) / Math.max(x.length, y.length, 1);
+    function score(q, it){
+      const s = it.f; if(!q) return 0;
+      if(s === q) return 1;
+      if(s.startsWith(q)) return 0.96;
+      if(it.toks.some(t => t.startsWith(q))) return 0.9;
+      if(s.includes(q)) return 0.86;
+      const qt = q.split(' ');
+      let best = dice(q, s) * 0.92, tokScore = 0;
+      qt.forEach(w => { let b = 0; it.toks.forEach(t => { b = Math.max(b, ratio(w, t), t.length > w.length ? ratio(w, t.slice(0, w.length)) * 0.95 : 0); }); tokScore += b; });
+      tokScore /= qt.length;
+      return Math.max(best, tokScore * 0.9, ratio(q, s.slice(0, q.length + 1)) * 0.88);
+    }
+    const BONUS = { REGION: 0.03, WARD: 0.02, GRAPE: 0.02, PRODUCER: 0.01, WINE: 0 };   // a region outranks a producer that merely carries its name
+    function search(qRaw){
+      const q = fold(qRaw); if(q.length < 2 || !SEARCH) return { hits: [], fuzzy: false };
+      const scored = SEARCH.map(it => ({ it, raw: score(q, it) })).filter(x => x.raw >= (q.length < 4 ? 0.7 : 0.55)).map(x => ({ ...x, s: x.raw + BONUS[x.it.t] }));
+      scored.sort((x, y) => y.s - x.s);
+      const hits = scored.slice(0, 8);
+      return { hits, fuzzy: hits.length > 0 && hits[0].raw < 0.86 };
+    }
+    const hl = (label, q) => { const f = fold(q); const i = fold(label).indexOf(f); if(i < 0 || !f) return esc(label); return esc(label.slice(0, i)) + '<mark>' + esc(label.slice(i, i + f.length)) + '</mark>' + esc(label.slice(i + f.length)); };
+    let pendingRecord = null;
+    function showRecord(id){
+      const rec = rvScroll.querySelector('#rec-' + id); if(!rec) return;
+      rec.classList.remove('lens-off'); rec.hidden = false; rec.classList.add('search-hit');
+      rec.scrollIntoView({ block: 'center', behavior: 'auto' });
+      setTimeout(() => rec.classList.remove('search-hit'), 4000);
+    }
+    function go(it){
+      if(it.t === 'GRAPE'){
+        if(rvOpen) closeRegion();
+        grape = GRAPES.includes(it.g) ? it.g : grape; lens = GRAPES.includes(it.g) ? 'grape' : lens; apply();
+        explore.scrollIntoView({ block: 'start' }); return;
+      }
+      if(rvOpen && rvKey === it.k){ if(it.id) showRecord(it.id); return; }
+      if(it.id) pendingRecord = it.id;
+      openRegion(it.k);
+    }
+    // the record that was searched for: jump to it once the region has rendered and its boot lines have run
+    new MutationObserver(() => { if(!pendingRecord) return; const id = pendingRecord; pendingRecord = null; setTimeout(() => showRecord(id), rv.querySelector('#rvBoot').classList.contains('done') ? 100 : 2900); }).observe(rvScroll, { childList: true });
+    function mount(input, out, onGo){
+      let hits = [], sel = -1;
+      function render(){
+        if(!hits.length){ out.innerHTML = input.value.trim().length >= 2 ? `<div class="none">NOTHING CLOSE TO “${esc(input.value.trim().toUpperCase())}” ON THE RECORD</div>` : ''; out.classList.toggle('show', !!out.innerHTML); return; }
+        const q = input.value;
+        out.innerHTML = (hits.fuzzy ? `<div class="fuzzy-note">NO EXACT MATCH — SHOWING THE CLOSEST ON THE RECORD</div>` : '') +
+          hits.map((h, i) => `<div class="res${i === sel ? ' sel' : ''}" role="option" id="${out.id}-${i}" aria-selected="${i === sel}" data-i="${i}"><span class="t">${h.it.t}</span><span class="l">${hl(h.it.l, q)}</span><span class="s">${esc(h.it.s || '')}</span></div>`).join('');
+        out.classList.add('show'); input.setAttribute('aria-activedescendant', sel >= 0 ? `${out.id}-${sel}` : '');
+      }
+      const choose = h => { input.value = h.it.l; out.classList.remove('show'); input.blur(); if(onGo) onGo(); go(h.it); };
+      const run = () => { const r = search(input.value); hits = r.hits; hits.fuzzy = r.fuzzy; sel = hits.length ? 0 : -1; render(); };
+      input.addEventListener('input', () => { if(SEARCH) run(); else loadSearch().then(run); });
+      input.addEventListener('focus', () => { loadSearch(); if(hits.length) out.classList.add('show'); });
+      input.addEventListener('keydown', e => {
+        if(e.key === 'ArrowDown'){ e.preventDefault(); sel = Math.min(hits.length - 1, sel + 1); render(); }
+        else if(e.key === 'ArrowUp'){ e.preventDefault(); sel = Math.max(0, sel - 1); render(); }
+        else if(e.key === 'Enter'){ e.preventDefault(); if(hits[sel]) choose(hits[sel]); }
+        else if(e.key === 'Escape' && out.classList.contains('show')){ e.stopPropagation(); out.classList.remove('show'); }
+      });
+      out.addEventListener('mousedown', e => { const r = e.target.closest('.res'); if(r){ e.preventDefault(); choose(hits[+r.dataset.i]); } });
+      document.addEventListener('click', e => { if(!input.parentElement.contains(e.target)) out.classList.remove('show'); });
+      return { focus(){ input.focus(); input.select(); if(hits.length) out.classList.add('show'); }, hide(){ out.classList.remove('show'); } };
+    }
+    mount(document.getElementById('searchStripInput'), document.getElementById('searchStripResults'));
+    const toggle = document.getElementById('searchToggle'), panel = document.getElementById('searchPanel');
+    let open = false, panelOpener = null;
+    const panelSearch = mount(document.getElementById('searchPanelInput'), document.getElementById('searchPanelResults'), () => setOpen(false));
+    function setOpen(v){
+      open = v; panel.hidden = !v; toggle.classList.toggle('on', v); toggle.setAttribute('aria-expanded', v);
+      if(v){ panelOpener = document.activeElement; panelSearch.focus(); }
+      else { panelSearch.hide(); if(panelOpener && document.contains(panelOpener) && panelOpener !== document.body) panelOpener.focus({ preventScroll: true }); panelOpener = null; }
+    }
+    toggle.addEventListener('click', () => setOpen(!open));
+    window.addEventListener('keydown', e => {
+      if(e.key === '/' && !/INPUT|TEXTAREA/.test(document.activeElement.tagName) && !e.ctrlKey && !e.metaKey){ e.preventDefault(); setOpen(true); }
+      else if(e.key === 'Escape' && open){ e.stopPropagation(); setOpen(false); }
+    }, true);
+    document.addEventListener('click', e => { if(open && !panel.contains(e.target) && !toggle.contains(e.target)) setOpen(false); });
+    if('requestIdleCallback' in window) requestIdleCallback(() => loadSearch()); else setTimeout(loadSearch, 4000);
+
+    /* ---- the other corner controls: the emblem returns to the top; the corner box shows its full-screen state ---- */
+    const emblem = document.getElementById('emblem');
+    if(emblem) emblem.addEventListener('click', () => { if(rvOpen) closeRegion(); if(lv.classList.contains('open')) closeLicence(); window.scrollTo({ top: 0, behavior: REDUCED_MOTION ? 'auto' : 'smooth' }); });
+    const fsBtn = document.getElementById('menuToggle');
+    if(fsBtn){
+      const enter = fsBtn.innerHTML;
+      const exit = '<svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M5 1v4M5 5H1M11 1v4M11 5h4M5 15v-4M5 11H1M11 15v-4M11 11h4" stroke="var(--gold)" stroke-width="1"/></svg>';
+      document.addEventListener('fullscreenchange', () => { const on = !!document.fullscreenElement; fsBtn.innerHTML = on ? exit : enter; fsBtn.title = on ? 'Exit full screen' : 'Full screen'; fsBtn.setAttribute('aria-label', fsBtn.title); });
+    }
+  })();
+
   if(BOOT_REGION){
     clearInterval(plInterval);
     document.getElementById('preloader').classList.add('hide');
-    document.getElementById('chrome').classList.add('show');
+    document.getElementById('chrome').classList.add('show'); document.getElementById('searchToggle').classList.add('show');
     startParticles();
     document.getElementById('explore').scrollIntoView();
     openRegion(BOOT_REGION, { fromHistory: true, instant: true });

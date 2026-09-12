@@ -2,6 +2,16 @@
 
 Newest first. Each entry is one sync to `production site/`.
 
+## v0.14.0 — 2026-09-12 — September 2026 edition
+`versions/cape-wine-atlas_2026-09-12_v0.14.0_september-2026-edition.html`
+
+Lenses and search, from the prototype reviewed on 11–12 September. Built against the 12 September atlas export (644 producers · 1,326 verified honours · 24 under review · 144 held back).
+- **Lenses.** A rail under "Explore the regions" — PRODUCERS · HONOURS · GRAPE · TASTING · AGE · OLD VINES · COVERAGE, with a second row of the twelve most-grown grapes (Shiraz and Syrah counted together). A lens re-weights the markers by its metric (regions with nothing to show drop to the dormant rings), swaps the index's FARMS column for the metric, and turns the hint line into a legend stated the honest way ("308 producers grow it, of 644 with varieties on record"; "24 under review, not counted"). Opening a region while a lens is active carries it inside: pins dim and records hide for producers that don't qualify, with a line saying "LENS · GRAPE · CHENIN BLANC · 42 of 55 producers shown · CLEAR". The lens lives in the address (`#lens=honours`, `#lens=grape:Chenin%20Blanc`) so a view can be shared, and survives closing a region. Figures are counted by the build into `data/index.json`; nothing is inferred.
+- **Search.** One box for producers, regions, wards, grapes and signature wines (about 2,000 entries in `data/search.json`, fetched on first use), forgiving of spelling: exact, prefix and substring matches first, then edit distance (a swapped pair counts as one slip) and letter-trigram overlap. When nothing matched exactly the list says so in gold rather than substituting silently. A FIND strip sits above the lens rail on the chart page; a corner control top-left (or `/` from anywhere) drops the same box from the top of any page, region readouts included. A producer or wine opens its region and lands on the record, which glows for a few seconds; a region or ward opens the region; a grape sets the Grape lens.
+- **Corner controls.** The emblem returns to the top of the atlas (closing a region or the licence page first); the full-screen box shows its state, gold and pointing inward while active; each carries a tooltip.
+- **Layout.** With the strip and rail under the title, the chart moves up and to the right into the ground below the radar; sized to fit at 1920×1080, 1877×870, 1440×900, 1366×768 and 1500×700; the strip, rail and grape row wrap on tablets and phones; the hover card sits below the rail, never over it.
+- Accessibility carried through: the rail and grape buttons are toggle buttons with pressed state; both search boxes are labelled comboboxes with keyboard selection; the panel returns focus to where it was opened from; marker names follow the lens ("Stellenbosch — 530 honours").
+
 ## v0.13.3 — 2026-09-11 — September 2026 edition
 `versions/cape-wine-atlas_2026-09-11_v0.13.3_september-2026-edition.html`
 

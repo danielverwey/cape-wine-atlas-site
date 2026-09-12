@@ -625,6 +625,82 @@
     #menuToggle, #soundToggle{ padding:6px 10px; font-size:9px; }
   }
 
+  /* ---------- LENSES: the chart weighted by one attribute at a time ---------- */
+  .lens-rail{ position:relative; z-index:6; display:flex; flex-wrap:wrap; align-items:center; gap:6px 8px; padding:12px 40px 0; font-size:9.5px; letter-spacing:.16em; color:var(--muted); }
+  .lens-rail .lk{ margin-right:8px; color:#bdbdbd; }
+  .lens-rail button{ appearance:none; -webkit-appearance:none; font:inherit; letter-spacing:inherit; color:var(--muted); background:rgba(6,6,6,0.5); border:1px solid var(--line); padding:6px 10px; cursor:pointer; transition:color .2s, border-color .2s; }
+  .lens-rail button:hover{ color:#eaeaea; border-color:rgba(234,234,234,0.4); }
+  .lens-rail button.on{ color:var(--gold); border-color:var(--gold); }
+  .lens-rail .grapes{ display:none; flex-basis:100%; flex-wrap:wrap; gap:6px 8px; padding-left:52px; max-width:min(100%, 820px); }
+  .lens-rail .grapes.show{ display:flex; }
+  .lens-rail .grapes button{ padding:4px 8px; font-size:9px; }
+  .lens-legend{ color:var(--gold); }
+  .lens-legend .n{ color:#eaeaea; }
+  #explore.lensed .orb:not(.lens-hit){ opacity:.55; }
+  .orb{ transition:opacity .6s ease, transform .7s cubic-bezier(.2,.8,.2,1); }
+  .region-list .rl .c{ transition:color .3s; }
+  .region-list .rl.lens-zero{ color:#555; }
+  .region-list .rl.lens-zero .c{ color:#444; }
+  .rv-lens{ margin:-6px 0 18px; font-size:10px; letter-spacing:.16em; color:var(--gold); }
+  .rv-lens .n{ color:#eaeaea; }
+  .rv-lens a{ color:inherit; }
+  .rv-map .pin.lens-off{ opacity:.28; }
+  .rv-map .pin.lens-off b{ display:none; }
+  .rec.lens-off{ display:none; }
+
+  /* ---------- SEARCH: a strip on the chart page, and a corner control that works on every page ---------- */
+  .atlas-search{ position:relative; z-index:7; display:flex; align-items:center; gap:10px; font-size:9.5px; letter-spacing:.16em; color:var(--muted); }
+  .atlas-search .lk{ color:#bdbdbd; }
+  .atlas-search .box{ position:relative; width:100%; }
+  .atlas-search input{ width:100%; box-sizing:border-box; background:rgba(6,6,6,0.6); border:1px solid var(--line); color:#eaeaea; font:inherit; letter-spacing:.14em; padding:9px 12px; text-transform:uppercase; }
+  .atlas-search input::placeholder{ color:#5c5c5c; text-transform:none; letter-spacing:.12em; }
+  .atlas-search input:focus{ outline:none; border-color:var(--gold); }
+  .atlas-search input::-webkit-search-cancel-button{ -webkit-appearance:none; }
+  .atlas-search .results{ background:rgba(6,6,6,0.96); border:1px solid var(--line); display:none; overflow-y:auto; scrollbar-width:thin; scrollbar-color:#333 transparent; }
+  .atlas-search .results.show{ display:block; }
+  .atlas-search .res{ display:grid; grid-template-columns:78px 1fr auto; gap:12px; align-items:baseline; padding:8px 12px; cursor:pointer; border-bottom:1px dashed rgba(234,234,234,0.08); }
+  .atlas-search .res:last-child{ border-bottom:0; }
+  .atlas-search .res .t{ font-size:8.5px; color:var(--muted); }
+  .atlas-search .res .l{ color:#eaeaea; letter-spacing:.08em; text-transform:none; font-size:11px; }
+  .atlas-search .res .l mark{ background:none; color:var(--gold); }
+  .atlas-search .res .s{ color:var(--muted); font-size:9px; white-space:nowrap; }
+  .atlas-search .res:hover, .atlas-search .res.sel{ background:rgba(201,162,39,0.08); }
+  .atlas-search .res:hover .l, .atlas-search .res.sel .l{ color:var(--gold); }
+  .atlas-search .fuzzy-note{ padding:7px 12px; font-size:8.5px; color:var(--gold); border-bottom:1px dashed rgba(234,234,234,0.08); }
+  .atlas-search .none{ padding:10px 12px; color:var(--muted); }
+  .atlas-search .hint{ margin-top:6px; font-size:8.5px; letter-spacing:.16em; color:var(--muted); text-align:right; }
+  #searchStrip{ padding:18px 40px 0; }
+  #searchStrip .box{ width:min(560px, 100%); }
+  #searchStrip .results{ position:absolute; left:0; right:0; top:calc(100% + 4px); max-height:340px; }
+  #searchToggle{ position:fixed; top:22px; left:22px; z-index:1100; width:44px; height:44px; padding:0; align-items:center; justify-content:center; opacity:0; transition:opacity .8s ease; pointer-events:none; }
+  #searchToggle.show{ opacity:1; pointer-events:auto; }
+  #searchToggle:hover, #searchToggle.on{ border-color:var(--gold); }
+  #searchToggle.on svg *{ stroke:var(--gold); }
+  #searchPanel{ position:fixed; top:78px; left:50%; transform:translateX(-50%); width:min(640px, calc(100vw - 32px)); z-index:1100; }
+  #searchPanel input{ background:rgba(6,6,6,0.94); padding:12px 14px; font-size:11px; }
+  #searchPanel .results{ margin-top:4px; max-height:min(52vh, 420px); }
+  .rec.search-hit{ border-color:var(--gold); box-shadow:0 0 0 1px rgba(201,162,39,.35), 0 0 24px rgba(201,162,39,.18); }
+  .rv-top{ padding-left:84px; }   /* room for the search control beside the breadcrumb */
+  /* with the strip and the rail under the title, the chart sits up and to the right, into the ground below the radar */
+  @media (min-width:901px){
+    .ex-head{ padding-top:84px; }
+    .map-stage{ margin-top:-70px; }
+    .map-plane{ width:min(86vw, 1240px, calc((100vh - 380px) * 2.25)); left:calc(50% - 30px); top:-22%; }
+    .region-list{ max-height:calc(100vh - 300px); }
+  }
+  @media (max-width:900px){
+    #searchStrip{ padding:14px 20px 0; }
+    .lens-rail{ padding:10px 20px 0; }
+    .lens-rail .grapes{ padding-left:0; max-width:none; }
+  }
+  @media (max-width:760px){
+    #searchToggle{ left:16px; top:22px; }
+    #searchPanel{ top:74px; }
+    .atlas-search .res{ grid-template-columns:62px 1fr; }
+    .atlas-search .res .s{ display:none; }
+    .rv-top{ padding-left:70px; }
+  }
+
   /* ---------- HUD geometry on small and short screens ----------
      The hairline rings, crosses and section frames are drawn at 14–16 % white: right on a large monitor,
      lost on a phone in daylight or a 13-inch laptop. The weight stays hairline; only the tone lifts. */
@@ -696,7 +772,7 @@
     /* region readout */
     .rv-boot{ padding:0 16px 40px 16px; }
     .rv-boot .lines{ font-size:10px; }
-    .rv-top{ padding:16px 16px 0; gap:12px; }
+    .rv-top{ padding:16px 16px 0 70px; gap:12px; }
     .rv-top .crumb{ min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
     #rvClose, #lvClose{ white-space:nowrap; flex:none; padding:8px 10px; }
     .rv-scroll{ padding:20px 16px 48px; }

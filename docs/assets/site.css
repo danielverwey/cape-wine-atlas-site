@@ -459,7 +459,8 @@
   .orb.live{ cursor:pointer; }
   .orb.live::after{ content:"OPEN ▸"; position:absolute; left:calc(100% + 4px); top:50%; transform:translateY(-50%) scaleY(1.9); font:9px "JetBrains Mono", monospace; letter-spacing:.14em; color:var(--gold); white-space:nowrap; opacity:0; transition:opacity .3s; }
   .orb.live:hover::after, .orb.live.hi::after{ opacity:1; }
-  .map-card{ right:auto; left:40px; top:26%; bottom:auto; pointer-events:auto; width:340px; padding:16px 20px; }
+  .map-card{ right:auto; left:40px; top:26%; bottom:auto; pointer-events:auto; width:auto; min-width:340px; max-width:min(560px, 46vw); padding:16px 20px; }   /* sized to its longest line — the status never wraps into a stack */
+  .map-card .eyebrow, .map-card .stat b{ white-space:nowrap; }
   .map-card .name{ font-size:17px; margin-bottom:6px; }
   .map-card .stat{ margin-top:8px; line-height:1.5; }
   .map-card .cta{ margin-top:10px; }

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" data-root="/" data-region="nieuwoudtville">
+<html lang="en" data-root="/" data-region="nieuwoudtville" data-producer="">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -12,11 +12,12 @@
 <meta property="og:description" content="Nieuwoudtville — 1 wine producers on record, 1 honours verified against their sources. The Bokkeveld escarpment above the Hantam Karoo, where it meets the Knersvlakte.">
 <meta property="og:url" content="https://capewineatlas.co.za/region/nieuwoudtville/">
 <meta property="og:image" content="https://capewineatlas.co.za/assets/img/og.jpg">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Cape Wine Atlas", "item": "https://capewineatlas.co.za/"}, {"@type": "ListItem", "position": 2, "name": "Nieuwoudtville", "item": "https://capewineatlas.co.za/region/nieuwoudtville/"}]}, {"@type": "ItemList", "name": "Wine producers on record in Nieuwoudtville", "url": "https://capewineatlas.co.za/region/nieuwoudtville/", "numberOfItems": 1, "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Cloudskraal", "url": "https://capewineatlas.co.za/producer/cloudskraal/"}]}]}</script>
 <meta name="twitter:card" content="summary_large_image">
 <meta name="theme-color" content="#0a0a0a">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%230a0a0a'/%3E%3Ccircle cx='16' cy='16' r='9' fill='none' stroke='%23c9a227' stroke-width='1.5'/%3E%3Ccircle cx='16' cy='16' r='3.5' fill='%23c9a227'/%3E%3C/svg%3E">
 <link rel="stylesheet" href="/assets/site.css">
-<noscript><style>#preloader{display:none!important}#chrome{opacity:1!important}#regionView.open,#regionView.open .rv-boot{display:flex}#regionView .rv-boot{display:none!important}.rv-lede{min-height:0}</style></noscript>
+<noscript><style>#preloader{display:none!important}#chrome{opacity:1!important}#regionView.open,#regionView.open .rv-boot,#producerView.open{display:flex}#regionView .rv-boot{display:none!important}.rv-lede{min-height:0}</style></noscript>
 <!--
   Cape Wine Atlas. © 2026 the Cape Wine Atlas project, maintained by MDRF.
   Data: Open Database License (ODbL) 1.0 — contains information from OpenStreetMap, © OpenStreetMap contributors.
@@ -190,16 +191,16 @@
       <section class="rv-block">
         <h3 class="mono"><span class="h3l">PRODUCER RECORDS <span>1 ON RECORD · RECORDED · AWAITING INDEPENDENT REVIEW</span></span></h3>
         <div class="rv-grid" id="recGrid"><article class="rec" id="rec-cloudskraal" data-id="cloudskraal">
-        <div class="rec-bar mono"><span>$ record.cloudskraal</span><span class="term-dots"><span></span><span></span><span></span></span></div>
+        <div class="rec-bar mono"><span>$ record.cloudskraal</span><a class="rec-open mono" href="/producer/cloudskraal/" data-region="nieuwoudtville" data-open="cloudskraal">OPEN THE RECORD ▸</a><span class="term-dots"><span></span><span></span><span></span></span></div>
         <div class="rec-body">
-          <div class="rec-name display">Cloudskraal</div>
+          <div class="rec-name display" data-region="nieuwoudtville" data-open="cloudskraal">Cloudskraal</div>
           <div class="rec-meta mono"><span><span class="ok">TASTING BY APPOINTMENT</span></span><span>LOCATION · MEDIUM</span></div>
           <p class="rec-hist">Guest house and working farm (sheep, rooibos, wine) run by the Nel family; wine is the newest of the three enterprises. Entered as a structured award below.</p>
           
           
           <div class="rec-row"><span class="k mono">VARIETIES</span><div class="tags mono"><span>Sauvignon Blanc</span></div></div>
           <div class="rec-row"><span class="k mono">SIGNATURE</span><span>Cloudskraal Nieu Sauvignon Blanc</span></div>
-          <div class="rec-awards"><div class="aw"><span class="y">2023</span><span><b>Winemag Label Design Awards (sponsored by Rotolabel)</b> — Bronze and People&#x27;s Choice Award, label design category<br><span class="w">Cloudskraal Nieu Sauvignon Blanc 2023</span><br><a class="src mono" href="https://www.cloudskraal.com/post/cloudskraal-nieu-sauvignon-blanc-wins-awards-2023" target="_blank" rel="noopener" title="Cloudskraal&#x27;s own site (design credited to Studio Sebastian); a wine-quality review of the same vintage appears separately at winemag.co.za">SOURCE · CLOUDSKRAAL&#x27;S OWN SITE (DESIGN…</a></span></div></div>
+          <div class="rec-awards"><div class="rec-sum mono"><span class="g">1 HONOUR VERIFIED</span> · Winemag Label Design Awards (sponsored by Rotolabel) Bronze and People&#x27;s Choice Award, label de 2023</div></div>
           <div class="rec-contact mono"><a href="https://www.cloudskraal.com/" target="_blank" rel="noopener">cloudskraal.com</a></div>
         </div></article></div>
       </section>
@@ -219,6 +220,16 @@
         </div>
       </section>
       <div class="rv-foot mono"><span>THE ATLAS RECORD · SEPTEMBER 2026 EDITION</span><span>DATA UNDER ODbL 1.0 · CONTAINS INFORMATION FROM OPENSTREETMAP, © OPENSTREETMAP CONTRIBUTORS</span><span>NIEUWOUDTVILLE</span><span>RECORDS GATHERED 2026-09-04</span><span>ACROSS THE ATLAS · 644 FARMS · 31 REGIONS · 1326 HONOURS VERIFIED</span></div></div>
+  </div>
+
+  <!-- ================= PRODUCER VIEW (opened from a region's record card) ================= -->
+  <div id="producerView" class="" role="dialog" aria-modal="true" aria-labelledby="pvTitle">
+    <div class="frame"><i class="tl"></i><i class="tr"></i><i class="bl"></i><i class="br"></i></div>
+    <div class="rv-top mono">
+      <div class="crumb" id="pvCrumb"></div>
+      <div class="btns"><button id="pvBack" class="mono" type="button" aria-label="Back to the region">[ BACK ] ◂</button><button id="pvClose" class="mono" type="button" aria-label="Close the record"><span class="long">[ CLOSE ] </span>✕</button></div>
+    </div>
+    <div class="rv-scroll" id="pvScroll"></div>
   </div>
 
   <!-- ================= LICENCE & CREDITS (opened from the footer) ================= -->

@@ -10,6 +10,7 @@ publication gate, and writes a static site to <out>/ (GitHub Pages serves it):
 
     <out>/index.html                   the atlas
     <out>/region/<key>/index.html      one pre-rendered page per region, with a real URL
+    <out>/producer/<id>/index.html     one pre-rendered page per producer (the third level)
     <out>/data/index.json              region index, statistics, map geometry, lens figures
     <out>/data/search.json             the search index (producers, regions, wards, grapes, wines)
     <out>/data/regions/<key>.json      one file per region, fetched when opened
@@ -211,7 +212,44 @@ for key, R in regions.items():
         for w in (f.get('signatureWines') or []): search.append({'t': 'WINE', 'l': w, 's': f['name'], 'k': key, 'id': f['id']})
 for w, x in wards.items(): search.append({'t': 'WARD', 'l': w, 's': f"{x['n']} producers · {name_of[x['k']]}", 'k': x['k']})
 for g, n in sorted(grape_count.items(), key=lambda x: -x[1]): search.append({'t': 'GRAPE', 'l': g, 's': f"{n} producers grow it", 'g': g})
-index = {'idx': idx, 'stats': stats, 'geo': geo, 'marks': marks, 'lensGrapes': LENS_GRAPES, 'lensTotals': lens_totals}
+# every producer, compactly, so the producer page can find its region and its neighbours across region borders
+producers = [[f['id'], key, f['name'], f['lat'], f['lng']] for key, R in regions.items() for f in R['farms']]
+index = {'idx': idx, 'stats': stats, 'geo': geo, 'marks': marks, 'lensGrapes': LENS_GRAPES, 'lensTotals': lens_totals, 'producers': producers}
+
+# ---------------------------------------------------------------- the producer record (shared by the region cards and the producer page)
+import math
+def km(a, b):
+    dlat = math.radians(b['lat'] - a['lat']); dlng = math.radians(b['lng'] - a['lng'])
+    x = math.sin(dlat/2)**2 + math.cos(math.radians(a['lat'])) * math.cos(math.radians(b['lat'])) * math.sin(dlng/2)**2
+    return 2 * 6371 * math.asin(math.sqrt(x))
+LOCATED = [(key, f) for key, R in regions.items() for f in R['farms'] if f['lat'] is not None]
+def neighbours_of(f, n=6):
+    if f['lat'] is None: return []
+    return sorted(({'key': k, 'f': x, 'd': km(f, x)} for k, x in LOCATED if x['id'] != f['id']), key=lambda z: z['d'])[:n]
+def rank(a):
+    t = (a['award'] + ' ' + a['body']).lower()
+    if re.search(r'winery of the year|trophy|best in show', t): return 6
+    if re.search(r'double gold|5 star|five star|platinum|grand gold', t): return 5
+    if re.search(r'gold|9[5-9]/100|9[5-9] points|9[5-9]pts', t): return 4
+    if re.search(r'silver|9[0-4]', t): return 3
+    if re.search(r'bronze', t): return 2
+    return 1
+def strip_vintage(w): return re.sub(r'\s+\((19|20)\d\d\)$', '', re.sub(r'\s+(19|20)\d\d\s*$', '', str(w or ''))).strip()
+def wines_of(f):
+    wines = {}
+    for w in (f['signatureWines'] or []):
+        k = strip_vintage(w)
+        if k: wines[k.lower()] = {'name': k, 'signature': True, 'honours': []}
+    for a in f['awards']:
+        if not a['wine'] or re.fullmatch(r'(?i)winery', a['wine']): continue
+        k = strip_vintage(a['wine']); wines.setdefault(k.lower(), {'name': k, 'signature': False, 'honours': []})['honours'].append(a)
+    return sorted(wines.values(), key=lambda w: (-len(w['honours']), -int(w['signature']), w['name']))
+PAREN = re.compile(r'\s*\(.*?\)\s*')
+def award_of(a):
+    # some sources name the critic in both fields; the ledger says it once
+    t = a['award'] or ''; b = a['body'] or ''
+    return t[len(b):].strip() if b and t.lower().startswith(b.lower() + ' ') else t
+def top_honours(f, n=3): return sorted(f['awards'], key=lambda a: (-rank(a), -(a['year'] or 0)))[:n]
 
 built = datetime.date.fromisoformat(stats['built'])
 EDITION = built.strftime('%B %Y').upper() + ' EDITION'
@@ -251,10 +289,11 @@ def prerender(R):
             'ROUTE MEMBER' if f['routeMember'] == 'yes' else None,
             f'LOCATION · {str(f["geoConfidence"] or "").upper()}' if f['lat'] is not None else 'LOCATION NOT YET RESOLVED',
             '<span class="gold">OLD VINES</span>' if f['oldVineFlag'] else None] if x]
-        led = ''.join(
-            f'<div class="aw"><span class="y">{esc(a["year"]) if a["year"] is not None else "—"}</span><span><b>{esc(a["body"])}</b> — {esc(a["award"])}<br><span class="w">{esc(a["wine"])}</span>'
-            + (f'<br><a class="src mono" href="{esc(a["sourceUrl"])}" target="_blank" rel="noopener" title="{esc(a.get("sourceName") or "")}">SOURCE · {esc(((a.get("sourceName") if a.get("sourceName") and len(a["sourceName"]) <= 32 else (a["sourceName"][:30].rstrip(" —–-") + "…") if a.get("sourceName") else host(a["sourceUrl"]))).upper())}</a>' if a.get('sourceUrl') else '')
-            + ('<span class="corr mono">✓✓ CORROBORATED</span>' if a.get('corr') else '') + '</span></div>' for a in f['awards'])
+        # the card carries a summary of the honours; the full ledger, each with its source, is on the producer's own page
+        n_aw = len(f['awards'])
+        led = (f'<div class="rec-sum mono"><span class="g">{n_aw} HONOUR{"" if n_aw == 1 else "S"} VERIFIED</span>'
+               + ''.join(f' · {esc(a["body"])} {esc(PAREN.sub("", award_of(a))[:42])}{" " + str(a["year"]) if a["year"] else ""}' for a in top_honours(f))
+               + (f' · and {n_aw - 3} more' if n_aw > 3 else '') + '</div>') if n_aw else ''
         flags = ''.join([
             '<span class="flag warn mono">AWARDS NOT YET RESEARCHED</span>' if not f['awardsCollected'] else '',
             '<span class="flag dim mono">NO VERIFIED HONOUR ON FILE</span>' if (f['awardsCollected'] and not f['awards'] and not f['pendingClaims']) else '',
@@ -263,9 +302,9 @@ def prerender(R):
             f'<a href="{esc(f["web"])}" target="_blank" rel="noopener">{esc(host(f["web"]))}</a>' if f['web'] else '',
             f'<span>{esc(str(f["contactHeld"]).upper())} ON FILE · NOT REPUBLISHED</span>' if f['contactHeld'] else ''])
         recs.append(f'''<article class="rec" id="rec-{f['id']}" data-id="{f['id']}">
-        <div class="rec-bar mono"><span>$ record.{f['id']}</span><span class="term-dots"><span></span><span></span><span></span></span></div>
+        <div class="rec-bar mono"><span>$ record.{f['id']}</span><a class="rec-open mono" href="{ROOT}producer/{f['id']}/" data-region="{R['key']}" data-open="{f['id']}">OPEN THE RECORD ▸</a><span class="term-dots"><span></span><span></span><span></span></span></div>
         <div class="rec-body">
-          <div class="rec-name display">{esc(f['name'])}</div>
+          <div class="rec-name display" data-region="{R['key']}" data-open="{f['id']}">{esc(f['name'])}</div>
           <div class="rec-meta mono">{''.join(f'<span>{x}</span>' for x in meta)}</div>
           {f'<p class="rec-hist">{esc(f["history"])}</p>' if f['history'] else ''}
           {f'<div class="rec-row"><span class="k mono">PEOPLE</span><span>{esc(f["people"])}</span></div>' if f.get('people') else ''}
@@ -331,6 +370,130 @@ def prerender(R):
       </section>
       <div class="rv-foot mono"><span>THE ATLAS RECORD · {EDITION}</span><span>DATA UNDER ODbL 1.0 · CONTAINS INFORMATION FROM OPENSTREETMAP, © OPENSTREETMAP CONTRIBUTORS</span><span>{' · '.join([*chain, *([esc(ward.upper())] if ward else [])]) or esc(R['name'].upper())}</span><span>RECORDS GATHERED {esc(R['collected'] or '—')}</span><span>ACROSS THE ATLAS · {S['farms']} FARMS · {S['regions']} REGIONS · {S['verifiedAwards']} HONOURS VERIFIED</span></div>'''
 
+# ---------------------------------------------------------------- the producer page (the third level: chart → region → producer)
+VENUE = {'hosted': 'TASTED AT A HOST VENUE', 'outlet': 'TASTED AT AN OUTLET', 'none': 'NO TASTING VENUE'}
+def src_chip(a):
+    if not a.get('sourceUrl'): return ''
+    label = (a.get('sourceName') or host(a['sourceUrl'])).upper()
+    label = label[:30] + '…' if len(label) > 30 else label
+    return (f'<a class="src mono" href="{esc(a["sourceUrl"])}" target="_blank" rel="noopener" title="{esc(a.get("sourceName") or "")}">SOURCE · {esc(label)}</a>'
+            + ('<span class="corr mono">✓✓ CORROBORATED</span>' if a.get('corr') else ''))
+def pv_crumb_html(R, f): return f'<b>CAPE WINE ATLAS</b><span>/</span><b>{esc(R["name"].upper())}</b><span>/</span><b>{esc(f["name"].upper())}</b>'
+def prerender_producer(R, f):
+    region = R['name']; located = f['lat'] is not None
+    neigh = neighbours_of(f); wines = wines_of(f)
+    by_year = {}
+    for a in f['awards']: by_year.setdefault(a['year'] if a['year'] is not None else '—', []).append(a)
+    years = sorted(by_year, key=lambda y: -1 if y == '—' else -int(y))
+    eyebrow = ' · '.join(esc(str(x).upper()) for x in [R['woRegion'], R['district'], f['ward']] if x and x != '—') + (' · ' + esc(str(f['locality']).upper()) if f['locality'] else '')
+    flags = ''.join(x for x in [
+        f'<span class="flag gold mono">{ACCESS.get(f["access"], esc(str(f["access"]).upper()))}</span>' if f['access'] else '',
+        '<span class="flag dim mono">ROUTE MEMBER</span>' if f['routeMember'] == 'yes' else '',
+        '<span class="flag gold mono">OLD VINES</span>' if f['oldVineFlag'] else '',
+        f'<span class="flag dim mono">LOCATION · {esc(str(f["geoConfidence"] or "on record").upper()) if located else "AWAITING A PUBLISHED POSITION"}</span>',
+        '' if f['awardsCollected'] else '<span class="flag warn mono">AWARD RESEARCH NOT YET REACHED</span>',
+        f'<span class="flag warn mono">{f["pendingClaims"]} CLAIM{"" if f["pendingClaims"] == 1 else "S"} UNDER REVIEW</span>' if f['pendingClaims'] else ''] if x)
+    def wine_card(w):
+        hs = w['honours']
+        li = ''.join(f'<li><span class="y mono">{esc(a["year"] or "")}</span><span><b>{esc(a["body"])}</b> — {esc(award_of(a))}' + (f' <span class="vint">({m.group(0)})</span>' if (m := re.search(r'(19|20)\d\d', a['wine'] or '')) else '') + '</span></li>' for a in hs[:4])
+        more = f'<li><span class="y"></span><span class="vint">and {len(hs) - 4} more in the ledger below</span></li>' if len(hs) > 4 else ''
+        return (f'<div class="pv-wine"><div class="n display">{esc(w["name"])}</div><div class="m mono">{"SIGNATURE WINE" if w["signature"] else "NAMED IN THE HONOURS LEDGER"}'
+                + (f' · <span class="g">{len(hs)} HONOUR{"" if len(hs) == 1 else "S"}</span>' if hs else '') + '</div>' + (f'<ul>{li}{more}</ul>' if hs else '') + '</div>')
+    lede = esc(f['history']) if f['history'] else f'A producer on the {esc(region)} record. The atlas holds its hours, varieties and honours; a history line will follow when the record has one that meets the publication standard.'
+    row = lambda k, v: f'<div class="pv-row"><span class="k mono">{k}</span><span>{v}</span></div>'
+    visit = ''.join([
+        row('HOURS', esc(f['hours']) if f['hours'] else 'No public tasting schedule on record.'),
+        row('VENUE', VENUE[f['venue']]) if f['venue'] in VENUE else '',
+        row('WEBSITE', f'<a href="{esc(f["web"])}" target="_blank" rel="noopener">{esc(host(f["web"]))}</a>') if f['web'] else '',
+        row('CONTACT', (esc(str(f['contactHeld']).upper()) + ' on file, not republished — reach the producer through its own site.') if f['contactHeld'] else 'Not held; reach the producer through its own site.'),
+        '' if located else row('POSITION', 'None published by the producer or an association; the atlas does not invent one.')])
+    vineyard = ''.join([
+        (f'<div class="pv-row"><span class="k mono">VARIETIES</span><div class="tags mono">' + ''.join(f'<span>{esc(v)}</span>' for v in f['varieties']) + '</div></div>') if f['varieties'] else row('VARIETIES', 'None on record yet.'),
+        row('SIGNATURE', ' · '.join(esc(x) for x in f['signatureWines'])) if f['signatureWines'] else '',
+        row('OLD VINES', 'Old-vine bottlings on record.') if f['oldVineFlag'] else '',
+        row('FOUNDED', esc(f['founded'])) if f['founded'] else ''])
+    def neigh_row(n):
+        far = regions[n['key']]['name'] if n['key'] != R['key'] else (n['f']['ward'] or '')
+        return (f'<span class="d">{n["d"]:.1f}' if n['d'] < 10 else f'<span class="d">{round(n["d"])}') + f' KM</span><a href="{ROOT}producer/{n["f"]["id"]}/" data-open="{n["f"]["id"]}" data-region="{n["key"]}">{esc(n["f"]["name"])}</a><span class="d">{esc(far.upper())}</span>'
+    neigh_html = ('<div class="pv-neigh mono">' + ''.join(neigh_row(n) for n in neigh) + '</div>') if neigh else '<p class="pv-prov">Neighbours are listed once the producer has a published position.</p>'
+    ledger = ''.join(
+        f'<div class="yr mono">{esc(y)}</div><div class="rv-grid pv-ledger-grid">' + ''.join(
+            f'<div class="aw pv-aw"><span><b>{esc(a["body"])}</b> — {esc(award_of(a))}</span><span class="w">{esc(a["wine"])}</span><span>{src_chip(a)}</span></div>' for a in by_year[y]) + '</div>'
+        for y in years) if f['awards'] else f'<p class="pv-prov">{"No verified honours on record." if f["awardsCollected"] else "Award research has not yet reached this producer; the ledger is empty rather than guessed."}</p>'
+    n_aw = len(f['awards']); pc = f['pendingClaims'] or 0
+    return f'''
+      <div class="pv-head{'' if located else ' nomap'}">
+        <div>
+          <div class="rv-eyebrow mono">{eyebrow or 'WESTERN CAPE'}</div>
+          <h2 class="display" id="pvTitle" tabindex="-1">{esc(f['name'])}</h2>
+          <p class="pv-lede">{lede}</p>
+          {f'<div class="pv-people"><span class="k mono">PEOPLE</span>{esc(f["people"])}</div>' if f.get('people') else ''}
+          <div class="pv-flags">{flags}</div>
+          <div class="pv-stats mono">
+            <div><span class="v{'' if f['founded'] else ' dim'}">{esc(f['founded']) if f['founded'] else '—'}</span><span class="k">FOUNDED</span></div>
+            <div><span class="v g">{n_aw}</span><span class="k">HONOURS VERIFIED</span></div>
+            <div><span class="v">{len(f['varieties'] or [])}</span><span class="k">VARIETIES ON RECORD</span></div>
+            <div><span class="v">{len(wines)}</span><span class="k">WINES ON RECORD</span></div>
+          </div>
+        </div>
+        {f'<div class="pv-map" id="pvMap"><canvas id="pvCanvas" role="img" aria-label="Tactical map around {esc(f["name"])}"></canvas><span class="corner tl"></span><span class="corner br"></span><div class="hud mono">TACTICAL · {esc(f["name"].upper())}<br><b>{f["lat"]:.4f}, {f["lng"]:.4f}</b><br>{len(neigh)} NEIGHBOURS WITHIN VIEW</div><div class="scale mono"><i style="width:53px"></i><span>≈ 1 KM</span></div></div>' if located else ''}
+      </div>
+      <section class="rv-block pv-three">
+        <div><h3 class="mono"><span class="h3l">VISIT</span></h3>{visit}</div>
+        <div><h3 class="mono"><span class="h3l">THE VINEYARD</span></h3>{vineyard}</div>
+        <div><h3 class="mono"><span class="h3l">NEIGHBOURS</span></h3>{neigh_html}</div>
+      </section>
+      <section class="rv-block pv-wines-block">
+        <h3 class="mono"><span class="h3l">THE WINES</span><span>{len(wines)} ON RECORD</span></h3>
+        {('<div class="pv-wines">' + ''.join(wine_card(w) for w in wines) + '</div>') if wines else '<p class="pv-prov">No wines are named on this record yet.</p>'}
+        <div class="pv-soon mono">THE FULL RANGE — EVERY LABEL THE PRODUCER SELLS, WITH STYLE AND VINTAGE — WILL FOLLOW AS THE ATLAS GATHERS IT. UNTIL THEN THIS LIST IS BUILT FROM THE SIGNATURE WINES AND THE HONOURS LEDGER ONLY.</div>
+      </section>
+      <section class="rv-block pv-ledger">
+        <h3 class="mono"><span class="h3l">THE HONOURS LEDGER</span><span>{n_aw} VERIFIED · EACH WITH ITS SOURCE{f' · {pc} UNDER REVIEW, NOT SHOWN' if pc else ''}</span></h3>
+        {ledger}
+      </section>
+      <section class="rv-block rv-two pv-prov-block">
+        <div>
+          <h3 class="mono"><span class="h3l">PROVENANCE</span></h3>
+          <p class="pv-prov"><b>Record</b> · {esc(region)}{', ' + esc(f['ward']) + ' ward' if f['ward'] else ''} · gathered {esc(R['collected'] or '—')}.<br>
+          <b>Position</b> · {f'published, confidence {esc(str(f["geoConfidence"] or "—"))}' if located else 'none published by the producer or an association; the atlas does not invent one'}.<br>
+          <b>Honours</b> · {f'research complete · {n_aw} verified, each cited to the page that announced it' if f['awardsCollected'] else 'research not yet reached'}{f' · {pc} claim{"" if pc == 1 else "s"} awaiting a publishable source' if pc else ''}.<br>
+          <b>Contact</b> · {'held on file, never republished' if f['contactHeld'] else 'not held'}.</p>
+        </div>
+        <div>
+          <h3 class="mono"><span class="h3l">CORRECTIONS</span></h3>
+          <p class="pv-prov">If you make wine here and this record is wrong, incomplete or out of date, write to <a class="lv-link" href="mailto:capewineatlas@gmail.com">capewineatlas@gmail.com</a>. A correction is made against a source and the record then cites it.</p>
+        </div>
+      </section>
+      <div class="rv-foot mono"><span>THE ATLAS RECORD · {EDITION}</span><span>DATA UNDER ODbL 1.0 · CONTAINS INFORMATION FROM OPENSTREETMAP, © OPENSTREETMAP CONTRIBUTORS</span><span>{esc(f['name'].upper())} · {esc(region.upper())}</span><span>RECORDS GATHERED {esc(R['collected'] or '—')}</span></div>'''
+
+# ---------------------------------------------------------------- structured data (what a search engine reads; nothing here that the page does not already say)
+def ld(obj): return '<script type="application/ld+json">' + json.dumps(obj, ensure_ascii=False).replace('</', '<\\/') + '</script>'
+def ld_breadcrumb(items):
+    return {'@type': 'BreadcrumbList', 'itemListElement': [{'@type': 'ListItem', 'position': i + 1, 'name': n, 'item': u} for i, (n, u) in enumerate(items)]}
+def ld_home(desc):
+    return ld({'@context': 'https://schema.org', '@graph': [
+        {'@type': 'WebSite', 'name': 'Cape Wine Atlas', 'url': BASE_URL, 'description': desc},
+        {'@type': 'Dataset', 'name': f'Cape Wine Atlas — {EDITION.title()}', 'description': desc, 'url': BASE_URL, 'license': 'https://opendatacommons.org/licenses/odbl/1-0/',
+         'creator': {'@type': 'Organization', 'name': 'the Cape Wine Atlas project, maintained by MDRF'}, 'spatialCoverage': 'Western Cape, South Africa', 'dateModified': stats['built'],
+         'distribution': [{'@type': 'DataDownload', 'encodingFormat': 'application/json', 'contentUrl': BASE_URL + 'data/index.json'}]}]})
+def ld_region(R):
+    url = f'{BASE_URL}region/{R["key"]}/'
+    return ld({'@context': 'https://schema.org', '@graph': [
+        ld_breadcrumb([('Cape Wine Atlas', BASE_URL), (R['name'], url)]),
+        {'@type': 'ItemList', 'name': f'Wine producers on record in {R["name"]}', 'url': url, 'numberOfItems': len(R['farms']),
+         'itemListElement': [{'@type': 'ListItem', 'position': i + 1, 'name': f['name'], 'url': f'{BASE_URL}producer/{f["id"]}/'} for i, f in enumerate(R['farms'])]}]})
+def ld_producer(R, f):
+    url = f'{BASE_URL}producer/{f["id"]}/'
+    w = {'@type': 'Winery', 'name': f['name'], 'url': url, 'address': {'@type': 'PostalAddress', 'addressRegion': 'Western Cape', 'addressCountry': 'ZA'}}
+    if f['ward'] or f['locality']: w['address']['addressLocality'] = f['ward'] or f['locality'].split('(')[0].strip()
+    if f['web']: w['sameAs'] = [f['web']]
+    if f['lat'] is not None: w['geo'] = {'@type': 'GeoCoordinates', 'latitude': f['lat'], 'longitude': f['lng']}
+    if f['founded']: w['foundingDate'] = str(f['founded'])
+    if f['history']: w['description'] = f['history']
+    w['containedInPlace'] = {'@type': 'Place', 'name': R['name'], 'url': f'{BASE_URL}region/{R["key"]}/'}
+    return ld({'@context': 'https://schema.org', '@graph': [ld_breadcrumb([('Cape Wine Atlas', BASE_URL), (R['name'], f'{BASE_URL}region/{R["key"]}/'), (f['name'], url)]), w]})
+
 # ---------------------------------------------------------------- templating
 template = (SRC / 'index.template.html').read_text(encoding='utf-8')
 site_css = (SRC / 'site.css').read_text(encoding='utf-8')
@@ -342,8 +505,9 @@ COMMON = {
     'AWARDS': S['verifiedAwards'], 'PENDING': S['pendingClaims'], 'WITHHELD': S['withheld'],
     'OG_IMAGE': BASE_URL + 'assets/img/og.jpg',
 }
+PV_BLANK = {'PRODUCER': '', 'PV_OPEN': '', 'PV_CRUMB': '', 'PV_PRERENDER': '', 'JSONLD': ''}
 def render(page):
-    vals = {**COMMON, **page}
+    vals = {**COMMON, **PV_BLANK, **page}
     out = template
     for k, v in vals.items(): out = out.replace('{{' + k + '}}', str(v))
     leftover = re.findall(r'\{\{[A-Z_]+\}\}', out)
@@ -365,13 +529,22 @@ for f in (SRC / 'assets' / 'img').iterdir(): shutil.copy(f, OUT / 'assets' / 'im
 for key, R in regions.items():
     (OUT / 'data' / 'regions' / f'{key}.json').write_text(json.dumps(R, ensure_ascii=False, separators=(',', ':')), encoding='utf-8')
 
-(OUT / 'index.html').write_text(render({'TITLE': 'Cape Wine Atlas', 'DESCRIPTION': site_desc, 'CANONICAL': BASE_URL, 'REGION': '', 'RV_OPEN': '', 'CRUMB': '', 'PRERENDER': ''}), encoding='utf-8')
+(OUT / 'index.html').write_text(render({'TITLE': 'Cape Wine Atlas', 'DESCRIPTION': site_desc, 'CANONICAL': BASE_URL, 'REGION': '', 'RV_OPEN': '', 'CRUMB': '', 'PRERENDER': '', 'JSONLD': ld_home(site_desc)}), encoding='utf-8')
 urls = [BASE_URL]
+n_pv = 0
 for key, R in regions.items():
     d = OUT / 'region' / key; d.mkdir(parents=True)
     desc = f"{R['name']} — {len(R['farms'])} wine producers on record, {sum(len(f['awards']) for f in R['farms'])} honours verified against their sources. {R['lede'][:150]}"
-    (d / 'index.html').write_text(render({'TITLE': f"{R['name']} — Cape Wine Atlas", 'DESCRIPTION': desc, 'CANONICAL': f'{BASE_URL}region/{key}/', 'REGION': key, 'RV_OPEN': 'open', 'CRUMB': crumb_html(R), 'PRERENDER': prerender(R)}), encoding='utf-8')
+    (d / 'index.html').write_text(render({'TITLE': f"{R['name']} — Cape Wine Atlas", 'DESCRIPTION': desc, 'CANONICAL': f'{BASE_URL}region/{key}/', 'REGION': key, 'RV_OPEN': 'open', 'CRUMB': crumb_html(R), 'PRERENDER': prerender(R), 'JSONLD': ld_region(R)}), encoding='utf-8')
     urls.append(f'{BASE_URL}region/{key}/')
+    # one page per producer: the region opens beneath it on load, so BACK lands on the region it came from
+    for f in R['farms']:
+        pd = OUT / 'producer' / f['id']; pd.mkdir(parents=True)
+        n_aw = len(f['awards'])
+        pdesc = f"{f['name']} — wine producer in {R['name']}{', ' + f['ward'] + ' ward' if f['ward'] else ''}. {n_aw} honour{'' if n_aw == 1 else 's'} verified against {'its source' if n_aw == 1 else 'their sources'}. {(f['history'] or '')[:150]}".strip()
+        (pd / 'index.html').write_text(render({'TITLE': f"{f['name']} — {R['name']} · Cape Wine Atlas", 'DESCRIPTION': pdesc, 'CANONICAL': f'{BASE_URL}producer/{f["id"]}/', 'REGION': key, 'RV_OPEN': '', 'CRUMB': crumb_html(R), 'PRERENDER': '',
+                                                'PRODUCER': f['id'], 'PV_OPEN': 'open', 'PV_CRUMB': pv_crumb_html(R, f), 'PV_PRERENDER': prerender_producer(R, f), 'JSONLD': ld_producer(R, f)}), encoding='utf-8')
+        urls.append(f'{BASE_URL}producer/{f["id"]}/'); n_pv += 1
 
 (OUT / 'sitemap.xml').write_text('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' + ''.join(f'  <url><loc>{u}</loc><lastmod>{S["built"]}</lastmod></url>\n' for u in urls) + '</urlset>\n', encoding='utf-8')
 (OUT / 'robots.txt').write_text(f'User-agent: *\nAllow: /\nSitemap: {BASE_URL}sitemap.xml\n', encoding='utf-8')
@@ -397,9 +570,9 @@ single = render({'TITLE': 'Cape Wine Atlas', 'DESCRIPTION': site_desc, 'CANONICA
 single = single.replace(f'<link rel="stylesheet" href="{ROOT}assets/site.css">', '<style>' + css_inline + '</style>')
 single = single.replace(f'<script src="{ROOT}assets/app.js"></script>',
     '<script>window.__CWA = ' + json.dumps({'index': index, 'regions': regions, 'search': search, 'assets': assets_inline}, ensure_ascii=False) + ';</script>\n<script>' + app_js + '</script>')
-single = single.replace('<html lang="en" data-root="/" data-region="">', '<html lang="en" data-root="./" data-region="">')
+single = single.replace('<html lang="en" data-root="/" data-region="" data-producer="">', '<html lang="en" data-root="./" data-region="" data-producer="">')
 single_path = HERE / 'cape-wine-atlas.html'
 single_path.write_text(single, encoding='utf-8')
 
 n_files = sum(1 for _ in OUT.rglob('*') if _.is_file())
-print(f"built: {S['farms']} farms · {S['regions']} regions · {S['verifiedAwards']} honours · {EDITION} → {OUT} ({n_files} files) + {single_path.name} ({single_path.stat().st_size//1024} KB)")
+print(f"built: {S['farms']} farms · {S['regions']} regions · {n_pv} producer pages · {S['verifiedAwards']} honours · {EDITION} → {OUT} ({n_files} files) + {single_path.name} ({single_path.stat().st_size//1024} KB)")

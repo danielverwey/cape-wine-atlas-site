@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" data-root="/" data-region="">
+<html lang="en" data-root="/" data-region="" data-producer="">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -12,11 +12,12 @@
 <meta property="og:description" content="An open record of South Africa’s wine farms — 644 producers across 31 regions, every entry traceable to its source. September 2026 Edition.">
 <meta property="og:url" content="https://capewineatlas.co.za/">
 <meta property="og:image" content="https://capewineatlas.co.za/assets/img/og.jpg">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "WebSite", "name": "Cape Wine Atlas", "url": "https://capewineatlas.co.za/", "description": "An open record of South Africa’s wine farms — 644 producers across 31 regions, every entry traceable to its source. September 2026 Edition."}, {"@type": "Dataset", "name": "Cape Wine Atlas — September 2026 Edition", "description": "An open record of South Africa’s wine farms — 644 producers across 31 regions, every entry traceable to its source. September 2026 Edition.", "url": "https://capewineatlas.co.za/", "license": "https://opendatacommons.org/licenses/odbl/1-0/", "creator": {"@type": "Organization", "name": "the Cape Wine Atlas project, maintained by MDRF"}, "spatialCoverage": "Western Cape, South Africa", "dateModified": "2026-09-12", "distribution": [{"@type": "DataDownload", "encodingFormat": "application/json", "contentUrl": "https://capewineatlas.co.za/data/index.json"}]}]}</script>
 <meta name="twitter:card" content="summary_large_image">
 <meta name="theme-color" content="#0a0a0a">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%230a0a0a'/%3E%3Ccircle cx='16' cy='16' r='9' fill='none' stroke='%23c9a227' stroke-width='1.5'/%3E%3Ccircle cx='16' cy='16' r='3.5' fill='%23c9a227'/%3E%3C/svg%3E">
 <link rel="stylesheet" href="/assets/site.css">
-<noscript><style>#preloader{display:none!important}#chrome{opacity:1!important}#regionView.open,#regionView.open .rv-boot{display:flex}#regionView .rv-boot{display:none!important}.rv-lede{min-height:0}</style></noscript>
+<noscript><style>#preloader{display:none!important}#chrome{opacity:1!important}#regionView.open,#regionView.open .rv-boot,#producerView.open{display:flex}#regionView .rv-boot{display:none!important}.rv-lede{min-height:0}</style></noscript>
 <!--
   Cape Wine Atlas. © 2026 the Cape Wine Atlas project, maintained by MDRF.
   Data: Open Database License (ODbL) 1.0 — contains information from OpenStreetMap, © OpenStreetMap contributors.
@@ -166,6 +167,16 @@
       <button id="rvClose" class="mono" type="button" aria-label="Close the region">[ CLOSE ] ✕</button>
     </div>
     <div class="rv-scroll" id="rvScroll"></div>
+  </div>
+
+  <!-- ================= PRODUCER VIEW (opened from a region's record card) ================= -->
+  <div id="producerView" class="" role="dialog" aria-modal="true" aria-labelledby="pvTitle">
+    <div class="frame"><i class="tl"></i><i class="tr"></i><i class="bl"></i><i class="br"></i></div>
+    <div class="rv-top mono">
+      <div class="crumb" id="pvCrumb"></div>
+      <div class="btns"><button id="pvBack" class="mono" type="button" aria-label="Back to the region">[ BACK ] ◂</button><button id="pvClose" class="mono" type="button" aria-label="Close the record"><span class="long">[ CLOSE ] </span>✕</button></div>
+    </div>
+    <div class="rv-scroll" id="pvScroll"></div>
   </div>
 
   <!-- ================= LICENCE & CREDITS (opened from the footer) ================= -->

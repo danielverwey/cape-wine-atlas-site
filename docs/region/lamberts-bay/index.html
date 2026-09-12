@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" data-root="/" data-region="lamberts-bay">
+<html lang="en" data-root="/" data-region="lamberts-bay" data-producer="">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -12,11 +12,12 @@
 <meta property="og:description" content="Lambert's Bay — 0 wine producers on record, 0 honours verified against their sources. No producer is yet on record in the Lambert's Bay district of the Coastal Region.">
 <meta property="og:url" content="https://capewineatlas.co.za/region/lamberts-bay/">
 <meta property="og:image" content="https://capewineatlas.co.za/assets/img/og.jpg">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Cape Wine Atlas", "item": "https://capewineatlas.co.za/"}, {"@type": "ListItem", "position": 2, "name": "Lambert's Bay", "item": "https://capewineatlas.co.za/region/lamberts-bay/"}]}, {"@type": "ItemList", "name": "Wine producers on record in Lambert's Bay", "url": "https://capewineatlas.co.za/region/lamberts-bay/", "numberOfItems": 0, "itemListElement": []}]}</script>
 <meta name="twitter:card" content="summary_large_image">
 <meta name="theme-color" content="#0a0a0a">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%230a0a0a'/%3E%3Ccircle cx='16' cy='16' r='9' fill='none' stroke='%23c9a227' stroke-width='1.5'/%3E%3Ccircle cx='16' cy='16' r='3.5' fill='%23c9a227'/%3E%3C/svg%3E">
 <link rel="stylesheet" href="/assets/site.css">
-<noscript><style>#preloader{display:none!important}#chrome{opacity:1!important}#regionView.open,#regionView.open .rv-boot{display:flex}#regionView .rv-boot{display:none!important}.rv-lede{min-height:0}</style></noscript>
+<noscript><style>#preloader{display:none!important}#chrome{opacity:1!important}#regionView.open,#regionView.open .rv-boot,#producerView.open{display:flex}#regionView .rv-boot{display:none!important}.rv-lede{min-height:0}</style></noscript>
 <!--
   Cape Wine Atlas. © 2026 the Cape Wine Atlas project, maintained by MDRF.
   Data: Open Database License (ODbL) 1.0 — contains information from OpenStreetMap, © OpenStreetMap contributors.
@@ -207,6 +208,16 @@
         </div>
       </section>
       <div class="rv-foot mono"><span>THE ATLAS RECORD · SEPTEMBER 2026 EDITION</span><span>DATA UNDER ODbL 1.0 · CONTAINS INFORMATION FROM OPENSTREETMAP, © OPENSTREETMAP CONTRIBUTORS</span><span>COASTAL REGION · LAMBERT&#x27;S BAY</span><span>RECORDS GATHERED 2026-09-04</span><span>ACROSS THE ATLAS · 644 FARMS · 31 REGIONS · 1326 HONOURS VERIFIED</span></div></div>
+  </div>
+
+  <!-- ================= PRODUCER VIEW (opened from a region's record card) ================= -->
+  <div id="producerView" class="" role="dialog" aria-modal="true" aria-labelledby="pvTitle">
+    <div class="frame"><i class="tl"></i><i class="tr"></i><i class="bl"></i><i class="br"></i></div>
+    <div class="rv-top mono">
+      <div class="crumb" id="pvCrumb"></div>
+      <div class="btns"><button id="pvBack" class="mono" type="button" aria-label="Back to the region">[ BACK ] ◂</button><button id="pvClose" class="mono" type="button" aria-label="Close the record"><span class="long">[ CLOSE ] </span>✕</button></div>
+    </div>
+    <div class="rv-scroll" id="pvScroll"></div>
   </div>
 
   <!-- ================= LICENCE & CREDITS (opened from the footer) ================= -->

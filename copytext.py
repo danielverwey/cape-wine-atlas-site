@@ -34,7 +34,7 @@ PROCESS_SRC = r"""
   \(producer\)|in\ because|is\ in|one\ is|winewiki|wineanorak|wosa|vinpro|news24|publish\w*|trade\ registry|wineinthecape|
   same-label|specifically|strictly|explicit\w*|literal\w*|verbatim|quoted?|quoting|wording|phrase[sd]?|phrasing|term|terms|
   varieties|cultivars|flagship\ wines:|caution|does\ not\ fit|consistent\ with|pre-dates|map\ only|from\ a\ \d{4}|po\ box|
-  delivery|limited\ to|range\ only|hosted|venue:|relation|nothing\ more|recommends?|insideguide|inside\ guide|\(association\)|unverif\w*|operational\ currency|used\ here|not\ used
+  delivery|limited\ to|range\ only|hosted|venue:|relation|nothing\ more|recommends?|collat\w*|coverage\ statement|quality\ statement|absence\ here|channels|flows\ through|not\ yet\ (?:collated|reached|surfaced)|insideguide|inside\ guide|\(association\)|unverif\w*|operational\ currency|used\ here|not\ used
   )(?![\w-])
 """
 HOURS_ONLY = r"""

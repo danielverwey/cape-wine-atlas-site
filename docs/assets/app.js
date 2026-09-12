@@ -20,6 +20,7 @@
     return (regionCache[key] = await r.json());
   }
   const BOOT_REGION = document.documentElement.dataset.region || '';
+  const BOOT_PRODUCER = document.documentElement.dataset.producer || '';
   // the archival single file is opened from disk, where the history API refuses new addresses
   const canRoute = /^https?:$/.test(location.protocol);
   const push = (state, url) => { if(canRoute){ try { history.pushState(state, '', url); } catch(e){} } };
@@ -910,6 +911,10 @@
   }
 
   let currentRegion = null;
+  // the honours that lead a card: the highest-ranked first, the most recent among equals
+  const rankOf = a => { const t = (a.award + ' ' + a.body).toLowerCase(); return /winery of the year|trophy|best in show/.test(t) ? 6 : /double gold|5 star|five star|platinum|grand gold/.test(t) ? 5 : /gold|9[5-9]\/100|9[5-9] points|9[5-9]pts/.test(t) ? 4 : /silver|9[0-4]/.test(t) ? 3 : /bronze/.test(t) ? 2 : 1; };
+  const awardOf = a => { const t = a.award || '', b = a.body || ''; return b && t.toLowerCase().startsWith(b.toLowerCase() + ' ') ? t.slice(b.length).trim() : t; };   // some sources name the critic in both fields
+  const topHonours = (f, n) => [...f.awards].sort((a, b) => rankOf(b) - rankOf(a) || (b.year || 0) - (a.year || 0)).slice(0, n || 3);
   function renderRegion(R){
     currentRegion = R;
     const S = ATLAS.stats, farms = R.farms;
@@ -947,7 +952,9 @@
         f.lat != null ? `LOCATION · ${String(f.geoConfidence||'').toUpperCase()}` : 'LOCATION NOT YET RESOLVED',
         f.oldVineFlag ? '<span class="gold">OLD VINES</span>' : null
       ].filter(Boolean).map(x => `<span>${x}</span>`).join('');
-      const led = f.awards.map(a => `<div class="aw"><span class="y">${a.year ?? '—'}</span><span><b>${esc(a.body)}</b> — ${esc(a.award)}<br><span class="w">${esc(a.wine)}</span>${a.sourceUrl ? `<br><a class="src mono" href="${esc(a.sourceUrl)}" target="_blank" rel="noopener" title="${esc(a.sourceName || '')}">SOURCE · ${esc((a.sourceName ? (a.sourceName.length <= 32 ? a.sourceName : a.sourceName.slice(0, 30).replace(/[\s—–-]+$/,'') + '…') : host(a.sourceUrl)).toUpperCase())}</a>` : ''}${a.corr ? '<span class="corr mono" title="Held in two independent competitions">✓✓ CORROBORATED</span>' : ''}</span></div>`).join('');
+      // the card carries a summary of the honours; the full ledger, each with its source, is on the producer's own page
+      const nAw = f.awards.length;
+      const led = nAw ? `<div class="rec-sum mono"><span class="g">${nAw} HONOUR${nAw === 1 ? '' : 'S'} VERIFIED</span>${topHonours(f).map(a => ` · ${esc(a.body)} ${esc(awardOf(a).replace(/\s*\(.*?\)\s*/g, '').slice(0, 42))}${a.year ? ' ' + a.year : ''}`).join('')}${nAw > 3 ? ` · and ${nAw - 3} more` : ''}</div>` : '';
       const flags = [
         !f.awardsCollected ? '<span class="flag warn mono">AWARDS NOT YET RESEARCHED</span>' : '',
         f.awardsCollected && !f.awards.length && !f.pendingClaims ? '<span class="flag dim mono">NO VERIFIED HONOUR ON FILE</span>' : '',
@@ -959,9 +966,9 @@
       ].filter(Boolean).join('');
       const hay = [f.name, f.ward, f.locality, ...(f.varieties||[]), ...(f.signatureWines||[])].join(' ').toLowerCase();
       return `<article class="rec" id="rec-${f.id}" data-id="${f.id}" data-hay="${esc(hay)}" data-awarded="${f.awards.length ? 1 : 0}">
-        <div class="rec-bar mono"><span>$ record.${f.id}</span><span class="term-dots"><span></span><span></span><span></span></span></div>
+        <div class="rec-bar mono"><span>$ record.${f.id}</span><a class="rec-open mono" href="${ROOT}producer/${f.id}/" data-region="${R.key}" data-open="${f.id}">OPEN THE RECORD ▸</a><span class="term-dots"><span></span><span></span><span></span></span></div>
         <div class="rec-body">
-          <div class="rec-name display">${esc(f.name)}</div>
+          <div class="rec-name display" data-region="${R.key}" data-open="${f.id}">${esc(f.name)}</div>
           <div class="rec-meta mono">${meta}</div>
           ${f.history ? `<p class="rec-hist">${esc(f.history)}</p>` : ''}
           ${f.people ? `<div class="rec-row"><span class="k mono">PEOPLE</span><span>${esc(f.people)}</span></div>` : ''}
@@ -1118,6 +1125,7 @@
   }
   function closeRegion(opts){
     opts = opts || {};
+    if(pvOpen) closeProducer({ silent: true });
     rv.classList.remove('open'); document.body.style.overflow = ''; rvOpen = false; rvKey = null;
     if(!lv.classList.contains('open')) setBehindInert(false);
     const ex = document.getElementById('explore'); if(ex) ex.scrollIntoView({ block: 'start', behavior: 'auto' });   // back to the chart, exactly, on every screen
@@ -1128,6 +1136,9 @@
     if(!opts.fromHistory && location.pathname !== ROOT){ push({}, ROOT + (window.__lensHash ? window.__lensHash() : '#explore')); }
   }
   window.addEventListener('popstate', e => {
+    const pm = location.pathname.match(/\/producer\/([a-z0-9-]+)\/?$/);
+    if(pm){ const key = producerRegion(pm[1]); if(key){ openProducer(key, pm[1], { fromHistory: true, instant: true }); return; } }
+    if(pvOpen) closeProducer({ fromHistory: true });
     const m = location.pathname.match(/\/region\/([a-z0-9-]+)\/?$/);
     if(m) openRegion(m[1], { fromHistory: true, instant: true }); else if(rvOpen) closeRegion({ fromHistory: true });
   });
@@ -1143,7 +1154,7 @@
   window.addEventListener('keydown', e => { if(e.key === 'Escape' && lv.classList.contains('open')) closeLicence(); });
   if(location.hash === '#licence') openLicence();
 
-  window.addEventListener('keydown', e => { if(e.key === 'Escape' && rvOpen) closeRegion(); });
+  window.addEventListener('keydown', e => { if(e.key === 'Escape' && rvOpen && !pvOpen) closeRegion(); });
 
   /* =========================================================
      9. LIVE PROGRESS TERMINAL — the atlas status window types
@@ -1332,8 +1343,7 @@
         grape = GRAPES.includes(it.g) ? it.g : grape; lens = GRAPES.includes(it.g) ? 'grape' : lens; apply();
         explore.scrollIntoView({ block: 'start' }); return;
       }
-      if(rvOpen && rvKey === it.k){ if(it.id) showRecord(it.id); return; }
-      if(it.id) pendingRecord = it.id;
+      if(it.id){ openProducer(it.k, it.id); return; }
       openRegion(it.k);
     }
     // the record that was searched for: jump to it once the region has rendered and its boot lines have run
@@ -1389,12 +1399,187 @@
     }
   })();
 
+  /* =========================================================
+     11. THE PRODUCER RECORD — the third level: chart → region → producer.
+     Everything shown is the producer's own record as the atlas holds it; the "wines on record" are the
+     signature list plus every wine named in an honour, vintages folded together. Neighbours are the six
+     nearest located producers across the whole atlas, so they cross region borders.
+     ========================================================= */
+  const pv = document.getElementById('producerView'), pvScroll = document.getElementById('pvScroll');
+  const PRODUCERS = ATLAS.producers || [];
+  function producerRegion(id){ const p = PRODUCERS.find(p => p[0] === id); return p ? p[1] : null; }
+  const km = (a, b) => { const R = 6371, dLat = (b.lat - a.lat) * Math.PI/180, dLng = (b.lng - a.lng) * Math.PI/180; const x = Math.sin(dLat/2)**2 + Math.cos(a.lat*Math.PI/180) * Math.cos(b.lat*Math.PI/180) * Math.sin(dLng/2)**2; return 2 * R * Math.asin(Math.sqrt(x)); };
+  const VENUE = { hosted:'TASTED AT A HOST VENUE', outlet:'TASTED AT AN OUTLET', none:'NO TASTING VENUE' };
+  const stripVintage = w => String(w || '').replace(/\s+(19|20)\d\d\s*$/, '').replace(/\s+\((19|20)\d\d\)$/, '').trim();
+  function winesOf(f){
+    const map = new Map();
+    (f.signatureWines || []).forEach(w => { const k = stripVintage(w); if(k) map.set(k.toLowerCase(), { name: k, signature: true, honours: [] }); });
+    f.awards.forEach(a => { if(!a.wine || /^winery$/i.test(a.wine)) return; const k = stripVintage(a.wine), id = k.toLowerCase(); if(!map.has(id)) map.set(id, { name: k, signature: false, honours: [] }); map.get(id).honours.push(a); });
+    return [...map.values()].sort((a, b) => b.honours.length - a.honours.length || (b.signature - a.signature) || a.name.localeCompare(b.name));
+  }
+  function neighboursOf(f){
+    if(f.lat == null) return [];
+    return PRODUCERS.filter(p => p[0] !== f.id && p[3] != null).map(p => ({ id: p[0], key: p[1], name: p[2], lat: p[3], lng: p[4], d: km(f, { lat: p[3], lng: p[4] }) })).sort((a, b) => a.d - b.d).slice(0, 6);
+  }
+  const srcChip = a => { if(!a.sourceUrl) return ''; let l = (a.sourceName || host(a.sourceUrl)).toUpperCase(); if(l.length > 30) l = l.slice(0, 30) + '…'; return `<a class="src mono" href="${esc(a.sourceUrl)}" target="_blank" rel="noopener" title="${esc(a.sourceName || '')}">SOURCE · ${esc(l)}</a>${a.corr ? '<span class="corr mono">✓✓ CORROBORATED</span>' : ''}`; };
+  const regionName = k => (regionCache[k] && regionCache[k].name) || (ATLAS.idx.find(r => r.key === k) || {}).name || k;
+
+  function drawProducerMap(cv, f, neighbours){
+    const W = cv.width = 760, H = cv.height = 760, g = cv.getContext('2d');
+    const span = 0.09;   // ≈ 8 km across
+    const box = { lon0: f.lng - span/2, lon1: f.lng + span/2, lat0: -f.lat - span/2, lat1: -f.lat + span/2 };
+    const P = (lon, lat) => [ (lon - box.lon0)/(box.lon1 - box.lon0) * W, (lat - box.lat0)/(box.lat1 - box.lat0) * H ];
+    let s = 7; const rnd = () => { s = (s * 16807) % 2147483647; return s / 2147483647; };
+    g.fillStyle = '#000'; g.fillRect(0, 0, W, H);
+    g.fillStyle = 'rgba(255,255,255,0.28)'; for(let i = 0; i < 2600; i++){ g.globalAlpha = 0.4 + 0.6 * rnd(); g.fillRect(rnd()*W, rnd()*H, 1.6, 1.6); } g.globalAlpha = 1;
+    const line = (pts, alpha, width, dash) => { g.strokeStyle = `rgba(255,255,255,${alpha})`; g.lineWidth = width; g.setLineDash(dash || []); g.beginPath(); pts.forEach((p, i) => { const q = P(p[0], p[1]); i ? g.lineTo(q[0], q[1]) : g.moveTo(q[0], q[1]); }); g.stroke(); g.setLineDash([]); };
+    (GEO.ridges || []).forEach(r => line(r, 0.5, 1.4, [2, 5]));
+    (GEO.roads || []).forEach(r => line(r, 0.45, 1.2, [5, 5]));
+    line(GEO.coast || [], 0.9, 2.4);
+    g.fillStyle = 'rgba(255,255,255,0.3)';
+    for(let lon = Math.ceil(box.lon0/0.02)*0.02; lon < box.lon1; lon += 0.02){ const x = P(lon, 0)[0]; for(let y = 0; y < H; y += 4) if(rnd() < 0.35) g.fillRect(x, y, 1, 1); }
+    for(let lat = Math.ceil(box.lat0/0.02)*0.02; lat < box.lat1; lat += 0.02){ const y = P(0, lat)[1]; for(let x = 0; x < W; x += 4) if(rnd() < 0.35) g.fillRect(x, y, 1, 1); }
+    const stipple = (lng, lat, r0, alpha) => { const [x, y] = P(lng, -lat); const rx = W * r0 * (0.8 + 0.4 * rnd()), ry = rx * (0.6 + 0.4 * rnd()), rot = rnd() * Math.PI; for(let i = 0; i < 260; i++){ const a = rnd() * Math.PI * 2, d = Math.sqrt(rnd()); const px = Math.cos(a) * rx * d, py = Math.sin(a) * ry * d; g.fillStyle = `rgba(255,255,255,${alpha * (0.45 + 0.55 * rnd())})`; g.fillRect(x + px * Math.cos(rot) - py * Math.sin(rot), y + px * Math.sin(rot) + py * Math.cos(rot), 1.6, 1.6); } };
+    neighbours.forEach(n => stipple(n.lng, n.lat, 0.045, 0.6));
+    stipple(f.lng, f.lat, 0.06, 1);
+    g.font = '15px "JetBrains Mono", monospace'; g.textBaseline = 'middle';
+    neighbours.forEach(n => { const [x, y] = P(n.lng, -n.lat); if(x < -20 || x > W + 20 || y < -20 || y > H + 20) return; g.strokeStyle = 'rgba(234,234,234,0.7)'; g.lineWidth = 1.2; g.setLineDash([]); g.beginPath(); g.arc(x, y, 7, 0, Math.PI*2); g.stroke(); g.fillStyle = 'rgba(234,234,234,0.9)'; g.beginPath(); g.arc(x, y, 2.5, 0, Math.PI*2); g.fill();
+      const label = shortName(n.name).toUpperCase(); const left = x > W * 0.62; g.textAlign = left ? 'right' : 'left'; g.fillStyle = 'rgba(0,0,0,0.65)'; const tw = g.measureText(label).width; g.fillRect(left ? x - 14 - tw - 6 : x + 14 - 3, y - 10, tw + 8, 20); g.fillStyle = 'rgba(207,207,207,0.95)'; g.fillText(label, left ? x - 14 : x + 14, y); });
+    const [cx, cy] = P(f.lng, -f.lat);
+    [[6, 1, 'rgba(255,230,0,1)'], [16, 1.6, 'rgba(255,230,0,0.9)'], [28, 1.2, 'rgba(255,230,0,0.6)'], [42, 1, 'rgba(255,230,0,0.35)']].forEach(([r, w, col], i) => { g.strokeStyle = col; g.lineWidth = w; g.setLineDash(i === 3 ? [4, 4] : []); g.beginPath(); g.arc(cx, cy, r, 0, Math.PI*2); g.stroke(); });
+    g.setLineDash([]); g.fillStyle = '#ffe600'; g.beginPath(); g.arc(cx, cy, 5, 0, Math.PI*2); g.fill();
+    g.shadowColor = 'rgba(255,230,0,0.8)'; g.shadowBlur = 18; g.beginPath(); g.arc(cx, cy, 5, 0, Math.PI*2); g.fill(); g.shadowBlur = 0;
+    const fh = g.createLinearGradient(0, 0, W, 0); fh.addColorStop(0, 'rgba(0,0,0,.9)'); fh.addColorStop(.12, 'rgba(0,0,0,0)'); fh.addColorStop(.88, 'rgba(0,0,0,0)'); fh.addColorStop(1, 'rgba(0,0,0,.9)');
+    const fv = g.createLinearGradient(0, 0, 0, H); fv.addColorStop(0, 'rgba(0,0,0,.9)'); fv.addColorStop(.1, 'rgba(0,0,0,0)'); fv.addColorStop(.9, 'rgba(0,0,0,0)'); fv.addColorStop(1, 'rgba(0,0,0,.9)');
+    g.fillStyle = fh; g.fillRect(0, 0, W, H); g.fillStyle = fv; g.fillRect(0, 0, W, H);
+  }
+
+  function renderProducer(R, f){
+    const region = R.name, located = f.lat != null;
+    const neighbours = neighboursOf(f), wines = winesOf(f);
+    const byYear = {}; f.awards.forEach(a => { (byYear[a.year ?? '—'] = byYear[a.year ?? '—'] || []).push(a); });
+    const years = Object.keys(byYear).sort((a, b) => (b === '—' ? -1 : +b) - (a === '—' ? -1 : +a));
+    document.getElementById('pvCrumb').innerHTML = `<b>CAPE WINE ATLAS</b><span>/</span><b>${esc(region.toUpperCase())}</b><span>/</span><b>${esc(f.name.toUpperCase())}</b>`;
+    const back = document.getElementById('pvBack'); back.innerHTML = `[ BACK<span class="long"> TO ${esc(region.toUpperCase())}</span> ] ◂`; back.setAttribute('aria-label', 'Back to ' + region);
+    const flags = [
+      f.access ? `<span class="flag gold mono">${ACCESS[f.access] || esc(String(f.access).toUpperCase())}</span>` : '',
+      f.routeMember === 'yes' ? '<span class="flag dim mono">ROUTE MEMBER</span>' : '',
+      f.oldVineFlag ? '<span class="flag gold mono">OLD VINES</span>' : '',
+      `<span class="flag dim mono">LOCATION · ${located ? esc(String(f.geoConfidence || 'on record').toUpperCase()) : 'AWAITING A PUBLISHED POSITION'}</span>`,
+      f.awardsCollected ? '' : '<span class="flag warn mono">AWARD RESEARCH NOT YET REACHED</span>',
+      f.pendingClaims ? `<span class="flag warn mono">${f.pendingClaims} CLAIM${f.pendingClaims === 1 ? '' : 'S'} UNDER REVIEW</span>` : ''
+    ].filter(Boolean).join('');
+    const wineCard = w => { const hs = w.honours; return `<div class="pv-wine"><div class="n display">${esc(w.name)}</div><div class="m mono">${w.signature ? 'SIGNATURE WINE' : 'NAMED IN THE HONOURS LEDGER'}${hs.length ? ` · <span class="g">${hs.length} HONOUR${hs.length === 1 ? '' : 'S'}</span>` : ''}</div>${hs.length ? `<ul>${hs.slice(0, 4).map(a => { const m = /(19|20)\d\d/.exec(a.wine || ''); return `<li><span class="y mono">${esc(a.year || '')}</span><span><b>${esc(a.body)}</b> — ${esc(awardOf(a))}${m ? ` <span class="vint">(${m[0]})</span>` : ''}</span></li>`; }).join('')}${hs.length > 4 ? `<li><span class="y"></span><span class="vint">and ${hs.length - 4} more in the ledger below</span></li>` : ''}</ul>` : ''}</div>`; };
+    const row = (k, v) => `<div class="pv-row"><span class="k mono">${k}</span><span>${v}</span></div>`;
+    const pc = f.pendingClaims || 0, nAw = f.awards.length;
+    pvScroll.innerHTML = `
+      <div class="pv-head${located ? '' : ' nomap'}">
+        <div>
+          <div class="rv-eyebrow mono">${[R.woRegion, R.district, f.ward].filter(x => x && x !== '—').map(x => esc(String(x).toUpperCase())).join(' · ') + (f.locality ? ' · ' + esc(String(f.locality).toUpperCase()) : '') || 'WESTERN CAPE'}</div>
+          <h2 class="display" id="pvTitle" tabindex="-1">${esc(f.name)}</h2>
+          <p class="pv-lede">${f.history ? esc(f.history) : `A producer on the ${esc(region)} record. The atlas holds its hours, varieties and honours; a history line will follow when the record has one that meets the publication standard.`}</p>
+          ${f.people ? `<div class="pv-people"><span class="k mono">PEOPLE</span>${esc(f.people)}</div>` : ''}
+          <div class="pv-flags">${flags}</div>
+          <div class="pv-stats mono">
+            <div><span class="v${f.founded ? '' : ' dim'}">${f.founded ? esc(f.founded) : '—'}</span><span class="k">FOUNDED</span></div>
+            <div><span class="v g">${nAw}</span><span class="k">HONOURS VERIFIED</span></div>
+            <div><span class="v">${(f.varieties || []).length}</span><span class="k">VARIETIES ON RECORD</span></div>
+            <div><span class="v">${wines.length}</span><span class="k">WINES ON RECORD</span></div>
+          </div>
+        </div>
+        ${located ? `<div class="pv-map" id="pvMap"><canvas id="pvCanvas" role="img" aria-label="Tactical map around ${esc(f.name)}"></canvas><span class="corner tl"></span><span class="corner br"></span><div class="hud mono">TACTICAL · ${esc(f.name.toUpperCase())}<br><b>${f.lat.toFixed(4)}, ${f.lng.toFixed(4)}</b><br>${neighbours.length} NEIGHBOURS WITHIN VIEW</div><div class="scale mono"><i style="width:53px"></i><span>≈ 1 KM</span></div></div>` : ''}
+      </div>
+      <section class="rv-block pv-three">
+        <div><h3 class="mono"><span class="h3l">VISIT</span></h3>
+          ${row('HOURS', f.hours ? esc(f.hours) : 'No public tasting schedule on record.')}
+          ${VENUE[f.venue] ? row('VENUE', VENUE[f.venue]) : ''}
+          ${f.web ? row('WEBSITE', `<a href="${esc(f.web)}" target="_blank" rel="noopener">${esc(host(f.web))}</a>`) : ''}
+          ${row('CONTACT', f.contactHeld ? esc(String(f.contactHeld).toUpperCase()) + ' on file, not republished — reach the producer through its own site.' : 'Not held; reach the producer through its own site.')}
+          ${located ? '' : row('POSITION', 'None published by the producer or an association; the atlas does not invent one.')}
+        </div>
+        <div><h3 class="mono"><span class="h3l">THE VINEYARD</span></h3>
+          ${(f.varieties || []).length ? `<div class="pv-row"><span class="k mono">VARIETIES</span><div class="tags mono">${f.varieties.map(v => `<span>${esc(v)}</span>`).join('')}</div></div>` : row('VARIETIES', 'None on record yet.')}
+          ${(f.signatureWines || []).length ? row('SIGNATURE', f.signatureWines.map(esc).join(' · ')) : ''}
+          ${f.oldVineFlag ? row('OLD VINES', 'Old-vine bottlings on record.') : ''}
+          ${f.founded ? row('FOUNDED', esc(f.founded)) : ''}
+        </div>
+        <div><h3 class="mono"><span class="h3l">NEIGHBOURS</span></h3>
+          ${neighbours.length ? `<div class="pv-neigh mono">${neighbours.map(n => `<span class="d">${n.d < 10 ? n.d.toFixed(1) : Math.round(n.d)} KM</span><a href="${ROOT}producer/${n.id}/" data-open="${n.id}" data-region="${n.key}">${esc(n.name)}</a><span class="d">${esc((n.key !== R.key ? regionName(n.key) : ((regionCache[n.key] && (regionCache[n.key].farms.find(x => x.id === n.id) || {}).ward) || f.ward || '')).toUpperCase())}</span>`).join('')}</div>` : '<p class="pv-prov">Neighbours are listed once the producer has a published position.</p>'}
+        </div>
+      </section>
+      <section class="rv-block pv-wines-block">
+        <h3 class="mono"><span class="h3l">THE WINES</span><span>${wines.length} ON RECORD</span></h3>
+        ${wines.length ? `<div class="pv-wines">${wines.map(wineCard).join('')}</div>` : '<p class="pv-prov">No wines are named on this record yet.</p>'}
+        <div class="pv-soon mono">THE FULL RANGE — EVERY LABEL THE PRODUCER SELLS, WITH STYLE AND VINTAGE — WILL FOLLOW AS THE ATLAS GATHERS IT. UNTIL THEN THIS LIST IS BUILT FROM THE SIGNATURE WINES AND THE HONOURS LEDGER ONLY.</div>
+      </section>
+      <section class="rv-block pv-ledger">
+        <h3 class="mono"><span class="h3l">THE HONOURS LEDGER</span><span>${nAw} VERIFIED · EACH WITH ITS SOURCE${pc ? ` · ${pc} UNDER REVIEW, NOT SHOWN` : ''}</span></h3>
+        ${nAw ? years.map(y => `<div class="yr mono">${esc(y)}</div><div class="rv-grid pv-ledger-grid">${byYear[y].map(a => `<div class="aw pv-aw"><span><b>${esc(a.body)}</b> — ${esc(awardOf(a))}</span><span class="w">${esc(a.wine)}</span><span>${srcChip(a)}</span></div>`).join('')}</div>`).join('') : `<p class="pv-prov">${f.awardsCollected ? 'No verified honours on record.' : 'Award research has not yet reached this producer; the ledger is empty rather than guessed.'}</p>`}
+      </section>
+      <section class="rv-block rv-two pv-prov-block">
+        <div>
+          <h3 class="mono"><span class="h3l">PROVENANCE</span></h3>
+          <p class="pv-prov"><b>Record</b> · ${esc(region)}${f.ward ? ', ' + esc(f.ward) + ' ward' : ''} · gathered ${esc(R.collected || '—')}.<br>
+          <b>Position</b> · ${located ? `published, confidence ${esc(String(f.geoConfidence || '—'))}` : 'none published by the producer or an association; the atlas does not invent one'}.<br>
+          <b>Honours</b> · ${f.awardsCollected ? `research complete · ${nAw} verified, each cited to the page that announced it` : 'research not yet reached'}${pc ? ` · ${pc} claim${pc === 1 ? '' : 's'} awaiting a publishable source` : ''}.<br>
+          <b>Contact</b> · ${f.contactHeld ? 'held on file, never republished' : 'not held'}.</p>
+        </div>
+        <div>
+          <h3 class="mono"><span class="h3l">CORRECTIONS</span></h3>
+          <p class="pv-prov">If you make wine here and this record is wrong, incomplete or out of date, write to <a class="lv-link" href="mailto:capewineatlas@gmail.com">capewineatlas@gmail.com</a>. A correction is made against a source and the record then cites it.</p>
+        </div>
+      </section>
+      <div class="rv-foot mono"><span>THE ATLAS RECORD · ${EDITION}</span><span>DATA UNDER ODbL 1.0 · CONTAINS INFORMATION FROM OPENSTREETMAP, © OPENSTREETMAP CONTRIBUTORS</span><span>${esc(f.name.toUpperCase())} · ${esc(region.toUpperCase())}</span><span>RECORDS GATHERED ${esc(R.collected || '—')}</span></div>`;
+    if(located) drawProducerMap(document.getElementById('pvCanvas'), f, neighbours);
+  }
+
+  let pvOpen = false, pvId = null, pvOpener = null;
+  function producerPath(id){ return ROOT + 'producer/' + id + '/'; }
+  async function openProducer(key, id, opts){
+    opts = opts || {};
+    if(pvOpen && pvId === id) return;
+    let R; try { R = await loadRegion(key); } catch(e){ console.warn(e); return; }
+    const f = (R.farms || []).find(x => x.id === id); if(!f) return;
+    if(!rvOpen || rvKey !== key) await openRegion(key, { fromHistory: true, instant: true });   // the region opens beneath, so BACK has somewhere to go
+    if(!pvOpen) pvOpener = document.activeElement;
+    pvOpen = true; pvId = id;
+    renderProducer(R, f);
+    pv.classList.add('open'); rv.inert = true; rv.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = 'hidden'; pvScroll.scrollTop = 0;
+    const t = document.getElementById('pvTitle'); if(t) t.focus({ preventScroll: true });
+    if(!opts.fromHistory && location.pathname !== producerPath(id)) push({ producer: id, region: key }, producerPath(id));
+    document.title = f.name + ' — ' + R.name + ' · Cape Wine Atlas';
+  }
+  function closeProducer(opts){
+    opts = opts || {};
+    pv.classList.remove('open'); pvOpen = false; pvId = null;
+    rv.inert = false; rv.removeAttribute('aria-hidden');
+    if(opts.silent){ pvOpener = null; return; }
+    if(currentRegion) document.title = currentRegion.name + ' — Cape Wine Atlas';
+    const back = pvOpener && document.contains(pvOpener) && pvOpener !== document.body && !pv.contains(pvOpener) ? pvOpener : document.getElementById('rvTitle');
+    if(back) back.focus({ preventScroll: true });
+    pvOpener = null;
+    if(!opts.fromHistory && rvKey && location.pathname !== regionPath(rvKey)) push({ region: rvKey }, regionPath(rvKey));
+  }
+  trapTab(pv);
+  document.getElementById('pvBack').addEventListener('click', () => closeProducer());
+  document.getElementById('pvClose').addEventListener('click', () => closeRegion());
+  window.addEventListener('keydown', e => { if(e.key === 'Escape' && pvOpen && !document.querySelector('#searchPanel:not([hidden])')){ e.stopPropagation(); closeProducer(); } }, true);
+  // a record card's name or OPEN link, and a neighbour on the producer page, open that producer
+  document.addEventListener('click', e => {
+    const t = e.target.closest('[data-open][data-region]'); if(!t) return;
+    if(e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return;   // let a modified click open the real link in a new tab
+    e.preventDefault(); openProducer(t.dataset.region, t.dataset.open);
+  });
+  window.__openProducer = openProducer;
+
   if(BOOT_REGION){
     clearInterval(plInterval);
     document.getElementById('preloader').classList.add('hide');
     document.getElementById('chrome').classList.add('show'); document.getElementById('searchToggle').classList.add('show');
     startParticles();
     document.getElementById('explore').scrollIntoView();
-    openRegion(BOOT_REGION, { fromHistory: true, instant: true });
+    await openRegion(BOOT_REGION, { fromHistory: true, instant: true });
+    if(BOOT_PRODUCER) openProducer(BOOT_REGION, BOOT_PRODUCER, { fromHistory: true, instant: true });
   }
 })();

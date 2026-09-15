@@ -1,3 +1,12 @@
+# Cape Wine Atlas — https://capewineatlas.co.za/
+# The producer and region pages are the public record. The data files under /data/ are published
+# for reuse under the Open Database Licence, not as pages to index — they are the same facts in a
+# form meant for machines, and indexing them would compete with the pages that explain them.
+# The one exception is the producer list, which the home page names as this atlas's download: a
+# dataset whose download cannot be fetched is a dataset nobody can check.
 User-agent: *
 Allow: /
+Allow: /data/index.json
+Disallow: /data/
+
 Sitemap: https://capewineatlas.co.za/sitemap.xml

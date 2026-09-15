@@ -2,6 +2,20 @@
 
 Newest first. Each entry is one sync to `production site/`.
 
+## v0.16.1 — 2026-09-15 — September 2026 edition
+`versions/cape-wine-atlas_2026-09-15_v0.16.1_september-2026-edition.html`
+
+Built against the same atlas export as v0.16.0 — 644 producers, 2,668 honours, 1,685 wines, unchanged. **Nothing visible on a page changes and no record moves.** What changes is what the site tells a search engine is true, brought into line with the atlas's own written account of what the site may claim on a producer's behalf.
+
+- **A winery is a place. Not every producer has one.** The structured data on a producer page said *Winery* for all 644 — an assertion, in machine-readable form, that a physical place exists at that name. For 146 producers it does not: 109 whose premises the atlas has not established, 18 with no public venue, 10 pouring at somebody else's venue and 9 selling only off-site. A producer who buys in fruit and works out of a shared cellar is a producer and is not a place. Those 146 now say *Organization* — this is a producer, this is its name, this is its site, this is the area it belongs to — and claim no premises. The other 498 still say *Winery*.
+- **No invented address.** Every producer page carried a postal address built out of the ward and the region — "Simonsberg-Stellenbosch, Western Cape, ZA" — which no source ever said. The atlas holds no street addresses for these records, so the address is gone. The area a producer belongs to is stated as an area, which is what is actually known.
+- **A coordinate only where it marks the producer's own gate.** The position now appears in the structured data for 437 producers rather than 477: only on a producer with premises of its own, and only where the pin is one the atlas calls clean. The pins that mark somebody else's tasting venue are still drawn on the page — they are useful, and the page says whose venue it is — but they are no longer offered to a search engine as that producer's location.
+- **The varieties a producer works with** are now stated in the structured data, as cultivars the producer works with rather than vines it is claimed to grow — many published producers own no vineyard at all.
+- **The sitemap no longer carries a date.** Every one of the 676 addresses was stamped with the build date, which said only that the site had been rebuilt — not that anything on the page had changed. One date across a whole site is a freshness claim nothing supports, and a crawler that learns to distrust it discounts it everywhere. The sitemap now gives locations and relative weight, and says nothing it cannot stand behind.
+- **Descriptions that finish their sentences.** The line a search engine shows under the title was assembled by cutting the history at 150 characters, which landed mid-word ("…over granitic clay — the granite is the"). It is now built in a fixed order — where the producer is, whether you can visit, honours, wines, the varieties on record — and the variety list is the part that shortens, one at a time, saying how many were left out. A producer with no honours no longer advertises "0 honours". Nothing is cut mid-word and the whole line stays within what a search result will show.
+- **Page and crawler housekeeping.** Pages declare South African English, state that they may be indexed and that a large preview image is welcome, and name the locale for a shared link. The data files under `/data/` are asked not to be indexed — they are published for reuse under the Open Database Licence, and they are the same facts as the pages in a form meant for machines — with one exception: the producer list the home page names as this atlas's download stays fetchable, because a dataset whose download cannot be fetched is a dataset nobody can check.
+- The build no longer stops when the atlas holds a region with no published records in it.
+
 ## v0.16.0 — 2026-09-12 — September 2026 edition
 `versions/cape-wine-atlas_2026-09-12_v0.16.0_september-2026-edition.html`
 

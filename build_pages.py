@@ -131,8 +131,16 @@ def tour_regions(t):
     return ks
 
 regions, idx = {}, []
+skipped = []
 for r in atlas['regions']:
-    m = r['meta']; name = m.get('name') or m.get('wo_district'); key = SLUG[name]
+    m = r['meta']; name = m.get('name') or m.get('wo_district')
+    # The atlas may carry a holding area that is not a place on the chart (producers with no vineyard of
+    # their own, say). With nothing published in it there is nothing to draw, so it is noted and passed over
+    # — but if it ever holds a published record the build stops rather than dropping that record silently.
+    if name not in SLUG:
+        if r['farms']: sys.exit(f"REFUSED — '{name}' holds {len(r['farms'])} published records but has no region file to place them in")
+        skipped.append(name); continue
+    key = SLUG[name]
     fs = [f for f in r['farms'] if f['lat'] is not None]
     if name in SHORT: short, lng, lat = SHORT[name]
     else: short = name; lat = sum(f['lat'] for f in fs)/len(fs); lng = sum(f['lng'] for f in fs)/len(fs)
@@ -141,7 +149,7 @@ for r in atlas['regions']:
     if short == 'Constantia': lng, lat = 18.42, -34.04
     farms = []
     for f in r['farms']:
-        rec = {k: f.get(k) for k in ('id','name','ward','lat','lng','geoConfidence','founded','hours','venue','access','varieties','signatureWines','web','routeMember','oldVineFlag','awardsCollected','pendingClaims','locality','contactHeld')}
+        rec = {k: f.get(k) for k in ('id','name','ward','lat','lng','geoConfidence','founded','hours','venue','access','varieties','signatureWines','web','routeMember','oldVineFlag','awardsCollected','pendingClaims','locality','contactHeld','coordsClean')}
         rec['awards'] = [{k: aw.get(k) for k in ('body','year','wine','award','sourceUrl','sourceName')} | {'corr': bool(aw.get('_corroborated'))} for aw in f['awards']]
         # the producer's own range, as printed on its own pages: names and range labels, the producer's own
         # account of a name where it gives one, and where and when the atlas read it. The working note behind
@@ -174,9 +182,10 @@ for r in atlas['regions']:
     idx.append({'key': key, 'name': short, 'district': district or '—', 'woRegion': m.get('wo_region') or '—', 'farms': len(r['farms']), 'pinned': len(fs),
                 'awards': sum(len(f['awards']) for f in r['farms']), 'pending': sum(f['pendingClaims'] or 0 for f in r['farms']),
                 'researched': sum(1 for f in r['farms'] if f['awardsCollected']), 'status': m['status'], 'lat': round(lat, 4), 'lng': round(lng, 4), 'withheld': withheld})
+if skipped: print('note: nothing published in ' + ', '.join(skipped) + ' — not drawn on the chart')
 idx.sort(key=lambda x: x['name'])
 stats = dict(atlas['stats'])
-stats.update({'regions': len(atlas['regions']), 'routes': len(atlas['routes']), 'tours': len(atlas['tourOperators']), 'built': atlas['built'], 'buildMode': mode,
+stats.update({'regions': len(idx), 'routes': len(atlas['routes']), 'tours': len(atlas['tourOperators']), 'built': atlas['built'], 'buildMode': mode,
               'competitions': [{'body': x['body'], 'year': x['year'], 'records': x['records']} for x in atlas['competitions']],
               'tourDisclaimer': atlas['tourOperatorDisclaimer'], 'withheld': atlas.get('withheld', {}).get('total', 0),
               'industry': {'cellars': atlas.get('industry', {}).get('cellarsCrushing2024', {}).get('total'), 'source': 'SAWIS, SA Wine Industry Statistics 2024'}})
@@ -573,15 +582,75 @@ def ld_region(R):
         ld_breadcrumb([('Cape Wine Atlas', BASE_URL), (R['name'], url)]),
         {'@type': 'ItemList', 'name': f'Wine producers on record in {R["name"]}', 'url': url, 'numberOfItems': len(R['farms']),
          'itemListElement': [{'@type': 'ListItem', 'position': i + 1, 'name': f['name'], 'url': f'{BASE_URL}producer/{f["id"]}/'} for i, f in enumerate(R['farms'])]}]})
+DESC_MAX = 300
+ACCESS_SENT = {'walk_in': 'open for walk-in tasting', 'appointment': 'tasting by appointment',
+               'scheduled': 'tasting on announced dates', 'closed_temporarily': 'tasting closed for now',
+               'closed_permanently': 'tasting permanently closed', 'none': 'no tasting room'}
+
+def clip(text, room):
+    """Cut on a word boundary and say nothing that was half-said. Never mid-word."""
+    text = ' '.join((text or '').split())
+    if len(text) <= room: return text
+    cut = text[:room].rsplit(' ', 1)[0].rstrip(' ,;:—-')
+    return cut + '…' if cut else ''
+
+def meta_desc(R, f, shown=4):
+    """Factual, built from what the record holds, in a fixed order. No marketing language.
+
+    Long names and long variety lists overflow what a search engine shows, so the VARIETY LIST is
+    the part that shortens — one cultivar at a time, always saying how many were not listed.
+    Nothing else is rephrased to fit, and a count of nothing is left unsaid rather than printed
+    as a zero.
+    """
+    place = f['ward'] or R['name']
+    s = f"{f['name']} — wine producer in {place}, Western Cape."
+    acc = ACCESS_SENT.get(f.get('access'))
+    if acc: s += f' Visit: {acc}.'
+    n_aw = len(f['awards'])
+    if n_aw: s += f" {n_aw} honour{'' if n_aw == 1 else 's'} verified against {'its source' if n_aw == 1 else 'their sources'}."
+    n_w = len(wines_of(f))
+    if n_w: s += f" {n_w} wine{'' if n_w == 1 else 's'} on record."
+    v = f['varieties'] or []
+    if v:
+        n = max(min(shown, len(v)), 1)
+        s += ' Varieties on record: ' + ', '.join(v[:n]) + ('.' if len(v) <= n else f' and {len(v) - n} more.')
+    if len(s) > DESC_MAX and shown > 1:
+        return meta_desc(R, f, shown - 1)
+    if f['history'] and len(s) < DESC_MAX - 40:
+        tail = clip(f['history'], DESC_MAX - len(s) - 1)
+        if tail: s += ' ' + tail
+    return clip(s, DESC_MAX)
+
 def ld_producer(R, f):
+    """Machine-readable claims a reader could check. Nothing here is inferred or filled in.
+
+    Winery descends from Place, so emitting it asserts that the producer has premises of its own.
+    That holds where the record establishes a venue of its own and nowhere else: a producer that
+    buys in fruit and makes wine in somebody else's cellar is a producer and is not a place, and
+    saying otherwise in machine-readable form is the same kind of error as inventing an address.
+    Organization says what is actually known — this is a producer, this is its name, this is its
+    site, this is the area it belongs to — and claims no place.
+
+    A postal address is never emitted. The atlas does not hold street addresses for these records,
+    and a region name dressed up as addressLocality is a fact nobody sourced.
+    """
     url = f'{BASE_URL}producer/{f["id"]}/'
-    w = {'@type': 'Winery', 'name': f['name'], 'url': url, 'address': {'@type': 'PostalAddress', 'addressRegion': 'Western Cape', 'addressCountry': 'ZA'}}
-    if f['ward'] or f['locality']: w['address']['addressLocality'] = f['ward'] or f['locality'].split('(')[0].strip()
+    own = f.get('venue') == 'own'
+    w = {'@type': 'Winery' if own else 'Organization', 'name': f['name'], 'url': url, 'mainEntityOfPage': url}
     if f['web']: w['sameAs'] = [f['web']]
-    if f['lat'] is not None: w['geo'] = {'@type': 'GeoCoordinates', 'latitude': f['lat'], 'longitude': f['lng']}
+    # A coordinate is a property of a place. It goes on the Winery branch only, and only on a pin
+    # the atlas calls clean — never on a pin that marks somebody else's tasting venue.
+    if own and f['lat'] is not None and f.get('coordsClean'):
+        w['geo'] = {'@type': 'GeoCoordinates', 'latitude': round(f['lat'], 6), 'longitude': round(f['lng'], 6)}
+    area = f['ward'] or R['name']
+    if area: w['areaServed'] = {'@type': 'AdministrativeArea', 'name': area}
+    if f['varieties']:
+        # These are the cultivars the producer works with — grown, bought in, or vinified under
+        # contract. knowsAbout says that and claims nothing about who planted the vines.
+        w['knowsAbout'] = list(f['varieties'])
     if f['founded']: w['foundingDate'] = str(f['founded'])
     if f['history']: w['description'] = f['history']
-    w['containedInPlace'] = {'@type': 'Place', 'name': R['name'], 'url': f'{BASE_URL}region/{R["key"]}/'}
+    w['containedInPlace' if own else 'location'] = {'@type': 'Place', 'name': R['name'], 'url': f'{BASE_URL}region/{R["key"]}/'}
     return ld({'@context': 'https://schema.org', '@graph': [ld_breadcrumb([('Cape Wine Atlas', BASE_URL), (R['name'], f'{BASE_URL}region/{R["key"]}/'), (f['name'], url)]), w]})
 
 # ---------------------------------------------------------------- templating
@@ -620,25 +689,40 @@ for key, R in regions.items():
     (OUT / 'data' / 'regions' / f'{key}.json').write_text(json.dumps(R, ensure_ascii=False, separators=(',', ':')), encoding='utf-8')
 
 (OUT / 'index.html').write_text(render({'TITLE': 'Cape Wine Atlas', 'DESCRIPTION': site_desc, 'CANONICAL': BASE_URL, 'REGION': '', 'RV_OPEN': '', 'CRUMB': '', 'PRERENDER': '', 'JSONLD': ld_home(site_desc)}), encoding='utf-8')
-urls = [BASE_URL]
+urls = [(BASE_URL, '1.0')]
 n_pv = 0
 for key, R in regions.items():
     d = OUT / 'region' / key; d.mkdir(parents=True)
-    desc = f"{R['name']} — {len(R['farms'])} wine producers on record, {sum(len(f['awards']) for f in R['farms'])} honours verified against their sources. {R['lede'][:150]}"
+    head = f"{R['name']} — {len(R['farms'])} wine producers on record, {sum(len(f['awards']) for f in R['farms'])} honours verified against their sources."
+    desc = clip(head + ' ' + (R['lede'] or ''), DESC_MAX)
     (d / 'index.html').write_text(render({'TITLE': f"{R['name']} — Cape Wine Atlas", 'DESCRIPTION': desc, 'CANONICAL': f'{BASE_URL}region/{key}/', 'REGION': key, 'RV_OPEN': 'open', 'CRUMB': crumb_html(R), 'PRERENDER': prerender(R), 'JSONLD': ld_region(R)}), encoding='utf-8')
-    urls.append(f'{BASE_URL}region/{key}/')
+    urls.append((f'{BASE_URL}region/{key}/', '0.8'))
     # one page per producer: the region opens beneath it on load, so BACK lands on the region it came from
     for f in R['farms']:
         pd = OUT / 'producer' / f['id']; pd.mkdir(parents=True)
-        n_aw = len(f['awards'])
-        n_w = len(wines_of(f))
-        pdesc = f"{f['name']} — wine producer in {R['name']}{', ' + f['ward'] + ' ward' if f['ward'] else ''}. {n_aw} honour{'' if n_aw == 1 else 's'} verified against {'its source' if n_aw == 1 else 'their sources'}{(', ' + str(n_w) + ' wine' + ('' if n_w == 1 else 's') + ' on record') if n_w else ''}. {(f['history'] or '')[:150]}".strip()
+        pdesc = meta_desc(R, f)
         (pd / 'index.html').write_text(render({'TITLE': f"{f['name']} — {R['name']} · Cape Wine Atlas", 'DESCRIPTION': pdesc, 'CANONICAL': f'{BASE_URL}producer/{f["id"]}/', 'REGION': key, 'RV_OPEN': '', 'CRUMB': crumb_html(R), 'PRERENDER': '',
                                                 'PRODUCER': f['id'], 'PV_OPEN': 'open', 'PV_CRUMB': pv_crumb_html(R, f), 'PV_PRERENDER': prerender_producer(R, f), 'JSONLD': ld_producer(R, f)}), encoding='utf-8')
-        urls.append(f'{BASE_URL}producer/{f["id"]}/'); n_pv += 1
+        urls.append((f'{BASE_URL}producer/{f["id"]}/', '0.7')); n_pv += 1
 
-(OUT / 'sitemap.xml').write_text('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' + ''.join(f'  <url><loc>{u}</loc><lastmod>{S["built"]}</lastmod></url>\n' for u in urls) + '</urlset>\n', encoding='utf-8')
-(OUT / 'robots.txt').write_text(f'User-agent: *\nAllow: /\nSitemap: {BASE_URL}sitemap.xml\n', encoding='utf-8')
+# No modification date. The atlas knows when a record was last READ, not when its content last
+# changed, and one build date stamped across every URL is a freshness claim nothing supports —
+# crawlers discount a lastmod they learn to distrust, so the honest sitemap omits it.
+(OUT / 'sitemap.xml').write_text('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' + ''.join(f'  <url><loc>{u}</loc><changefreq>monthly</changefreq><priority>{p}</priority></url>\n' for u, p in urls) + '</urlset>\n', encoding='utf-8')
+(OUT / 'robots.txt').write_text(
+    f'''# Cape Wine Atlas — {BASE_URL}
+# The producer and region pages are the public record. The data files under /data/ are published
+# for reuse under the Open Database Licence, not as pages to index — they are the same facts in a
+# form meant for machines, and indexing them would compete with the pages that explain them.
+# The one exception is the producer list, which the home page names as this atlas's download: a
+# dataset whose download cannot be fetched is a dataset nobody can check.
+User-agent: *
+Allow: /
+Allow: /data/index.json
+Disallow: /data/
+
+Sitemap: {BASE_URL}sitemap.xml
+''', encoding='utf-8')
 if DOMAIN and ROOT == '/': (OUT / 'CNAME').write_text(DOMAIN + '\n', encoding='utf-8')
 (OUT / '.nojekyll').write_text('', encoding='utf-8')
 (OUT / '404.html').write_text(f'''<!DOCTYPE html><html lang="en" data-root="{ROOT}"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Not on the record — Cape Wine Atlas</title><link rel="stylesheet" href="{ROOT}assets/site.css"><meta name="robots" content="noindex"></head>

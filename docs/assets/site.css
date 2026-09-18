@@ -103,7 +103,10 @@
   /* ---------- accessibility: real controls, visible focus, a skip link, calmer motion on request ---------- */
   button.corner-box, button.orb, button.rl, button.pin{ appearance:none; -webkit-appearance:none; font:inherit; color:inherit; background:none; border:0; margin:0; padding:0; text-align:left; letter-spacing:inherit; line-height:inherit; }
   button.corner-box{ display:flex; }
-  .region-list button.rl{ display:flex; width:calc(100% + 8px); }
+  .region-list button.rl, .region-list a.rl{ display:flex; width:calc(100% + 8px); }
+  .region-list a.rl{ text-decoration:none; color:inherit; }
+  .crumb a{ color:inherit; text-decoration:none; }
+  .crumb a:hover{ color:var(--gold); }
   a:focus-visible, button:focus-visible, input:focus-visible, summary:focus-visible, [tabindex]:focus-visible{ outline:1px solid var(--gold); outline-offset:3px; }
   .orb:focus-visible{ outline-offset:6px; border-radius:50%; }
   #rvTitle:focus, #lvTitle:focus{ outline:none; }   /* the dialog title takes focus so it is announced; a ring around a display heading is not needed */
@@ -895,6 +898,7 @@
   /* ---------- the shelf: a holding area with no position on the chart ---------- */
   .rl.nochart{ margin-top:10px; border-top:1px dashed var(--line); padding-top:12px; }
   .rl.nochart .n{ color:#9a9a9a; }
-  .rl .nc{ display:inline-block; margin-left:10px; font-style:normal; font-size:8px; letter-spacing:.18em; color:var(--muted); border:1px solid var(--line); padding:1px 5px; vertical-align:middle; }
+  .region-list .rl.nochart{ flex-wrap:wrap; }
+  .rl .nc{ flex-basis:100%; font-style:normal; font-size:8px; letter-spacing:.18em; color:var(--muted); margin-top:2px; }
   .rv-map.nochart{ display:flex; align-items:center; justify-content:center; background:repeating-linear-gradient(135deg, rgba(255,255,255,0.025) 0 2px, transparent 2px 14px), #000; }
   .rv-map.nochart .nopins{ position:static; transform:none; }

@@ -714,6 +714,9 @@
     const listEl = document.getElementById('regionList');
     let hideTimer = null, pinnedKey = null;
     const maxFarms = Math.max(...ATLAS.idx.map(r => r.farms));
+    // the build writes this list as real links so the page leads somewhere without a script; the
+    // script replaces them with its own rows, which are also links — same href, same destination
+    listEl.querySelectorAll('a.rl').forEach(a => a.remove());
     ATLAS.idx.forEach((r, i) => {
       // a holding area placed at the province — the atlas's "No fixed place" shelf — has no position on the
       // chart: it is listed, marked as such, and opens like any region, but no marker is drawn for it
@@ -732,11 +735,11 @@
         o.style.transitionDelay = (0.04 * i) + 's';
         plane.appendChild(o);
       }
-      const li = document.createElement('button');
-      li.type = 'button';
+      const li = document.createElement('a');
+      li.href = ROOT + 'region/' + r.key + '/';
       li.className = 'rl' + (r.nochart ? ' nochart' : ''); li.dataset.key = r.key;
       li.setAttribute('aria-label', `${r.name} — ${r.farms} producer${r.farms === 1 ? '' : 's'}${r.nochart ? ', not on the chart' : ''}. Open the region`);
-      li.innerHTML = `<span class="n">${r.nochart ? '··' : String(i+1).padStart(2,'0')} ${r.name.toUpperCase()}${r.nochart ? '<em class="nc">NOT ON THE CHART</em>' : ''}</span><span class="c">${r.farms}</span>`;
+      li.innerHTML = `<span class="n">${r.nochart ? '··' : String(i+1).padStart(2,'0')} ${r.name.toUpperCase()}</span><span class="c">${r.farms}</span>${r.nochart ? '<em class="nc">NOT ON THE CHART</em>' : ''}`;
       listEl.appendChild(li);
       const show = () => {
         clearTimeout(hideTimer);
@@ -763,7 +766,10 @@
       if(o){ o.addEventListener('mouseenter', show); o.addEventListener('mouseleave', hide); o.addEventListener('focus', show); o.addEventListener('blur', hide); }
       li.addEventListener('mouseenter', show); li.addEventListener('mouseleave', hide);
       li.addEventListener('focus', show); li.addEventListener('blur', hide);
-      li.addEventListener('click', () => openRegion(r.key));
+      li.addEventListener('click', e => {
+        if(e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button > 0) return;   // let a modified click open a tab
+        e.preventDefault(); openRegion(r.key);
+      });
     });
     // A press on the chart opens the marker nearest the finger or pointer, measured on screen after the
     // 3-D projection — so in the dense Stellenbosch / Cape Town cluster, and on a phone-sized chart,
@@ -789,6 +795,23 @@
         geometry and the producers' own coordinates, then passed
         through the same dot-screen bake as the hero.
      ========================================================= */
+  // The crumbs and the region index are real links — a crawler and a no-script reader follow them,
+  // and a modified click opens a tab. Inside the running app they route instead of reloading.
+  document.addEventListener('click', e => {
+    const a = e.target.closest('a[href]'); if(!a) return;
+    if(e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button > 0 || a.target === '_blank') return;
+    const u = a.getAttribute('href'); if(!u || !canRoute) return;
+    if(u === ROOT){ e.preventDefault(); if(pvOpen) closeProducer({ silent: true }); if(rvOpen) closeRegion(); else scrollTo({ top: 0, behavior: 'smooth' }); return; }
+    const m = u.match(/^(.*)region\/([^/]+)\/$/);
+    if(m && m[1] === ROOT){
+      e.preventDefault();
+      // the region the crumb names is usually the one already open beneath the producer: closing the
+      // producer normally is what restores that region's address and its focus
+      if(pvOpen && rvOpen && rvKey === m[2]) closeProducer();
+      else { if(pvOpen) closeProducer({ silent: true }); openRegion(m[2]); }
+    }
+  });
+
   const rv = document.getElementById('regionView');
   const rvScroll = document.getElementById('rvScroll');
   const ACCESS = { walk_in:'WALK-IN TASTING', appointment:'TASTING BY APPOINTMENT', scheduled:'TASTING ON ANNOUNCED DATES', closed_temporarily:'TASTING CLOSED FOR NOW', closed_permanently:'TASTING PERMANENTLY CLOSED', none:'NO TASTING ROOM', unknown:'ACCESS NOT CONFIRMED' };
@@ -948,7 +971,7 @@
     const ward = R.ward && !/\(/.test(R.ward) ? R.ward : null;
     const chain = [R.woRegion, R.district].filter(x => x && x !== '—' && x.toUpperCase() !== R.name.toUpperCase());
     const chainTxt = chain.map(x => esc(x.toUpperCase()));
-    document.getElementById('rvCrumb').innerHTML = `<b>CAPE WINE ATLAS</b>${chainTxt.map(x => `<span>/</span>${x}`).join('')}<span>/</span><b>${esc((ward || R.name).toUpperCase())}${ward ? ' WARD' : ''}</b>`;
+    document.getElementById('rvCrumb').innerHTML = `<a href="${ROOT}"><b>CAPE WINE ATLAS</b></a>${chainTxt.map(x => `<span>/</span>${x}`).join('')}<span>/</span><b>${esc((ward || R.name).toUpperCase())}${ward ? ' WARD' : ''}</b>`;
 
     const recs = farms.map(f => {
       const meta = [
@@ -1499,7 +1522,7 @@
     const neighbours = neighboursOf(f), wines = winesOf(f);
     const byYear = {}; f.awards.forEach(a => { (byYear[a.year ?? '—'] = byYear[a.year ?? '—'] || []).push(a); });
     const years = Object.keys(byYear).sort((a, b) => (b === '—' ? -1 : +b) - (a === '—' ? -1 : +a));
-    document.getElementById('pvCrumb').innerHTML = `<b>CAPE WINE ATLAS</b><span>/</span><b>${esc(region.toUpperCase())}</b><span>/</span><b>${esc(f.name.toUpperCase())}</b>`;
+    document.getElementById('pvCrumb').innerHTML = `<a href="${ROOT}"><b>CAPE WINE ATLAS</b></a><span>/</span><a href="${ROOT}region/${R.key}/"><b>${esc(region.toUpperCase())}</b></a><span>/</span><b>${esc(f.name.toUpperCase())}</b>`;
     const back = document.getElementById('pvBack'); back.innerHTML = `[ BACK<span class="long"> TO ${esc(region.toUpperCase())}</span> ] ◂`; back.setAttribute('aria-label', 'Back to ' + region);
     const flags = [
       f.access ? `<span class="flag gold mono">${ACCESS[f.access] || esc(String(f.access).toUpperCase())}</span>` : '',

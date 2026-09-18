@@ -2,6 +2,16 @@
 
 Newest first. Each entry is one sync to `production site/`.
 
+## v0.17.1 — 2026-09-18 — September 2026 edition
+`versions/cape-wine-atlas_2026-09-18_v0.17.1_september-2026-edition.html`
+
+Same data as v0.17.0. **The site can now be walked from the front page to any producer without a script**, which it could not before — and that, not the sitemap, is what a search engine reads as evidence that a page is worth having.
+
+- **The front page linked to nothing.** The region index was drawn by the script as buttons, so the published home page carried four links, two of them email addresses. Every region and every producer page existed only in the sitemap: findable, but with nothing on the site pointing at them. The index is now written into the page as thirty-two real links, which the script still replaces with its own — also links — so nothing about how it looks or behaves changes.
+- **A producer page could not be walked back up.** The trail at the top said CAPE WINE ATLAS / STELLENBOSCH / KANONKOP and none of it was a link, so all 651 producer pages were leaves with no parent. Both earlier segments are now links; inside the running atlas they still step back through the views rather than reloading, and a middle-click or ⌘-click opens a tab as you would expect.
+- Same on a region page: the trail's first segment returns to the chart.
+- The NOT ON THE CHART label under the shelf's index row was being clipped to an ellipsis at narrow widths; it now sits on its own line.
+
 ## v0.17.0 — 2026-09-17 — September 2026 edition
 `versions/cape-wine-atlas_2026-09-17_v0.17.0_september-2026-edition.html`
 

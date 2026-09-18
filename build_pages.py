@@ -357,9 +357,32 @@ def chain_of(R):
 
 def crumb_html(R):
     ward, chain = chain_of(R)
-    return '<b>CAPE WINE ATLAS</b>' + ''.join(f'<span>/</span>{x}' for x in chain) + f'<span>/</span><b>{esc((ward or R["name"]).upper())}{" WARD" if ward else ""}</b>'
+    return crumb_home() + ''.join(f'<span>/</span>{x}' for x in chain) + f'<span>/</span><b>{esc((ward or R["name"]).upper())}{" WARD" if ward else ""}</b>'
 
 NOCHART_MAP = '''<div class="rv-map nochart" id="rvMap" role="note"><div class="nopins mono">NOT ON THE CHART<br>THESE PRODUCERS CANNOT BE PLACED<br>NARROWER THAN THE WESTERN CAPE</div><span class="corner tl"></span><span class="corner br"></span></div>'''
+def region_index_html():
+    """The home page's way in, as real links.
+
+    The index is drawn as an interactive list by the script, but a page whose only route to 651
+    producer pages is a script is a page that links to nothing: a crawler reads four links, two of
+    them mailto, and every region and producer below is reachable only from the sitemap. These
+    anchors are the same rows the script renders, written at build time; the script replaces them
+    with its own, which are also anchors.
+    """
+    NC = '<em class="nc">NOT ON THE CHART</em>'
+    out = []
+    for i, r in enumerate(idx):
+        cls = 'rl nochart' if r['nochart'] else 'rl'
+        num = '··' if r['nochart'] else str(i + 1).zfill(2)
+        tag = NC if r['nochart'] else ''
+        out.append(f'<a class="{cls}" href="{ROOT}region/{r["key"]}/" data-key="{r["key"]}">'
+                   f'<span class="n">{num} {esc(r["name"].upper())}</span>'
+                   f'<span class="c">{r["farms"]}</span>{tag}</a>')
+    return ''.join(out)
+
+def crumb_home():
+    return f'<a href="{ROOT}"><b>CAPE WINE ATLAS</b></a>'
+
 def prerender(R):
     farms = R['farms']; S = stats
     pinned = sum(1 for f in farms if f['lat'] is not None)
@@ -467,7 +490,11 @@ def src_chip(a):
     label = label[:30] + '…' if len(label) > 30 else label
     return (f'<a class="src mono" href="{esc(a["sourceUrl"])}" target="_blank" rel="noopener" title="{esc(a.get("sourceName") or "")}">SOURCE · {esc(label)}</a>'
             + ('<span class="corr mono">✓✓ CORROBORATED</span>' if a.get('corr') else ''))
-def pv_crumb_html(R, f): return f'<b>CAPE WINE ATLAS</b><span>/</span><b>{esc(R["name"].upper())}</b><span>/</span><b>{esc(f["name"].upper())}</b>'
+def pv_crumb_html(R, f):
+    # the region segment is a real link: a producer page that cannot be walked back up to its region
+    # is a leaf with no parent, and 651 of them were exactly that
+    return (crumb_home() + f'<span>/</span><a href="{ROOT}region/{R["key"]}/"><b>{esc(R["name"].upper())}</b></a>'
+            + f'<span>/</span><b>{esc(f["name"].upper())}</b>')
 def prerender_producer(R, f):
     region = R['name']; located = f['lat'] is not None
     neigh = neighbours_of(f); wines = wines_of(f)
@@ -685,6 +712,7 @@ COMMON = {
     'FARMS': S['farms'], 'REGIONS': S['regions'], 'ROUTES': S['routes'], 'TOURS': S['tours'],
     'AWARDS': S['verifiedAwards'], 'PENDING': S['pendingClaims'], 'WITHHELD': S['withheld'], 'WINES': (S.get('wines') or {}).get('brands') or 0,
     'OG_IMAGE': BASE_URL + 'assets/img/og.jpg',
+    'REGION_INDEX': region_index_html(),
 }
 PV_BLANK = {'PRODUCER': '', 'PV_OPEN': '', 'PV_CRUMB': '', 'PV_PRERENDER': '', 'JSONLD': ''}
 def render(page):

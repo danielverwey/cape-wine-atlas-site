@@ -773,6 +773,16 @@ def ld_producer(R, f):
 template = (SRC / 'index.template.html').read_text(encoding='utf-8')
 site_css = (SRC / 'site.css').read_text(encoding='utf-8')
 app_js = (SRC / 'app.js').read_text(encoding='utf-8')
+# Every release changes the stylesheet, the script and the data, and a returning visitor's browser may
+# hold last week's copy of any of them — a fresh page over a stale script is how a region index ends up
+# drawn twice. So the stylesheet and script carry a fingerprint of their own content in their names, and
+# every data request carries the build's fingerprint: a changed file is a new address, never a stale one.
+import hashlib
+def fp(text): return hashlib.sha1(text.encode('utf-8')).hexdigest()[:10]
+CSS_NAME = f'site-{fp(site_css)}.css'
+DATA_V = fp(json.dumps(index, sort_keys=True, ensure_ascii=False) + json.dumps(search, ensure_ascii=False))
+app_js = app_js.replace('__DATA_V__', DATA_V)
+JS_NAME = f'app-{fp(app_js)}.js'
 S = stats
 COMMON = {
     'ROOT': ROOT, 'BUILT': S['built'], 'EDITION': EDITION, 'EDITION_LOWER': EDITION.lower(),
@@ -781,6 +791,7 @@ COMMON = {
     'OG_IMAGE': BASE_URL + 'assets/img/og.jpg',
     'REGION_INDEX': region_index_html(),
     'TOURS_URL': ROOT + 'tours/',
+    'CSS_HREF': ROOT + 'assets/' + CSS_NAME, 'JS_SRC': ROOT + 'assets/' + JS_NAME,
 }
 PV_BLANK = {'PRODUCER': '', 'PV_OPEN': '', 'PV_CRUMB': '', 'PV_PRERENDER': '', 'JSONLD': '', 'PAGE': '', 'TV_OPEN': '', 'TV_PRERENDER': '', 'TV_CRUMB': ''}
 def render(page):
@@ -797,8 +808,8 @@ site_desc = f"An open record of South Africa’s wine farms — {S['farms']} pro
 if OUT.exists(): shutil.rmtree(OUT)
 (OUT / 'assets' / 'img').mkdir(parents=True); (OUT / 'assets' / 'fonts').mkdir(parents=True)
 (OUT / 'data' / 'regions').mkdir(parents=True)
-(OUT / 'assets' / 'site.css').write_text(site_css.replace('{{ROOT}}', ROOT), encoding='utf-8')
-(OUT / 'assets' / 'app.js').write_text(app_js, encoding='utf-8')
+(OUT / 'assets' / CSS_NAME).write_text(site_css.replace('{{ROOT}}', ROOT), encoding='utf-8')
+(OUT / 'assets' / JS_NAME).write_text(app_js, encoding='utf-8')
 for f in (SRC / 'assets' / 'fonts').iterdir(): shutil.copy(f, OUT / 'assets' / 'fonts' / f.name)
 for f in (SRC / 'assets' / 'img').iterdir(): shutil.copy(f, OUT / 'assets' / 'img' / f.name)
 (OUT / 'data' / 'index.json').write_text(json.dumps(index, ensure_ascii=False, separators=(',', ':')), encoding='utf-8')
@@ -850,7 +861,7 @@ Sitemap: {BASE_URL}sitemap.xml
 ''', encoding='utf-8')
 if DOMAIN and ROOT == '/': (OUT / 'CNAME').write_text(DOMAIN + '\n', encoding='utf-8')
 (OUT / '.nojekyll').write_text('', encoding='utf-8')
-(OUT / '404.html').write_text(f'''<!DOCTYPE html><html lang="en" data-root="{ROOT}"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Not on the record — Cape Wine Atlas</title><link rel="stylesheet" href="{ROOT}assets/site.css"><meta name="robots" content="noindex"></head>
+(OUT / '404.html').write_text(f'''<!DOCTYPE html><html lang="en" data-root="{ROOT}"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Not on the record — Cape Wine Atlas</title><link rel="stylesheet" href="{ROOT}assets/{CSS_NAME}"><meta name="robots" content="noindex"></head>
 <body style="background:#0a0a0a;color:#eaeaea;min-height:100vh;display:flex;align-items:center;justify-content:center;text-align:center;padding:40px">
 <div class="frame"><i class="tl"></i><i class="tr"></i><i class="bl"></i><i class="br"></i></div>
 <div><div class="mono" style="font-size:10px;letter-spacing:.2em;color:#c9a227;margin-bottom:18px">// SIGNAL LOST</div>
@@ -867,8 +878,8 @@ for name in ('orbitron-900', 'jetbrains-mono-400', 'jetbrains-mono-700'):
     css_inline = css_inline.replace(f'url({{{{ROOT}}}}assets/fonts/{name}.woff2)', f'url({data_uri(SRC / "assets" / "fonts" / (name + ".woff2"), "font/woff2")})')
 assets_inline = {f'img/{n}': data_uri(SRC / 'assets' / 'img' / n, 'image/jpeg') for n in ('hero-tex.jpg', 'map-tex.jpg', 'footer-halftone.jpg')}
 single = render({'TITLE': 'Cape Wine Atlas', 'DESCRIPTION': site_desc, 'CANONICAL': BASE_URL, 'REGION': '', 'RV_OPEN': '', 'CRUMB': '', 'PRERENDER': ''})
-single = single.replace(f'<link rel="stylesheet" href="{ROOT}assets/site.css">', '<style>' + css_inline + '</style>')
-single = single.replace(f'<script src="{ROOT}assets/app.js"></script>',
+single = single.replace(f'<link rel="stylesheet" href="{ROOT}assets/{CSS_NAME}">', '<style>' + css_inline + '</style>')
+single = single.replace(f'<script src="{ROOT}assets/{JS_NAME}"></script>',
     '<script>window.__CWA = ' + json.dumps({'index': index, 'regions': regions, 'search': search, 'assets': assets_inline}, ensure_ascii=False) + ';</script>\n<script>' + app_js + '</script>')
 single = single.replace('<html lang="en" data-root="/" data-region="" data-producer="">', '<html lang="en" data-root="./" data-region="" data-producer="">')
 single_path = HERE / 'cape-wine-atlas.html'

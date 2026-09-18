@@ -6,16 +6,17 @@
      single-file build sets window.__CWA with the same things inlined. */
   const INLINE = window.__CWA || {};
   const ROOT = (document.documentElement.dataset.root || '/');
+  const DATA_V = 'af50fa70f1';   // the build's fingerprint: data addresses change when the data does
   const asset = p => INLINE.assets && INLINE.assets[p] ? INLINE.assets[p] : ROOT + 'assets/' + p;
   const FOOTER_HALFTONE_SRC = asset('img/footer-halftone.jpg');
   const MAP_TEX_SRC = asset('img/map-tex.jpg');
   const HERO_TEX_SRC = asset('img/hero-tex.jpg');
-  const ATLAS = INLINE.index || await (await fetch(ROOT + 'data/index.json', { cache: 'no-cache' })).json();
+  const ATLAS = INLINE.index || await (await fetch(ROOT + 'data/index.json?v=' + DATA_V)).json();
   const GEO = ATLAS.geo, MAP_MARKS = ATLAS.marks;
   const regionCache = INLINE.regions || {};
   async function loadRegion(key){
     if(regionCache[key]) return regionCache[key];
-    const r = await fetch(ROOT + 'data/regions/' + key + '.json', { cache: 'no-cache' });
+    const r = await fetch(ROOT + 'data/regions/' + key + '.json?v=' + DATA_V);
     if(!r.ok) throw new Error('region not found: ' + key);
     return (regionCache[key] = await r.json());
   }
@@ -1216,7 +1217,7 @@
     opts = opts || {};
     if(!tv.classList.contains('open')) tvOpener = document.activeElement;
     if(!toursData && !document.getElementById('tvTitle')){
-      try { toursData = await (await fetch(ROOT + 'data/tours.json')).json(); } catch(e){ console.warn(e); return; }
+      try { toursData = await (await fetch(ROOT + 'data/tours.json?v=' + DATA_V)).json(); } catch(e){ console.warn(e); return; }
       renderTours(toursData);
     }
     tv.classList.add('open'); setBehindInert(true); document.body.style.overflow = 'hidden';
@@ -1383,7 +1384,7 @@
 
     /* ---- search ---- */
     let SEARCH = INLINE.search || null, loading = null;
-    const loadSearch = () => SEARCH ? Promise.resolve(SEARCH) : (loading = loading || fetch(ROOT + 'data/search.json', { cache: 'force-cache' }).then(r => r.json()).then(d => { SEARCH = d.map(it => ({ ...it, f: fold(it.l), toks: fold(it.l).split(' ') })); return SEARCH; }));
+    const loadSearch = () => SEARCH ? Promise.resolve(SEARCH) : (loading = loading || fetch(ROOT + 'data/search.json?v=' + DATA_V).then(r => r.json()).then(d => { SEARCH = d.map(it => ({ ...it, f: fold(it.l), toks: fold(it.l).split(' ') })); return SEARCH; }));
     const fold = s => String(s || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/[’'`]/g, '').replace(/[^a-z0-9 ]+/g, ' ').replace(/\s+/g, ' ').trim();
     if(SEARCH) SEARCH = SEARCH.map(it => ({ ...it, f: fold(it.l), toks: fold(it.l).split(' ') }));
     const lev = (x, y) => {   // edit distance, with a swapped pair of letters counted as one slip

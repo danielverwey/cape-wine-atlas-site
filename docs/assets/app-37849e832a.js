@@ -6,7 +6,7 @@
      single-file build sets window.__CWA with the same things inlined. */
   const INLINE = window.__CWA || {};
   const ROOT = (document.documentElement.dataset.root || '/');
-  const DATA_V = 'af50fa70f1';   // the build's fingerprint: data addresses change when the data does
+  const DATA_V = 'e0fb3b548f';   // the build's fingerprint: data addresses change when the data does
   const asset = p => INLINE.assets && INLINE.assets[p] ? INLINE.assets[p] : ROOT + 'assets/' + p;
   const FOOTER_HALFTONE_SRC = asset('img/footer-halftone.jpg');
   const MAP_TEX_SRC = asset('img/map-tex.jpg');

@@ -2,6 +2,16 @@
 
 Newest first. Each entry is one sync to `production site/`.
 
+## v0.19.0 — 2026-09-18 — September 2026 edition
+`versions/cape-wine-atlas_2026-09-18_v0.19.0_september-2026-edition.html`
+
+Built against the atlas of 18 September. **The honours count goes down, and that is the release.**
+
+- **2,586 honours, not 2,673.** Eighty-nine of them did not exist. The Veritas 2025 results booklet was read twice — once on 10 September at one archive address, once on 12 September at another — and each reading wrote the wine the way its own page printed it: "The Journal Sauvignon Blanc 2024" the first time, "Diemersdal The Journal Sauvignon Blanc 2024" the second. Neither reading was wrong. The check that was supposed to notice compared the two strings, saw two different wines, and kept both. Diemersdal was carrying twelve results twice over and now shows 67 honours instead of 79; KWV loses nine; forty-six producers are affected. Where a producer page showed the same wine twice on the same day from the same competition, it now shows it once, and the surviving entry carries both readings and both sources in its record.
+- **Every published producer has now had its honours looked for.** The last 82 that had never been checked against the atlas's competition ledgers were checked: none of them appears in any of them. That is recorded as a finding — *searched, none found* — rather than left looking like work outstanding, and it is not a claim that those producers have never won anything: the ledgers are partial by competition, and each says where its own coverage ends.
+- **One honour gained.** Blake Family Wines of Yzerfontein, which had none, takes a Veritas 2025 Double Gold for Blake's Tourmaline 2024. "Blake's" is the producer's own premium range, not a separate winery — its own wine list names Tourmaline among them and describes it as the white blend the award record describes.
+- The atlas's build now refuses to produce a payload that records one result twice, so the count cannot drift upward again unnoticed.
+
 ## v0.18.0 — 2026-09-18 — September 2026 edition
 `versions/cape-wine-atlas_2026-09-18_v0.18.0_september-2026-edition.html`
 

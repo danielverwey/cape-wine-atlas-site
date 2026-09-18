@@ -14,7 +14,7 @@ PROCESS_SRC = r"""
   records?|recorded|files?|register|registry|registration|sources?|sourced|sourcing|unanimous|cit(?:ed|ation|ing)|json|robots|nav|
   triage|ruling|adopt\w*|geocod\w*|gps|lat|lng|null|stale|junk|director(?:y|ies)|aggregator|listings?|tiers?|hierarchy|tranche|
   audit\w*|auditor|verif\w*|re-sourced|phase|sweep|encoded|blurb|cards?|api|places|wikidata|osm|openstreetmap|withheld|url|www|
-  count\ gap|lead|candidate|primary|secondary|trade-press|sa-venues|wine\.co\.za|platter\w*|homepage|website|web|site|pages?|
+  count\ gap|coverage|third-party|checked_absence|lead|candidate|primary|secondary|trade-press|sa-venues|wine\.co\.za|platter\w*|homepage|website|web|site|pages?|
   domain|profile|search(?:es|ed)?|checked|check|contradiction|question|investigat\w*|blacklist\w*|guess\w*|rule|
   per\ (?:the|rule|hierarchy|brief)|this\ (?:pass|file|project)|the\ count|producer\ \#\d+|reciprocal|id|ids|status|pending|
   placeholder|scaffold|stub|todo|tbd|ask|owner's|the\ seed|nav\ list|member\ (?:page|cards?)|association(?:'s)?\ (?:own|member|page)|
@@ -137,10 +137,10 @@ def history(note, lowercase_vocab, budget=230, mode="history"):
     for s in _sentences(t):
         s = s.strip() if mode == "hours" else _strip_label(s.strip())   # "BY APPOINTMENT ONLY — …" is the hours, not a label
         if not s: continue
+        # a bracket that talks about method — often with a dash or semicolon inside it — is dropped whole
+        # BEFORE the clause split, or the split cuts through it and takes the fact in front of it too
+        s = re.sub(r"\s*\(([^()]*)\)", lambda m: "" if PROCESS.search(m.group(0)) or DOMAIN.search(m.group(1)) else m.group(0), s)
         if mode == "hours":
-            # hours carry their sourcing in brackets, often with a semicolon inside: drop such a bracket
-            # whole before the clause split, or the split cuts through it and takes the hours with it
-            s = re.sub(r"\s*\(([^()]*)\)", lambda m: "" if PROCESS.search(m.group(0)) or DOMAIN.search(m.group(1)) else m.group(0), s)
             s = re.sub(r"\s*\[[^\]]*\]", "", s).strip()
         clauses = re.split(r"(;\s+|\s—\s)", s)
         run, glue = [], []

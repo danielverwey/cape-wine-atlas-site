@@ -197,12 +197,43 @@ for r in atlas['regions']:
                 'researched': sum(1 for f in r['farms'] if f['awardsCollected']), 'status': m['status'],
                 'lat': None if nochart else round(lat, 4), 'lng': None if nochart else round(lng, 4), 'withheld': withheld, 'nochart': nochart})
 if skipped: print('note: nothing published in ' + ', '.join(skipped) + ' — not drawn on the chart')
+
+# ---------------------------------------------------------------- the tour operators, as one roster
+# Every operator the atlas lists, on one page, grouped by the area it serves. A region page shows only
+# the operators serving that region; 22 regions have none, so most of the roster was invisible.
+def op_record(t):
+    # in the order the operator itself names its areas — the first is where it is filed
+    keys, seen = [], set()
+    for rk in t['routesServed']:
+        for k in tour_regions({'routesServed': [rk]}):
+            if k in regions and k not in seen: seen.add(k); keys.append(k)
+    detail = copy(t.get('detail'), 260)
+    # a line that only says where the operator was listed is provenance, and the source chip already carries it
+    if re.match(r'^(Listed|Named) (on|under|by|in|among)\b', detail) and detail.count('. ') == 0: detail = ''
+    return {'id': t['id'], 'name': t['name'], 'type': t.get('type') or '', 'base': t.get('base') or '', 'web': t.get('web'),
+            'detail': detail, 'verified': bool(t.get('verified')), 'regions': [{'key': k, 'name': regions[k]['name']} for k in keys],
+            'source': t.get('sourceUrl'), 'retrieved': t.get('retrieved'),
+            'event': str(t.get('type') or '').lower().startswith('route event')}
+OPS = [op_record(t) for t in atlas['tourOperators']]
+def op_group(o):
+    if o['event']: return ('zz-event', 'ROUTE EVENTS')
+    if not o['regions']: return ('zy-none', 'AREA NOT STATED')
+    if len(o['regions']) >= 4: return ('zx-across', 'ACROSS THE WINELANDS')
+    return (o['regions'][0]['name'].lower(), o['regions'][0]['name'].upper())
+TOUR_GROUPS = []
+for o in sorted(OPS, key=lambda o: (op_group(o)[0], not o['verified'], o['name'].lower())):
+    g = op_group(o)
+    if not TOUR_GROUPS or TOUR_GROUPS[-1]['label'] != g[1]: TOUR_GROUPS.append({'label': g[1], 'ops': []})
+    TOUR_GROUPS[-1]['ops'].append(o)
+N_OPS = sum(1 for o in OPS if not o['event'])
+TOURS_DATA = {'groups': TOUR_GROUPS, 'operators': N_OPS, 'read': max((o['retrieved'] or '') for o in OPS)}
 idx.sort(key=lambda x: (x['nochart'], x['name']))   # the shelf lists last
 stats = dict(atlas['stats'])
 stats.update({'regions': sum(1 for x in idx if not x['nochart']), 'routes': len(atlas['routes']), 'tours': len(atlas['tourOperators']), 'built': atlas.get('dataAsAt') or atlas['built'], 'buildMode': mode,
               'competitions': [{'body': x['body'], 'year': x['year'], 'records': x['records']} for x in atlas['competitions']],
               'tourDisclaimer': atlas['tourOperatorDisclaimer'], 'withheld': atlas.get('withheld', {}).get('total', 0),
               'industry': {'cellars': atlas.get('industry', {}).get('cellarsCrushing2024', {}).get('total'), 'source': 'SAWIS, SA Wine Industry Statistics 2024'}})
+stats['tours'] = N_OPS   # operators, not entries: the atlas also records one route event, which is shown as such
 _w = atlas['stats'].get('wines') or {}
 stats['wines'] = {k: _w.get(k) for k in ('brands', 'ranges', 'notes', 'producersWithBrands', 'namelessByChoice')}
 LON0, LON1, LAT0, LAT1 = 17.6, 23.75, 31.25, 35.05        # the Western Cape chart's bounding box
@@ -360,6 +391,35 @@ def crumb_html(R):
     return crumb_home() + ''.join(f'<span>/</span>{x}' for x in chain) + f'<span>/</span><b>{esc((ward or R["name"]).upper())}{" WARD" if ward else ""}</b>'
 
 NOCHART_MAP = '''<div class="rv-map nochart" id="rvMap" role="note"><div class="nopins mono">NOT ON THE CHART<br>THESE PRODUCERS CANNOT BE PLACED<br>NARROWER THAN THE WESTERN CAPE</div><span class="corner tl"></span><span class="corner br"></span></div>'''
+TOURS_NOTE = ('<b>LISTED, NOT ENDORSED.</b> An operator appears here because it publicly offers winelands tours and the atlas can point to '
+              'where it says so. Inclusion says nothing about licensing, insurance or safety — please confirm operating permits, prices and '
+              'current schedules with the operator directly. What is shown is what the operator or its association had published on the day it was read.')
+def op_html(o):
+    flag = ('<span class="flag gold mono">EVENT · NOT AN OPERATOR</span>' if o['event'] else
+            '' if o['verified'] else '<span class="flag dim mono">NOT YET CONFIRMED</span>')
+    web = f'<a href="{esc(o["web"])}" target="_blank" rel="noopener">{esc(host(o["web"]))}</a>' if o['web'] else '<span class="dim">No website on record</span>'
+    regs = ' · '.join(f'<a href="{ROOT}region/{r["key"]}/">{esc(r["name"].upper())}</a>' for r in o['regions']) or 'NOT STATED'
+    src = f'<a class="src mono" href="{esc(o["source"])}" target="_blank" rel="noopener">SEEN AT · {esc(host(o["source"]).upper())}{(" · " + esc(o["retrieved"])) if o["retrieved"] else ""}</a>' if o['source'] else ''
+    return (f'<article class="op" id="op-{esc(o["id"])}"><div class="op-bar mono"><span>$ OPERATOR.{esc(o["id"].upper())}</span></div>'
+            f'<h3>{esc(o["name"])}</h3><div class="op-type mono">{esc(o["type"].upper())}</div>'
+            + (f'<p class="op-detail">{esc(o["detail"])}</p>' if o['detail'] else '')
+            + f'<div class="op-row"><span class="k mono">BASED</span><span>{esc(o["base"])}</span></div>'
+            f'<div class="op-row"><span class="k mono">SERVES</span><span class="mono op-regions">{regs}</span></div>'
+            f'<div class="op-row"><span class="k mono">WEBSITE</span><span>{web}</span></div>'
+            f'<div class="op-foot">{flag}{src}</div></article>')
+def prerender_tours():
+    groups = ''.join(f'<section class="op-group"><h2 class="mono"><span class="h3l">{esc(g["label"])} <span>{len(g["ops"])}</span></span></h2><div class="op-grid">'
+                     + ''.join(op_html(o) for o in g['ops']) + '</div></section>' for g in TOUR_GROUPS)
+    return f'''
+      <div class="lv-head tv-head">
+        <div class="rv-eyebrow mono">EVERY OPERATOR THE ATLAS LISTS · {N_OPS} ACROSS {len([g for g in TOUR_GROUPS if g["label"] not in ("ROUTE EVENTS", "AREA NOT STATED")])} AREAS · READ TO {esc(TOURS_DATA["read"])}</div>
+        <h2 class="display" id="tvTitle" tabindex="-1">Tour<br>operators</h2>
+        <p class="lv-lede">{N_OPS} operators publicly offer tours of the Cape winelands, from a hop-on hop-off tram to a steam train to a private guide. They are listed here under the first area each names, with every area it serves and the page that says so. <b>A region page shows only the operators serving that region; this page shows them all.</b></p>
+        <div class="rv-note tv-note">{TOURS_NOTE}</div>
+      </div>
+      {groups}'''
+def tours_crumb(): return crumb_home() + '<span>/</span><b>TOUR OPERATORS</b>'
+
 def region_index_html():
     """The home page's way in, as real links.
 
@@ -437,7 +497,8 @@ def prerender(R):
         unv = '' if t['verified'] else ' <span class="flag dim mono">NOT YET CONFIRMED</span>'
         web = f' · <a href="{esc(t["web"])}" target="_blank" rel="noopener">{esc(host(t["web"]))}</a>' if t['web'] else ''
         return f'<div class="tour"><b>{esc(t["name"])}</b>{unv}<span class="t mono">{esc(t["type"])} · {esc(t["base"])}{web}</span></div>'
-    tours = ''.join(tour_html(t) for t in R['tours']) or '<div class="tour"><span class="t mono">NO TOUR OPERATOR IS YET LISTED FOR THIS ROUTE</span></div>'
+    tours = (''.join(tour_html(t) for t in R['tours']) or '<div class="tour"><span class="t mono">NO TOUR OPERATOR IS YET LISTED FOR THIS ROUTE</span></div>') \
+            + f'<div class="tour tour-all"><a class="mono" href="{ROOT}tours/">ALL {N_OPS} OPERATORS ACROSS THE ATLAS ▸</a></div>'
     comps = ' · '.join(f'{esc(c["body"])} {c["year"]}' for c in S['competitions'])
     return f'''
       <div class="rv-head">
@@ -670,6 +731,12 @@ def meta_desc(R, f, shown=4):
         if tail: s += ' ' + tail
     return clip(s, DESC_MAX)
 
+def ld_tours():
+    url = BASE_URL + 'tours/'
+    items = [o for g in TOUR_GROUPS for o in g['ops'] if not o['event']]
+    return ld({'@context': 'https://schema.org', '@graph': [ld_breadcrumb([('Cape Wine Atlas', BASE_URL), ('Tour operators', url)]),
+        {'@type': 'ItemList', 'name': 'Tour operators serving the Cape winelands, as listed in the Cape Wine Atlas', 'url': url, 'numberOfItems': len(items),
+         'itemListElement': [{'@type': 'ListItem', 'position': i + 1, 'name': o['name'], **({'url': o['web']} if o['web'] else {})} for i, o in enumerate(items)]}]})
 def ld_producer(R, f):
     """Machine-readable claims a reader could check. Nothing here is inferred or filled in.
 
@@ -713,8 +780,9 @@ COMMON = {
     'AWARDS': S['verifiedAwards'], 'PENDING': S['pendingClaims'], 'WITHHELD': S['withheld'], 'WINES': (S.get('wines') or {}).get('brands') or 0,
     'OG_IMAGE': BASE_URL + 'assets/img/og.jpg',
     'REGION_INDEX': region_index_html(),
+    'TOURS_URL': ROOT + 'tours/',
 }
-PV_BLANK = {'PRODUCER': '', 'PV_OPEN': '', 'PV_CRUMB': '', 'PV_PRERENDER': '', 'JSONLD': ''}
+PV_BLANK = {'PRODUCER': '', 'PV_OPEN': '', 'PV_CRUMB': '', 'PV_PRERENDER': '', 'JSONLD': '', 'PAGE': '', 'TV_OPEN': '', 'TV_PRERENDER': '', 'TV_CRUMB': ''}
 def render(page):
     vals = {**COMMON, **PV_BLANK, **page}
     out = template
@@ -740,6 +808,13 @@ for key, R in regions.items():
 
 (OUT / 'index.html').write_text(render({'TITLE': 'Cape Wine Atlas', 'DESCRIPTION': site_desc, 'CANONICAL': BASE_URL, 'REGION': '', 'RV_OPEN': '', 'CRUMB': '', 'PRERENDER': '', 'JSONLD': ld_home(site_desc)}), encoding='utf-8')
 urls = [(BASE_URL, '1.0')]
+(OUT / 'tours').mkdir(parents=True)
+(OUT / 'data' / 'tours.json').write_text(json.dumps(TOURS_DATA, ensure_ascii=False, separators=(',', ':')), encoding='utf-8')
+(OUT / 'tours' / 'index.html').write_text(render({'TITLE': 'Tour operators — Cape Wine Atlas',
+    'DESCRIPTION': f"{N_OPS} tour operators publicly offering tours of the Cape winelands — trams, shuttles, cycling tours, private guides — listed by the area they serve, each with its source. Listed, not endorsed.",
+    'CANONICAL': BASE_URL + 'tours/', 'REGION': '', 'RV_OPEN': '', 'CRUMB': '', 'PRERENDER': '', 'JSONLD': ld_tours(),
+    'PAGE': 'tours', 'TV_OPEN': 'open', 'TV_PRERENDER': prerender_tours(), 'TV_CRUMB': tours_crumb()}), encoding='utf-8')
+urls.append((BASE_URL + 'tours/', '0.8'))
 n_pv = 0
 for key, R in regions.items():
     d = OUT / 'region' / key; d.mkdir(parents=True)

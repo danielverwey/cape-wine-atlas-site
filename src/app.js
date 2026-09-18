@@ -21,6 +21,7 @@
   }
   const BOOT_REGION = document.documentElement.dataset.region || '';
   const BOOT_PRODUCER = document.documentElement.dataset.producer || '';
+  const BOOT_PAGE = document.documentElement.dataset.page || '';
   // the archival single file is opened from disk, where the history API refuses new addresses
   const canRoute = /^https?:$/.test(location.protocol);
   const push = (state, url) => { if(canRoute){ try { history.pushState(state, '', url); } catch(e){} } };
@@ -801,13 +802,15 @@
     const a = e.target.closest('a[href]'); if(!a) return;
     if(e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button > 0 || a.target === '_blank') return;
     const u = a.getAttribute('href'); if(!u || !canRoute) return;
-    if(u === ROOT){ e.preventDefault(); if(pvOpen) closeProducer({ silent: true }); if(rvOpen) closeRegion(); else scrollTo({ top: 0, behavior: 'smooth' }); return; }
+    if(u === ROOT){ e.preventDefault(); if(tv.classList.contains('open')) closeTours({ fromHistory: true }); if(pvOpen) closeProducer({ silent: true }); if(rvOpen) closeRegion(); else { scrollTo({ top: 0, behavior: 'smooth' }); if(location.pathname !== ROOT) push({}, ROOT); } return; }
     const m = u.match(/^(.*)region\/([^/]+)\/$/);
     if(m && m[1] === ROOT){
       e.preventDefault();
       // the region the crumb names is usually the one already open beneath the producer: closing the
       // producer normally is what restores that region's address and its focus
+      if(tv.classList.contains('open')) closeTours({ fromHistory: true });
       if(pvOpen && rvOpen && rvKey === m[2]) closeProducer();
+      else if(rvOpen && rvKey === m[2] && !pvOpen){ if(location.pathname !== regionPath(m[2])) push({ region: m[2] }, regionPath(m[2])); }
       else { if(pvOpen) closeProducer({ silent: true }); openRegion(m[2]); }
     }
   });
@@ -1016,6 +1019,7 @@
       : `<p>No route association is on file for this area; the producers below were gathered from the wine industry’s own records and their own websites.</p>`;
     const tours = R.tours.length ? R.tours.map(t => `<div class="tour"><b>${esc(t.name)}</b>${t.verified ? '' : ' <span class="flag dim mono">NOT YET CONFIRMED</span>'}<span class="t mono">${esc(t.type)} · ${esc(t.base)}${t.web ? ` · <a href="${esc(t.web)}" target="_blank" rel="noopener">${esc(host(t.web))}</a>` : ''}</span></div>`).join('')
       : `<div class="tour"><span class="t mono">NO TOUR OPERATOR IS YET LISTED FOR THIS ROUTE</span></div>`;
+    const toursAll = `<div class="tour tour-all"><a class="mono" href="${ROOT}tours/">ALL ${ATLAS.stats.tours} OPERATORS ACROSS THE ATLAS ▸</a></div>`;
     const compList = S.competitions.map(c => `${esc(c.body)} ${c.year}`).join(' · ');
 
     rvScroll.innerHTML = `
@@ -1059,7 +1063,7 @@
           ${routes}
           <h4 class="mono" style="margin-top:26px">TOUR OPERATORS SERVING THIS AREA · ${R.tours.length}</h4>
           <div class="rv-note" style="margin-bottom:10px"><b>LISTED, NOT ENDORSED.</b> An operator appears here because it publicly offers winelands tours and we can point to where it says so. Inclusion says nothing about licensing, insurance or safety — please confirm operating permits and current schedules with the operator directly. Details are as published at the source on the day we consulted it.</div>
-          ${tours}
+          ${tours}${toursAll}
         </div>
         <div>
           <h4 class="mono">THE HONOURS LEDGER</h4>
@@ -1166,6 +1170,8 @@
     if(!opts.fromHistory && location.pathname !== ROOT){ push({}, ROOT + (window.__lensHash ? window.__lensHash() : '#explore')); }
   }
   window.addEventListener('popstate', e => {
+    if(/\/tours\/?$/.test(location.pathname)){ openTours({ fromHistory: true }); return; }
+    if(tv.classList.contains('open')) closeTours({ fromHistory: true });
     const pm = location.pathname.match(/\/producer\/([a-z0-9-]+)\/?$/);
     if(pm){ const key = producerRegion(pm[1]); if(key){ openProducer(key, pm[1], { fromHistory: true, instant: true }); return; } }
     if(pvOpen) closeProducer({ fromHistory: true });
@@ -1183,6 +1189,59 @@
   document.getElementById('lvClose').addEventListener('click', closeLicence);
   window.addEventListener('keydown', e => { if(e.key === 'Escape' && lv.classList.contains('open')) closeLicence(); });
   if(location.hash === '#licence') openLicence();
+
+  /* ---- tour operators: every operator the atlas lists, on one page ---- */
+  const tv = document.getElementById('toursView'); let tvOpener = null, toursData = null;
+  const toursPath = () => ROOT + 'tours/';
+  const TOURS_NOTE = '<b>LISTED, NOT ENDORSED.</b> An operator appears here because it publicly offers winelands tours and the atlas can point to where it says so. Inclusion says nothing about licensing, insurance or safety — please confirm operating permits, prices and current schedules with the operator directly. What is shown is what the operator or its association had published on the day it was read.';
+  function opHtml(o){
+    const flag = o.event ? '<span class="flag gold mono">EVENT · NOT AN OPERATOR</span>' : o.verified ? '' : '<span class="flag dim mono">NOT YET CONFIRMED</span>';
+    const web = o.web ? `<a href="${esc(o.web)}" target="_blank" rel="noopener">${esc(host(o.web))}</a>` : '<span class="dim">No website on record</span>';
+    const regs = o.regions.map(r => `<a href="${ROOT}region/${r.key}/">${esc(r.name.toUpperCase())}</a>`).join(' · ') || 'NOT STATED';
+    const src = o.source ? `<a class="src mono" href="${esc(o.source)}" target="_blank" rel="noopener">SEEN AT · ${esc(host(o.source).toUpperCase())}${o.retrieved ? ' · ' + esc(o.retrieved) : ''}</a>` : '';
+    return `<article class="op" id="op-${esc(o.id)}"><div class="op-bar mono"><span>$ OPERATOR.${esc(o.id.toUpperCase())}</span></div><h3>${esc(o.name)}</h3><div class="op-type mono">${esc(o.type.toUpperCase())}</div>${o.detail ? `<p class="op-detail">${esc(o.detail)}</p>` : ''}<div class="op-row"><span class="k mono">BASED</span><span>${esc(o.base)}</span></div><div class="op-row"><span class="k mono">SERVES</span><span class="mono op-regions">${regs}</span></div><div class="op-row"><span class="k mono">WEBSITE</span><span>${web}</span></div><div class="op-foot">${flag}${src}</div></article>`;
+  }
+  function renderTours(T){
+    const areas = T.groups.filter(g => g.label !== 'ROUTE EVENTS' && g.label !== 'AREA NOT STATED').length;
+    document.getElementById('tvCrumb').innerHTML = `<a href="${ROOT}"><b>CAPE WINE ATLAS</b></a><span>/</span><b>TOUR OPERATORS</b>`;
+    document.getElementById('tvScroll').innerHTML = `
+      <div class="lv-head tv-head">
+        <div class="rv-eyebrow mono">EVERY OPERATOR THE ATLAS LISTS · ${T.operators} ACROSS ${areas} AREAS · READ TO ${esc(T.read)}</div>
+        <h2 class="display" id="tvTitle" tabindex="-1">Tour<br>operators</h2>
+        <p class="lv-lede">${T.operators} operators publicly offer tours of the Cape winelands, from a hop-on hop-off tram to a steam train to a private guide. They are listed here under the first area each names, with every area it serves and the page that says so. <b>A region page shows only the operators serving that region; this page shows them all.</b></p>
+        <div class="rv-note tv-note">${TOURS_NOTE}</div>
+      </div>` + T.groups.map(g => `<section class="op-group"><h2 class="mono"><span class="h3l">${esc(g.label)} <span>${g.ops.length}</span></span></h2><div class="op-grid">${g.ops.map(opHtml).join('')}</div></section>`).join('');
+  }
+  async function openTours(opts){
+    opts = opts || {};
+    if(!tv.classList.contains('open')) tvOpener = document.activeElement;
+    if(!toursData && !document.getElementById('tvTitle')){
+      try { toursData = await (await fetch(ROOT + 'data/tours.json')).json(); } catch(e){ console.warn(e); return; }
+      renderTours(toursData);
+    }
+    tv.classList.add('open'); setBehindInert(true); document.body.style.overflow = 'hidden';
+    document.getElementById('tvScroll').scrollTop = 0;
+    if(!opts.fromHistory && location.pathname !== toursPath()) push({ tours: true }, toursPath());
+    document.title = 'Tour operators — Cape Wine Atlas';
+    const t = document.getElementById('tvTitle'); if(t) t.focus({ preventScroll: true });
+  }
+  function closeTours(opts){
+    opts = opts || {};
+    tv.classList.remove('open');
+    if(!rvOpen && !lv.classList.contains('open')){ document.body.style.overflow = ''; setBehindInert(false); }
+    document.title = rvOpen && currentRegion ? currentRegion.name + ' — Cape Wine Atlas' : 'Cape Wine Atlas';
+    if(!opts.fromHistory && location.pathname === toursPath()) push(rvOpen ? { region: rvKey } : {}, rvOpen ? regionPath(rvKey) : ROOT + '#explore');
+    const back = tvOpener && document.contains(tvOpener) && !tv.contains(tvOpener) ? tvOpener : document.getElementById('openTours');
+    if(back) back.focus({ preventScroll: true }); tvOpener = null;
+  }
+  trapTab(tv);
+  document.getElementById('tvClose').addEventListener('click', () => closeTours());
+  window.addEventListener('keydown', e => { if(e.key === 'Escape' && tv.classList.contains('open')){ e.stopPropagation(); closeTours(); } }, true);
+  document.addEventListener('click', e => {
+    const a = e.target.closest('a[href]'); if(!a) return;
+    if(e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button > 0) return;
+    if(a.getAttribute('href') === toursPath() && canRoute){ e.preventDefault(); openTours(); }
+  });
 
   window.addEventListener('keydown', e => { if(e.key === 'Escape' && rvOpen && !pvOpen) closeRegion(); });
 
@@ -1650,6 +1709,13 @@
   });
   window.__openProducer = openProducer;
 
+  if(BOOT_PAGE === 'tours'){
+    clearInterval(plInterval);
+    document.getElementById('preloader').classList.add('hide');
+    document.getElementById('chrome').classList.add('show'); document.getElementById('searchToggle').classList.add('show');
+    startParticles();
+    openTours({ fromHistory: true });
+  }
   if(BOOT_REGION){
     clearInterval(plInterval);
     document.getElementById('preloader').classList.add('hide');

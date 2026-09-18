@@ -2,6 +2,15 @@
 
 Newest first. Each entry is one sync to `production site/`.
 
+## v0.18.0 — 2026-09-18 — September 2026 edition
+`versions/cape-wine-atlas_2026-09-18_v0.18.0_september-2026-edition.html`
+
+Same data as v0.17.x. A fourth kind of page.
+
+- **Tour operators, all on one page** at `/tours/`. The atlas lists 30 operators — a hop-on hop-off tram, a tractor, a tuk-tuk, a steam train, cycling tours, private guides — but a visitor could only meet them region by region, and 22 regions have none, so most were effectively invisible. They are now filed under the first area each names, with every area it serves as a link, what it offers in the operator's own terms, where it is based, its website, and the page the atlas read to list it. An operator taken from an association's map rather than its own site is marked NOT YET CONFIRMED, as on the region pages. Harvest Fridays at Gabriëlskloof, which the atlas records as a route event rather than an operator, is shown as exactly that. The page opens like the licence page and closes back to wherever you were; every region page's tour block now ends with ALL 30 OPERATORS ACROSS THE ATLAS ▸, and the footer's count is the way in from the front page. It has its own address, its own listing in the sitemap, and structured data naming all thirty.
+- **Counted as operators, not entries.** The footer and boot log said 31; one of the 31 is the route event. They now say 30.
+- **The copy pass reads a bracket before it splits a sentence.** A bracketed source note with a dash inside it used to split the sentence in front of it, taking a fact with it — Ataraxia's history line ended "Founded 2004 when Kevin Grant." Three producers' history lines return from blank, thirty-odd read fuller, and two working-note phrases that had reached the site ("The location gap stands — the map is a query embed", Daschbosch's) are gone.
+
 ## v0.17.1 — 2026-09-18 — September 2026 edition
 `versions/cape-wine-atlas_2026-09-18_v0.17.1_september-2026-edition.html`
 

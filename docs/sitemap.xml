@@ -10,7 +10,6 @@
   <url><loc>https://capewineatlas.co.za/producer/villion/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://capewineatlas.co.za/producer/genevieve-mcc/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://capewineatlas.co.za/producer/arcangeli/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/rivendell/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://capewineatlas.co.za/producer/paardenkloof/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://capewineatlas.co.za/producer/anysbos/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://capewineatlas.co.za/producer/eerstehoop/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
@@ -37,6 +36,7 @@
   <url><loc>https://capewineatlas.co.za/producer/silkbush/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://capewineatlas.co.za/producer/bosjes/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://capewineatlas.co.za/producer/lorraine-private-cellar/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/seven-oaks/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://capewineatlas.co.za/producer/waboomsrivier-winery/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://capewineatlas.co.za/region/calitzdorp/</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
   <url><loc>https://capewineatlas.co.za/producer/boplaas/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
@@ -57,6 +57,7 @@
   <url><loc>https://capewineatlas.co.za/producer/lost-boy/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://capewineatlas.co.za/region/cape-south-coast/</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
   <url><loc>https://capewineatlas.co.za/producer/sijnn/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/the-drift-estate/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://capewineatlas.co.za/producer/lismore/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://capewineatlas.co.za/producer/swallow-hill/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://capewineatlas.co.za/producer/aant-vette-wine-estate/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
@@ -73,6 +74,7 @@
   <url><loc>https://capewineatlas.co.za/producer/hout-bay-vineyards/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://capewineatlas.co.za/producer/capaia/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://capewineatlas.co.za/producer/cape-point-vineyards/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/signal-hill/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://capewineatlas.co.za/producer/dorrance-urban-winery/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://capewineatlas.co.za/producer/tim-martin-wines/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://capewineatlas.co.za/region/cederberg/</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
@@ -242,6 +244,26 @@
   <url><loc>https://capewineatlas.co.za/producer/baleia-wines/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://capewineatlas.co.za/region/nieuwoudtville/</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
   <url><loc>https://capewineatlas.co.za/producer/cloudskraal/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/region/no-fixed-place/</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/alinea-wines/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/avr-wines/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/birthmark-of-africa-wines/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/cape-dreams/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/dalsig/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/elmie/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/helder-crest/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/holder-vineyard-and-wines/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/keet-wines/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/kleine-draken/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/la-ricmal-wines/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/leopard-frog-vineyards/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/malanot/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/mont-destin-wines/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/paul-roos-wine/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/richard-hilton-vineyards/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/snow-mountain-wines/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/tumbaga-fine-wines/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/yardstick-wines/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://capewineatlas.co.za/region/olifants-river/</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
   <url><loc>https://capewineatlas.co.za/producer/klawer-wine-cellars/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://capewineatlas.co.za/producer/lutzville-vineyards/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
@@ -291,21 +313,17 @@
   <url><loc>https://capewineatlas.co.za/producer/anura-vineyards/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://capewineatlas.co.za/producer/klein-parys-vineyards/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://capewineatlas.co.za/producer/simonsvlei/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/alinea-wines/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://capewineatlas.co.za/producer/the-ahrens-family/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://capewineatlas.co.za/producer/cape-wine-company/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://capewineatlas.co.za/producer/denneboom-vineyards/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://capewineatlas.co.za/producer/firstcape/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://capewineatlas.co.za/producer/freedom-hill-vineyards/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://capewineatlas.co.za/producer/lourens-family-wines/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/mont-destin-wines/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://capewineatlas.co.za/producer/mooi-bly/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://capewineatlas.co.za/producer/nomoya-world/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://capewineatlas.co.za/producer/scali-wines/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://capewineatlas.co.za/producer/the-foundry/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/tumbaga-fine-wines/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://capewineatlas.co.za/producer/vilafonte/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/kleine-draken/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://capewineatlas.co.za/region/plettenberg-bay/</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
   <url><loc>https://capewineatlas.co.za/producer/bramon-wine-estate/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://capewineatlas.co.za/producer/lodestone/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
@@ -345,7 +363,6 @@
   <url><loc>https://capewineatlas.co.za/producer/le-roux-fourie-vignerons/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://capewineatlas.co.za/producer/arabella-wines/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://capewineatlas.co.za/producer/fraai-uitzicht-1798/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/cape-dreams/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://capewineatlas.co.za/producer/claime-dor-wines/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://capewineatlas.co.za/producer/clairvaux-family-wines/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://capewineatlas.co.za/producer/gabriel-and-gysbert/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
@@ -375,221 +392,210 @@
   <url><loc>https://capewineatlas.co.za/producer/deep-rooted-wines/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://capewineatlas.co.za/producer/saurwein-wines/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://capewineatlas.co.za/region/stellenbosch/</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/delaire-graff/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/spier/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/kleine-zalze/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/cavalli/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/alto/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/beyerskloof/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/demorgenzon/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/dornier/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/glenelly/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/neil-ellis/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/tokara/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/jordan/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/warwick/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/hazendal/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/villiera/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/vredenheim/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/meinert/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/hoopenburg/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/stellenzicht/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/koelenbosch/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/stellenbosch-hills/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/stellenbosch-family-wines/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/stark-conde/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/beeslaar/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/kanonkop/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/rustenberg/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/simonsig/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/waterford/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/thelema/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/meerlust/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/raats/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/le-riche/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/oldenburg/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/zorgvliet/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/stellenrust/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/de-meye/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/lievland/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/slaley/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/deux-freres/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/remhoogte/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/l-avenir/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/morgenhof/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/knorhoek/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/quoin-rock/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/muratie/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/delheim/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/bartinney/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/le-pommier/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/hartenberg/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/kunjani/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/bellevue/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/fort-simon/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/groenland/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/mooiplaas/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/kaapzicht/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/zevenwacht/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/saxenburg/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/bein/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/de-toren/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/skilpadvlei/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/boschkloof/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/neethlingshof/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/lovane/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/dewaal/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/overgaauw/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/brenaissance/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://capewineatlas.co.za/producer/aaldering/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/clos-malverne/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/louisvale/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/jc-le-roux/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/le-grand-domaine/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/dalla-cia/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/stellakaya/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/rascallion/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/the-high-road/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/middelvlei/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/audacia/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/annandale/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/peter-falke/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/guardian-peak/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/ernie-els/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/uva-mira/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/haskell/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/hidden-valley/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/longridge/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/grangehurst/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/somerbosch/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/lyngrove/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/klein-welmoed/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/ken-forrester/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/post-house/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/vergenoegd-low/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/lourensford/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/morgenster/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/waterkloof/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/idiom/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/vriesenhof/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/kleinood/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/keermont/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/lanzerac/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/kanu-private-cellar-vineyards/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/koopmanskloof/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/m-hudi-wines/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/mostertsdrift-noble-wines/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/sterhuis-wines/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/the-19th/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/alluvia-specialist-winery/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/arra-vineyards/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/camberley-wines/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/clouds-estate/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/ernst-gouws-co-wines/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/le-bonheur/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/marianne-wine-estate/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/miles-mossop-wines/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/mount-vernon/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/natte-valleij-wines/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/rainbow-s-end-wine-estate/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/vuurberg-wine-estate/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/avontuur-estate/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/bilton-wines/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/eikendal-estate/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/flagstone-winery/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/jp-bredell-wines/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/lithos-wines/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/rust-en-vrede/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/stonewall-wines/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/the-winery-of-good-hope/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/vergelegen-estate/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/webersburg/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/yonder-hill/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/brampton-wines/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/de-trafford-wines/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/graceland-vineyards/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/klein-dasbosch/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/rudera-wines/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/amani-vineyards/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/asara-wine-estate/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/jacobsdal-wine-estate/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/kyburg-boutique-wines/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/mulderbosch-vineyards/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/sylvanvale-vineyards/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/winshaw-vineyards/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/weltevreden-estate/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/taaibosch-wines/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/reyneke-wines/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/pink-valley-wines/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/man-family-wines/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/long-dog-wines/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/ladybird-vineyards/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/la-boucher-wines/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/klein-graniet/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/journey-s-end/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/heins-family-wines/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/compagniesdrift-wines/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/aslina-wines/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/amperbo-boerdery/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/stellenbosch-vineyards/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/casa-mori/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/devonvale-golf-and-wine-estate/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/the-hills-wine/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/botanica-wines/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/croydon-vineyard-estate/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/karibib-wine-estate/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/craven-wines/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/angus-paul-wines/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/illimis-wines/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/three-quarters-wines/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/anwilka/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/capelands/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/edgebaston-vineyard/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/highberry-vineyards/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/naude-wines/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/blankbottle-winery/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/thistle-and-weed/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://capewineatlas.co.za/producer/african-roots-wine-brands/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/avr-wines/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/birthmark-of-africa-wines/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/alluvia-specialist-winery/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/alto/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/amani-vineyards/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/amperbo-boerdery/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/angus-paul-wines/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/annandale/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/anwilka/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/arra-vineyards/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/asara-wine-estate/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/aslina-wines/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/audacia/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/avontuur-estate/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/bartinney/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/beeslaar/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/bein/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/bellevue/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/beyerskloof/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/bilton-wines/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://capewineatlas.co.za/producer/bizoe-wines/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/blankbottle-winery/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/boschkloof/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/botanica-wines/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/brampton-wines/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/brenaissance/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/camberley-wines/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/capelands/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://capewineatlas.co.za/producer/capensis-wines/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/elmie/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/casa-mori/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/cavalli/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/clos-malverne/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/clouds-estate/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/compagniesdrift-wines/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/craven-wines/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/croydon-vineyard-estate/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/dalla-cia/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/de-meye/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/de-toren/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/de-trafford-wines/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/delaire-graff/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/delheim/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/demorgenzon/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/deux-freres/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/devonvale-golf-and-wine-estate/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/dewaal/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/dornier/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/edgebaston-vineyard/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/eikendal-estate/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/ernie-els/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/ernst-gouws-co-wines/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/flagstone-winery/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/fort-simon/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://capewineatlas.co.za/producer/friesland-wines/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/helder-crest/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/glenelly/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/graceland-vineyards/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/grangehurst/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/groenland/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/guardian-peak/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/hartenberg/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/haskell/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/hazendal/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/heins-family-wines/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/hidden-valley/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/highberry-vineyards/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://capewineatlas.co.za/producer/hogan-wines/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/holder-vineyard-and-wines/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/keet-wines/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/la-ricmal-wines/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/hoopenburg/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/idiom/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/illimis-wines/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/jacobsdal-wine-estate/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/jc-le-roux/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/jordan/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/journey-s-end/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/jp-bredell-wines/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/kaapzicht/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/kanonkop/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/kanu-private-cellar-vineyards/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/karibib-wine-estate/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/keermont/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/ken-forrester/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/klein-dasbosch/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/klein-graniet/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/klein-welmoed/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/kleine-zalze/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/kleinood/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/knorhoek/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/koelenbosch/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/koopmanskloof/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/kunjani/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/kyburg-boutique-wines/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/l-avenir/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/la-boucher-wines/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/ladybird-vineyards/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/lanzerac/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/le-bonheur/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://capewineatlas.co.za/producer/le-chant-wines/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/leopard-frog-vineyards/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/malanot/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/le-grand-domaine/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/le-pommier/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/le-riche/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/lievland/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/lithos-wines/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/long-dog-wines/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/longridge/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/louisvale/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/lourensford/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/lovane/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/lyngrove/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/m-hudi-wines/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/man-family-wines/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/marianne-wine-estate/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://capewineatlas.co.za/producer/marklew-family-wines/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/meerlust/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/meinert/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://capewineatlas.co.za/producer/metzer-family-wines/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/middelvlei/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/miles-mossop-wines/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/mooiplaas/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/morgenhof/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/morgenster/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/mostertsdrift-noble-wines/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://capewineatlas.co.za/producer/mount-rozier/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/mount-vernon/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/mudita-cap-classique/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/mulderbosch-vineyards/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/muratie/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/natte-valleij-wines/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/naude-wines/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/neethlingshof/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/neil-ellis/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://capewineatlas.co.za/producer/nico-van-der-merwe-wines/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/paul-roos-wine/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/oldenburg/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/overgaauw/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/peter-falke/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/pink-valley-wines/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/post-house/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/quoin-rock/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/raats/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/rainbow-s-end-wine-estate/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/rascallion/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://capewineatlas.co.za/producer/rebel-rebel-wines/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/richard-hilton-vineyards/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/romond-vineyards/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/salt-rock-wines/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/scions-of-sinai/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/snow-mountain-wines/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/remhoogte/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/reyneke-wines/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://capewineatlas.co.za/producer/rock-of-eye/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/romond-vineyards/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/rudera-wines/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/rust-en-vrede/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/rustenberg/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/salt-rock-wines/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/saxenburg/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/scions-of-sinai/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/simonsig/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/skilpadvlei/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/slaley/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/somerbosch/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/spier/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://capewineatlas.co.za/producer/spotswood-wines/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/stark-conde/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/stellakaya/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/stellenbosch-family-wines/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/stellenbosch-hills/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/stellenbosch-vineyards/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/stellenrust/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://capewineatlas.co.za/producer/stellenview-premium-wines/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/stellenzicht/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/sterhuis-wines/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/stonewall-wines/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://capewineatlas.co.za/producer/strydom-vineyards/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://capewineatlas.co.za/producer/super-single-vineyards/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/dalsig/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/sylvanvale-vineyards/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/taaibosch-wines/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/the-19th/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/the-high-road/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/the-hills-wine/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://capewineatlas.co.za/producer/the-township-winery/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/the-winery-of-good-hope/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/thelema/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/thistle-and-weed/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/three-quarters-wines/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/tokara/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/uva-mira/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/vergelegen-estate/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/vergenoegd-low/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/villiera/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://capewineatlas.co.za/producer/vinoneers/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://capewineatlas.co.za/producer/visio-vintners/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://capewineatlas.co.za/producer/yardstick-wines/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/von-family-wines/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/vredenheim/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/vriesenhof/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/vuurberg-wine-estate/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/warwick/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/waterford/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/waterkloof/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/webersburg/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/weltevreden-estate/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/winshaw-vineyards/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/yonder-hill/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/zevenwacht/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/zorgvliet/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://capewineatlas.co.za/region/swartland/</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
   <url><loc>https://capewineatlas.co.za/producer/aa-badenhorst-family-wines/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://capewineatlas.co.za/producer/allesverloren/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://capewineatlas.co.za/producer/intellego-wines/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://capewineatlas.co.za/producer/kloovenburg/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/lammershoek/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://capewineatlas.co.za/producer/leeuwenkuil-family-vineyards/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://capewineatlas.co.za/producer/mullineux/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://capewineatlas.co.za/producer/org-de-rac/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
@@ -636,12 +642,14 @@
   <url><loc>https://capewineatlas.co.za/producer/welbedacht-schalk-burger/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://capewineatlas.co.za/producer/val-du-charron/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://capewineatlas.co.za/producer/mont-du-toit/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/dunstone/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://capewineatlas.co.za/producer/nabygelegen/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://capewineatlas.co.za/producer/linton-park/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://capewineatlas.co.za/producer/wellington-wines/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://capewineatlas.co.za/producer/roodekrantz/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://capewineatlas.co.za/producer/mischa-estate/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://capewineatlas.co.za/producer/hildenbrand/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://capewineatlas.co.za/producer/jacques-smit/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://capewineatlas.co.za/producer/napier-winery/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://capewineatlas.co.za/producer/welgegund/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://capewineatlas.co.za/producer/andreas/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>

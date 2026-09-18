@@ -715,28 +715,33 @@
     let hideTimer = null, pinnedKey = null;
     const maxFarms = Math.max(...ATLAS.idx.map(r => r.farms));
     ATLAS.idx.forEach((r, i) => {
-      const m = MAP_MARKS[r.key]; if(!m) return;
-      const o = document.createElement('button');
-      o.type = 'button';
-      o.className = 'orb live';
-      o.dataset.key = r.key;
-      o.setAttribute('aria-label', `${r.name} — ${r.farms} producer${r.farms === 1 ? '' : 's'}. Open the region`);
-      const sc = 0.72 + 0.55 * Math.sqrt(r.farms / maxFarms);
-      o.style.left = (m[0]*100).toFixed(2) + '%'; o.style.top = (m[1]*100).toFixed(2) + '%';
-      o.style.setProperty('--sc', sc.toFixed(2));
-      o.innerHTML = '<i></i><i></i><i></i><i></i>';
-      o.style.transitionDelay = (0.04 * i) + 's';
-      plane.appendChild(o);
+      // a holding area placed at the province — the atlas's "No fixed place" shelf — has no position on the
+      // chart: it is listed, marked as such, and opens like any region, but no marker is drawn for it
+      const m = MAP_MARKS[r.key]; if(!m && !r.nochart) return;
+      let o = null;
+      if(m){
+        o = document.createElement('button');
+        o.type = 'button';
+        o.className = 'orb live';
+        o.dataset.key = r.key;
+        o.setAttribute('aria-label', `${r.name} — ${r.farms} producer${r.farms === 1 ? '' : 's'}. Open the region`);
+        const sc = 0.72 + 0.55 * Math.sqrt(r.farms / maxFarms);
+        o.style.left = (m[0]*100).toFixed(2) + '%'; o.style.top = (m[1]*100).toFixed(2) + '%';
+        o.style.setProperty('--sc', sc.toFixed(2));
+        o.innerHTML = '<i></i><i></i><i></i><i></i>';
+        o.style.transitionDelay = (0.04 * i) + 's';
+        plane.appendChild(o);
+      }
       const li = document.createElement('button');
       li.type = 'button';
-      li.className = 'rl'; li.dataset.key = r.key;
-      li.setAttribute('aria-label', `${r.name} — ${r.farms} producer${r.farms === 1 ? '' : 's'}. Open the region`);
-      li.innerHTML = `<span class="n">${String(i+1).padStart(2,'0')} ${r.name.toUpperCase()}</span><span class="c">${r.farms}</span>`;
+      li.className = 'rl' + (r.nochart ? ' nochart' : ''); li.dataset.key = r.key;
+      li.setAttribute('aria-label', `${r.name} — ${r.farms} producer${r.farms === 1 ? '' : 's'}${r.nochart ? ', not on the chart' : ''}. Open the region`);
+      li.innerHTML = `<span class="n">${r.nochart ? '··' : String(i+1).padStart(2,'0')} ${r.name.toUpperCase()}${r.nochart ? '<em class="nc">NOT ON THE CHART</em>' : ''}</span><span class="c">${r.farms}</span>`;
       listEl.appendChild(li);
       const show = () => {
         clearTimeout(hideTimer);
         document.querySelectorAll('.orb.hi, .rl.hi').forEach(e => e.classList.remove('hi'));
-        o.classList.add('hi'); li.classList.add('hi');
+        if(o) o.classList.add('hi'); li.classList.add('hi');
         document.getElementById('mcEyebrow').textContent = r.district && r.district !== '—' ? `${r.woRegion.toUpperCase()} · ${r.district.toUpperCase()}${/DISTRICT|REGION/.test(r.district.toUpperCase()) ? '' : ' DISTRICT'}` : r.woRegion.toUpperCase();
         document.getElementById('mcName').textContent = r.name;
         document.getElementById('mcText').innerHTML = `<div class="stat mono">
@@ -753,11 +758,11 @@
       };
       const hide = () => {
         if(pinnedKey === r.key) return;
-        hideTimer = setTimeout(() => { o.classList.remove('hi'); li.classList.remove('hi'); card.classList.remove('show'); }, 380);
+        hideTimer = setTimeout(() => { if(o) o.classList.remove('hi'); li.classList.remove('hi'); card.classList.remove('show'); }, 380);
       };
-      o.addEventListener('mouseenter', show); o.addEventListener('mouseleave', hide);
+      if(o){ o.addEventListener('mouseenter', show); o.addEventListener('mouseleave', hide); o.addEventListener('focus', show); o.addEventListener('blur', hide); }
       li.addEventListener('mouseenter', show); li.addEventListener('mouseleave', hide);
-      o.addEventListener('focus', show); o.addEventListener('blur', hide); li.addEventListener('focus', show); li.addEventListener('blur', hide);
+      li.addEventListener('focus', show); li.addEventListener('blur', hide);
       li.addEventListener('click', () => openRegion(r.key));
     });
     // A press on the chart opens the marker nearest the finger or pointer, measured on screen after the
@@ -795,6 +800,7 @@
   // ---------- tactical map: geometry → canvas ----------
   let tacticalBox = null, tacticalPins = {};
   function regionBox(R){
+    if(R.nochart) return null;   // nothing to frame: the shelf has no position on the chart
     const pts = R.farms.filter(f => f.lat != null);
     let lon0, lon1, lat0, lat1;
     if(pts.length){
@@ -930,7 +936,7 @@
     tacticalBox = regionBox(R);
     const Pn = (lon, lat) => [ (lon - tacticalBox.lon0)/(tacticalBox.lon1 - tacticalBox.lon0) * 100, (lat - tacticalBox.lat0)/(tacticalBox.lat1 - tacticalBox.lat0) * 100 ];
     const showLabels = pinned <= 16;
-    const located = farms.filter(f => f.lat != null).map(f => ({ f, p: Pn(f.lng, -f.lat) })).sort((a,b) => a.p[1] - b.p[1]);
+    const located = tacticalBox ? farms.filter(f => f.lat != null).map(f => ({ f, p: Pn(f.lng, -f.lat) })).sort((a,b) => a.p[1] - b.p[1]) : [];
     let prev = null;
     const pins = located.map(({f, p}) => {
       let side = p[0] < 55 ? 'r' : 'l', dy = 0;
@@ -948,7 +954,7 @@
       const meta = [
         f.founded ? `EST ${f.founded}` : null,
         `<span class="${(f.access==='walk_in'||f.access==='appointment')?'ok':''}">${ACCESS[f.access] || 'ACCESS NOT CONFIRMED'}</span>`,
-        (f.ward && (!R.ward || f.ward !== R.ward)) ? `WARD · ${esc(f.ward.toUpperCase())}` : (f.locality && !f.ward ? esc(f.locality.split(/[(—]/)[0].trim().toUpperCase()) : null),
+        (f.ward && (!R.ward || f.ward !== R.ward)) ? `WARD · ${esc(f.ward.toUpperCase())}` : (f.locality && !f.ward && !R.nochart ? esc(f.locality.split(/[(—]/)[0].trim().toUpperCase()) : null),
         f.routeMember === 'yes' ? 'ROUTE MEMBER' : null,
         f.lat != null ? `LOCATION · ${String(f.geoConfidence||'').toUpperCase()}` : 'LOCATION NOT YET RESOLVED',
         f.oldVineFlag ? '<span class="gold">OLD VINES</span>' : null
@@ -1007,14 +1013,14 @@
           </div>
           ${R.withheld ? `<div class="rv-withheld mono">${R.withheld} FURTHER ${R.withheld === 1 ? 'RECORD IS' : 'RECORDS ARE'} HELD BACK UNTIL ${R.withheld === 1 ? 'IT MEETS' : 'THEY MEET'} THE PUBLICATION STANDARD</div>` : ''}
         </div>
-        <div class="rv-map" id="rvMap">
+        ${R.nochart ? `<div class="rv-map nochart" id="rvMap" role="note"><div class="nopins mono">NOT ON THE CHART<br>THESE PRODUCERS CANNOT BE PLACED<br>NARROWER THAN THE WESTERN CAPE</div><span class="corner tl"></span><span class="corner br"></span></div>` : `<div class="rv-map" id="rvMap">
           <canvas id="miniCanvas" role="img" aria-label="Tactical map of ${esc(R.name)}: producers with a published position"></canvas>
           <span class="corner tl"></span><span class="corner br"></span>
           <div class="hud mono">TACTICAL · ${esc(R.name.toUpperCase())}<br><b>${pinned}/${farms.length}</b> POSITIONS LOCATED${pinned < farms.length ? `<br>${farms.length - pinned} AWAITING A PUBLISHED POSITION` : ''}</div>
           ${pins}
           ${pinned ? '' : '<div class="nopins mono">NO PUBLISHED POSITION YET<br>FOR THESE PRODUCERS</div>'}
           <div class="scale mono"><i style="width:60px"></i><span>≈ 1 KM</span></div>
-        </div>
+        </div>`}
       </div>
 
       <section class="rv-block">
@@ -1118,7 +1124,7 @@
       `&gt;&gt; WINE OF ORIGIN: ${[R.woRegion, R.district, R.ward].filter(x => x && x !== '—').map(x => x.toUpperCase()).join(' / ') || R.name.toUpperCase()}`,
       `&gt;&gt; POSITIONS LOCATED ................. <span class="g">${pinned}/${R.farms.length}</span>`,
       `&gt;&gt; PROVENANCE CHECK ................... <span class="g">EVERY HONOUR SOURCED</span>`,
-      `&gt;&gt; DRAWING THE TACTICAL MAP ...`
+      R.nochart ? `&gt;&gt; NO CHART POSITION ................. <span class="g">PLACED AT THE WESTERN CAPE</span>` : `&gt;&gt; DRAWING THE TACTICAL MAP ...`
     ];
     lines.innerHTML = msgs.map(m => `<div>${m}</div>`).join('');
     [...lines.children].forEach((el, i) => setTimeout(() => el.classList.add('show'), 120 + i*170));
@@ -1520,9 +1526,9 @@
     pvScroll.innerHTML = `
       <div class="pv-head${located ? '' : ' nomap'}">
         <div>
-          <div class="rv-eyebrow mono">${[R.woRegion, R.district, f.ward].filter(x => x && x !== '—').map(x => esc(String(x).toUpperCase())).join(' · ') + (f.locality ? ' · ' + esc(String(f.locality).toUpperCase()) : '') || 'WESTERN CAPE'}</div>
+          <div class="rv-eyebrow mono">${R.nochart ? 'WESTERN CAPE · NO FIXED PLACE' : ([R.woRegion, R.district, f.ward].filter(x => x && x !== '—').map(x => esc(String(x).toUpperCase())).join(' · ') + (f.locality ? ' · ' + esc(String(f.locality).toUpperCase()) : '') || 'WESTERN CAPE')}</div>
           <h2 class="display" id="pvTitle" tabindex="-1">${esc(f.name)}</h2>
-          <p class="pv-lede">${f.history ? esc(f.history) : `A producer on the ${esc(region)} record. The atlas holds its hours, varieties and honours; a history line will follow when the record has one that meets the publication standard.`}</p>
+          <p class="pv-lede">${f.history ? esc(f.history) : `${R.nochart ? 'A producer the atlas can name, source and reach, and cannot place narrower than the Western Cape. ' : `A producer on the ${esc(region)} record. `}The atlas holds its hours, varieties and honours; a history line will follow when the record has one that meets the publication standard.`}</p>
           ${f.people ? `<div class="pv-people"><span class="k mono">PEOPLE</span>${esc(f.people)}</div>` : ''}
           <div class="pv-flags">${flags}</div>
           <div class="pv-stats mono">
@@ -1540,6 +1546,7 @@
           ${VENUE[f.venue] ? row('VENUE', VENUE[f.venue]) : ''}
           ${f.web ? row('WEBSITE', `<a href="${esc(f.web)}" target="_blank" rel="noopener">${esc(host(f.web))}</a>`) : ''}
           ${row('CONTACT', f.contactHeld ? esc(String(f.contactHeld).toUpperCase()) + ' on file, not republished — reach the producer through its own site.' : 'Not held; reach the producer through its own site.')}
+          ${R.nochart && f.locality ? row('LOCALITY', esc(f.locality) + ' — as the producer states it; not a place the atlas could confirm.') : ''}
           ${located ? '' : row('POSITION', 'None published by the producer or an association; the atlas does not invent one.')}
         </div>
         <div><h3 class="mono"><span class="h3l">THE VINEYARD</span></h3>
@@ -1595,7 +1602,7 @@
     document.body.style.overflow = 'hidden'; pvScroll.scrollTop = 0;
     const t = document.getElementById('pvTitle'); if(t) t.focus({ preventScroll: true });
     if(!opts.fromHistory && location.pathname !== producerPath(id)) push({ producer: id, region: key }, producerPath(id));
-    document.title = f.name + ' — ' + R.name + ' · Cape Wine Atlas';
+    document.title = f.name + ' — ' + (R.nochart ? 'Western Cape · no fixed place' : R.name) + ' · Cape Wine Atlas';
   }
   function closeProducer(opts){
     opts = opts || {};

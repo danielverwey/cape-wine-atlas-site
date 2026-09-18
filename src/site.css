@@ -891,3 +891,10 @@
     .pv-wines, .pv-ledger-grid{ grid-template-columns:minmax(0,1fr); }
     .rec-bar .rec-open{ margin-right:8px; }
   }
+
+  /* ---------- the shelf: a holding area with no position on the chart ---------- */
+  .rl.nochart{ margin-top:10px; border-top:1px dashed var(--line); padding-top:12px; }
+  .rl.nochart .n{ color:#9a9a9a; }
+  .rl .nc{ display:inline-block; margin-left:10px; font-style:normal; font-size:8px; letter-spacing:.18em; color:var(--muted); border:1px solid var(--line); padding:1px 5px; vertical-align:middle; }
+  .rv-map.nochart{ display:flex; align-items:center; justify-content:center; background:repeating-linear-gradient(135deg, rgba(255,255,255,0.025) 0 2px, transparent 2px 14px), #000; }
+  .rv-map.nochart .nopins{ position:static; transform:none; }

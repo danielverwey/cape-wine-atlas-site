@@ -140,9 +140,18 @@ for r in atlas['regions']:
     if name not in SLUG:
         if r['farms']: sys.exit(f"REFUSED — '{name}' holds {len(r['farms'])} published records but has no region file to place them in")
         skipped.append(name); continue
+    # A holding area placed at the geographical unit and nothing narrower — the atlas's "No fixed place"
+    # shelf, whose producers it can name, source and reach but cannot place closer than the Western Cape.
+    # It is listed and its records have pages, but it has no position on the chart and is never drawn there.
+    nochart = bool(m.get('geographicalUnit')) and not (m.get('wo_region') or m.get('wo_district') or m.get('wo_ward'))
+    if not r['farms'] and name not in SHORT:
+        # Nothing published in it and no fixed position on the chart: there is nowhere to draw it, so it is
+        # noted and passed over. A real place with everything withheld — Lambert's Bay — keeps its position.
+        skipped.append(name); continue
     key = SLUG[name]
     fs = [f for f in r['farms'] if f['lat'] is not None]
-    if name in SHORT: short, lng, lat = SHORT[name]
+    if nochart: short, lng, lat = name, None, None
+    elif name in SHORT: short, lng, lat = SHORT[name]
     else: short = name; lat = sum(f['lat'] for f in fs)/len(fs); lng = sum(f['lng'] for f in fs)/len(fs)
     if fs and name in SHORT and name != "Lambert's Bay":
         lat = sum(f['lat'] for f in fs)/len(fs); lng = sum(f['lng'] for f in fs)/len(fs)
@@ -173,26 +182,31 @@ for r in atlas['regions']:
     ward = (m.get('wo_ward') or '').split(' (')[0].split(' | ')[0].strip() or None
     withheld = atlas.get('withheld', {}).get('byRegion', {}).get(name, 0)
     terroir = copy(m.get('terroir'), 380)
+    # the atlas may publish an introduction of its own for a region (ADR-119); where it does, that is the
+    # lede as written. Where it only has a terroir note, the note goes through the copy pass as before.
+    intro = ' '.join((r.get('intro') or '').split()) if r.get('introFrom') == 'intro' else ''
     n_f = len(r['farms']); where = f"the {district or short} district of the {m.get('wo_region') or 'Cape'}"
     fallback = (f"No producer is yet on record in {where}." if n_f == 0 else f"One producer on record in {where}." if n_f == 1 else f"{n_f} producers on record in {where}.")
-    lede = terroir or (rts[0]['blurb'] if rts else '') or fallback
-    regions[key] = {'key': key, 'name': short, 'full': name, 'woRegion': m.get('wo_region') or '—', 'district': district or '—', 'ward': ward,
+    lede = intro or terroir or (rts[0]['blurb'] if rts else '') or fallback
+    wo_region = m.get('wo_region') or (m.get('geographicalUnit') if nochart else None) or '—'
+    regions[key] = {'key': key, 'name': short, 'full': name, 'woRegion': wo_region, 'district': district or '—', 'ward': ward, 'nochart': nochart,
                     'withheld': withheld, 'status': m['status'], 'collected': m.get('collected'), 'expected': intornull(m.get('producer_count_expected')),
                     'terroir': terroir, 'lede': lede, 'routes': rts, 'tours': tours, 'farms': farms}
-    idx.append({'key': key, 'name': short, 'district': district or '—', 'woRegion': m.get('wo_region') or '—', 'farms': len(r['farms']), 'pinned': len(fs),
+    idx.append({'key': key, 'name': short, 'district': district or '—', 'woRegion': wo_region, 'farms': len(r['farms']), 'pinned': len(fs),
                 'awards': sum(len(f['awards']) for f in r['farms']), 'pending': sum(f['pendingClaims'] or 0 for f in r['farms']),
-                'researched': sum(1 for f in r['farms'] if f['awardsCollected']), 'status': m['status'], 'lat': round(lat, 4), 'lng': round(lng, 4), 'withheld': withheld})
+                'researched': sum(1 for f in r['farms'] if f['awardsCollected']), 'status': m['status'],
+                'lat': None if nochart else round(lat, 4), 'lng': None if nochart else round(lng, 4), 'withheld': withheld, 'nochart': nochart})
 if skipped: print('note: nothing published in ' + ', '.join(skipped) + ' — not drawn on the chart')
-idx.sort(key=lambda x: x['name'])
+idx.sort(key=lambda x: (x['nochart'], x['name']))   # the shelf lists last
 stats = dict(atlas['stats'])
-stats.update({'regions': len(idx), 'routes': len(atlas['routes']), 'tours': len(atlas['tourOperators']), 'built': atlas['built'], 'buildMode': mode,
+stats.update({'regions': sum(1 for x in idx if not x['nochart']), 'routes': len(atlas['routes']), 'tours': len(atlas['tourOperators']), 'built': atlas.get('dataAsAt') or atlas['built'], 'buildMode': mode,
               'competitions': [{'body': x['body'], 'year': x['year'], 'records': x['records']} for x in atlas['competitions']],
               'tourDisclaimer': atlas['tourOperatorDisclaimer'], 'withheld': atlas.get('withheld', {}).get('total', 0),
               'industry': {'cellars': atlas.get('industry', {}).get('cellarsCrushing2024', {}).get('total'), 'source': 'SAWIS, SA Wine Industry Statistics 2024'}})
 _w = atlas['stats'].get('wines') or {}
 stats['wines'] = {k: _w.get(k) for k in ('brands', 'ranges', 'notes', 'producersWithBrands', 'namelessByChoice')}
 LON0, LON1, LAT0, LAT1 = 17.6, 23.75, 31.25, 35.05        # the Western Cape chart's bounding box
-marks = {r['key']: [(r['lng']-LON0)/(LON1-LON0), (-r['lat']-LAT0)/(LAT1-LAT0)] for r in idx}
+marks = {r['key']: [(r['lng']-LON0)/(LON1-LON0), (-r['lat']-LAT0)/(LAT1-LAT0)] for r in idx if r['lat'] is not None}
 geo = json.loads((SRC / 'geo.json').read_text())
 
 # ---------------------------------------------------------------- lenses & search
@@ -345,6 +359,7 @@ def crumb_html(R):
     ward, chain = chain_of(R)
     return '<b>CAPE WINE ATLAS</b>' + ''.join(f'<span>/</span>{x}' for x in chain) + f'<span>/</span><b>{esc((ward or R["name"]).upper())}{" WARD" if ward else ""}</b>'
 
+NOCHART_MAP = '''<div class="rv-map nochart" id="rvMap" role="note"><div class="nopins mono">NOT ON THE CHART<br>THESE PRODUCERS CANNOT BE PLACED<br>NARROWER THAN THE WESTERN CAPE</div><span class="corner tl"></span><span class="corner br"></span></div>'''
 def prerender(R):
     farms = R['farms']; S = stats
     pinned = sum(1 for f in farms if f['lat'] is not None)
@@ -359,7 +374,7 @@ def prerender(R):
         meta = [x for x in [
             f'EST {f["founded"]}' if f['founded'] else None,
             f'<span class="{"ok" if f["access"] in ("walk_in","appointment") else ""}">{ACCESS.get(f["access"], "ACCESS NOT CONFIRMED")}</span>',
-            (f'WARD · {esc(f["ward"].upper())}' if (f['ward'] and (not R['ward'] or f['ward'] != R['ward'])) else (esc(f['locality'].split('(')[0].split('—')[0].strip().upper()) if (f['locality'] and not f['ward']) else None)),
+            (f'WARD · {esc(f["ward"].upper())}' if (f['ward'] and (not R['ward'] or f['ward'] != R['ward'])) else (esc(f['locality'].split('(')[0].split('—')[0].strip().upper()) if (f['locality'] and not f['ward'] and not R['nochart']) else None)),
             'ROUTE MEMBER' if f['routeMember'] == 'yes' else None,
             f'LOCATION · {str(f["geoConfidence"] or "").upper()}' if f['lat'] is not None else 'LOCATION NOT YET RESOLVED',
             '<span class="gold">OLD VINES</span>' if f['oldVineFlag'] else None] if x]
@@ -419,9 +434,9 @@ def prerender(R):
           </div>
           {f'<div class="rv-withheld mono">{R["withheld"]} FURTHER {"RECORD IS" if R["withheld"] == 1 else "RECORDS ARE"} HELD BACK UNTIL {"IT MEETS" if R["withheld"] == 1 else "THEY MEET"} THE PUBLICATION STANDARD</div>' if R['withheld'] else ''}
         </div>
-        <div class="rv-map" id="rvMap"><canvas id="miniCanvas" role="img" aria-label="Tactical map of {esc(R['name'])}: producers with a published position"></canvas><span class="corner tl"></span><span class="corner br"></span>
+        {NOCHART_MAP if R['nochart'] else f"""<div class="rv-map" id="rvMap"><canvas id="miniCanvas" role="img" aria-label="Tactical map of {esc(R['name'])}: producers with a published position"></canvas><span class="corner tl"></span><span class="corner br"></span>
           <div class="hud mono">TACTICAL · {esc(R['name'].upper())}<br><b>{pinned}/{len(farms)}</b> POSITIONS LOCATED</div>
-          <div class="scale mono"><i style="width:60px"></i><span>≈ 1 KM</span></div></div>
+          <div class="scale mono"><i style="width:60px"></i><span>≈ 1 KM</span></div></div>"""}
       </div>
       <section class="rv-block">
         <h3 class="mono"><span class="h3l">PRODUCER RECORDS <span>{len(farms)} ON RECORD · {esc(STATUS.get(R['status'], R['status']).upper())}</span></span></h3>
@@ -459,7 +474,10 @@ def prerender_producer(R, f):
     by_year = {}
     for a in f['awards']: by_year.setdefault(a['year'] if a['year'] is not None else '—', []).append(a)
     years = sorted(by_year, key=lambda y: -1 if y == '—' else -int(y))
-    eyebrow = ' · '.join(esc(str(x).upper()) for x in [R['woRegion'], R['district'], f['ward']] if x and x != '—') + (' · ' + esc(str(f['locality']).upper()) if f['locality'] else '')
+    # a producer on the shelf is placed at the province and nothing narrower: the eyebrow says exactly that, and
+    # the locality the producer itself states goes under VISIT, where it reads as the producer's word rather than ours
+    eyebrow = ('WESTERN CAPE · NO FIXED PLACE' if R['nochart'] else
+               ' · '.join(esc(str(x).upper()) for x in [R['woRegion'], R['district'], f['ward']] if x and x != '—') + (' · ' + esc(str(f['locality']).upper()) if f['locality'] else ''))
     flags = ''.join(x for x in [
         f'<span class="flag gold mono">{ACCESS.get(f["access"], esc(str(f["access"]).upper()))}</span>' if f['access'] else '',
         '<span class="flag dim mono">ROUTE MEMBER</span>' if f['routeMember'] == 'yes' else '',
@@ -496,13 +514,14 @@ def prerender_producer(R, f):
                  ('no readable page on the producer’s own domain' if f.get('winesAbsent') else ('the producer publishes no wine names on its own site' if f.get('winesCollected') else 'range not yet read'))
     if n_more: wines_prov += f'; {n_more} further name{pl(n_more).lower()} from the honours ledger'
     ranges_html = ('<div class="pv-ranges mono"><span class="k">RANGES</span>' + ''.join(f'<span>{esc(r)}</span>' for r in ranges) + '</div>') if ranges else ''
-    lede = esc(f['history']) if f['history'] else f'A producer on the {esc(region)} record. The atlas holds its hours, varieties and honours; a history line will follow when the record has one that meets the publication standard.'
+    lede = esc(f['history']) if f['history'] else (('A producer the atlas can name, source and reach, and cannot place narrower than the Western Cape. ' if R['nochart'] else f'A producer on the {esc(region)} record. ') + 'The atlas holds its hours, varieties and honours; a history line will follow when the record has one that meets the publication standard.')
     row = lambda k, v: f'<div class="pv-row"><span class="k mono">{k}</span><span>{v}</span></div>'
     visit = ''.join([
         row('HOURS', esc(f['hours']) if f['hours'] else 'No public tasting schedule on record.'),
         row('VENUE', VENUE[f['venue']]) if f['venue'] in VENUE else '',
         row('WEBSITE', f'<a href="{esc(f["web"])}" target="_blank" rel="noopener">{esc(host(f["web"]))}</a>') if f['web'] else '',
         row('CONTACT', (esc(str(f['contactHeld']).upper()) + ' on file, not republished — reach the producer through its own site.') if f['contactHeld'] else 'Not held; reach the producer through its own site.'),
+        row('LOCALITY', esc(f['locality']) + ' — as the producer states it; not a place the atlas could confirm.') if (R['nochart'] and f['locality']) else '',
         '' if located else row('POSITION', 'None published by the producer or an association; the atlas does not invent one.')])
     vineyard = ''.join([
         (f'<div class="pv-row"><span class="k mono">VARIETIES</span><div class="tags mono">' + ''.join(f'<span>{esc(v)}</span>' for v in f['varieties']) + '</div></div>') if f['varieties'] else row('VARIETIES', 'None on record yet.'),
@@ -580,7 +599,7 @@ def ld_region(R):
     url = f'{BASE_URL}region/{R["key"]}/'
     return ld({'@context': 'https://schema.org', '@graph': [
         ld_breadcrumb([('Cape Wine Atlas', BASE_URL), (R['name'], url)]),
-        {'@type': 'ItemList', 'name': f'Wine producers on record in {R["name"]}', 'url': url, 'numberOfItems': len(R['farms']),
+        {'@type': 'ItemList', 'name': ('Wine producers on record in the Western Cape with no fixed place' if R['nochart'] else f'Wine producers on record in {R["name"]}'), 'url': url, 'numberOfItems': len(R['farms']),
          'itemListElement': [{'@type': 'ListItem', 'position': i + 1, 'name': f['name'], 'url': f'{BASE_URL}producer/{f["id"]}/'} for i, f in enumerate(R['farms'])]}]})
 DESC_MAX = 300
 ACCESS_SENT = {'walk_in': 'open for walk-in tasting', 'appointment': 'tasting by appointment',
@@ -602,8 +621,11 @@ def meta_desc(R, f, shown=4):
     Nothing else is rephrased to fit, and a count of nothing is left unsaid rather than printed
     as a zero.
     """
-    place = f['ward'] or R['name']
-    s = f"{f['name']} — wine producer in {place}, Western Cape."
+    if R['nochart']:
+        s = f"{f['name']} — wine producer in the Western Cape; the atlas has not established where its premises are."
+    else:
+        place = f['ward'] or R['name']
+        s = f"{f['name']} — wine producer in {place}, Western Cape."
     acc = ACCESS_SENT.get(f.get('access'))
     if acc: s += f' Visit: {acc}.'
     n_aw = len(f['awards'])
@@ -642,7 +664,7 @@ def ld_producer(R, f):
     # the atlas calls clean — never on a pin that marks somebody else's tasting venue.
     if own and f['lat'] is not None and f.get('coordsClean'):
         w['geo'] = {'@type': 'GeoCoordinates', 'latitude': round(f['lat'], 6), 'longitude': round(f['lng'], 6)}
-    area = f['ward'] or R['name']
+    area = 'Western Cape' if R['nochart'] else (f['ward'] or R['name'])
     if area: w['areaServed'] = {'@type': 'AdministrativeArea', 'name': area}
     if f['varieties']:
         # These are the cultivars the producer works with — grown, bought in, or vinified under
@@ -650,7 +672,7 @@ def ld_producer(R, f):
         w['knowsAbout'] = list(f['varieties'])
     if f['founded']: w['foundingDate'] = str(f['founded'])
     if f['history']: w['description'] = f['history']
-    w['containedInPlace' if own else 'location'] = {'@type': 'Place', 'name': R['name'], 'url': f'{BASE_URL}region/{R["key"]}/'}
+    w['containedInPlace' if own else 'location'] = {'@type': 'Place', 'name': 'Western Cape' if R['nochart'] else R['name'], 'url': f'{BASE_URL}region/{R["key"]}/'}
     return ld({'@context': 'https://schema.org', '@graph': [ld_breadcrumb([('Cape Wine Atlas', BASE_URL), (R['name'], f'{BASE_URL}region/{R["key"]}/'), (f['name'], url)]), w]})
 
 # ---------------------------------------------------------------- templating
@@ -701,7 +723,7 @@ for key, R in regions.items():
     for f in R['farms']:
         pd = OUT / 'producer' / f['id']; pd.mkdir(parents=True)
         pdesc = meta_desc(R, f)
-        (pd / 'index.html').write_text(render({'TITLE': f"{f['name']} — {R['name']} · Cape Wine Atlas", 'DESCRIPTION': pdesc, 'CANONICAL': f'{BASE_URL}producer/{f["id"]}/', 'REGION': key, 'RV_OPEN': '', 'CRUMB': crumb_html(R), 'PRERENDER': '',
+        (pd / 'index.html').write_text(render({'TITLE': f"{f['name']} — {'Western Cape · no fixed place' if R['nochart'] else R['name']} · Cape Wine Atlas", 'DESCRIPTION': pdesc, 'CANONICAL': f'{BASE_URL}producer/{f["id"]}/', 'REGION': key, 'RV_OPEN': '', 'CRUMB': crumb_html(R), 'PRERENDER': '',
                                                 'PRODUCER': f['id'], 'PV_OPEN': 'open', 'PV_CRUMB': pv_crumb_html(R, f), 'PV_PRERENDER': prerender_producer(R, f), 'JSONLD': ld_producer(R, f)}), encoding='utf-8')
         urls.append((f'{BASE_URL}producer/{f["id"]}/', '0.7')); n_pv += 1
 

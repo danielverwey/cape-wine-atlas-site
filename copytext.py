@@ -41,7 +41,14 @@ HOURS_ONLY = r"""
   (?<![\w-])(?:bookings|\d{1,2}:\d{2}|(?:mon|tue|wed|thu|fri|sat|sun)(?:-|\b)|hours)(?![\w-])
 """
 PROCESS_HISTORY = re.compile(PROCESS_SRC + "|" + HOURS_ONLY, re.I | re.X)
-PROCESS_HOURS = re.compile(PROCESS_SRC, re.I | re.X)
+# Opening hours are short by nature ("Mon–Fri 08:00–17:00", "By appointment.") and speak of prior
+# arrangement, so the hours filter has no minimum length and does not treat "prior" as method.
+PROCESS_HOURS = re.compile(PROCESS_SRC.replace("notes?|prior|evidence", "notes?|evidence")
+                                      .replace("atlas|filed|per|self", "atlas|filed|self")
+                                      .replace("silence|closure|unknown", "silence|unknown")
+                                      .replace("sa-venues|wine\\.co\\.za|platter\\w*|", "sa-venues|wine\\.co\\.za|platter's|association|warns|tripadvisor|")
+                                      , re.I | re.X)
+MIN_LEN = {"history": 25, "hours": 6}
 PROCESS = PROCESS_HISTORY
 DOMAIN = re.compile(r"\b[a-z0-9-]+(?:\.[a-z0-9-]+)*\.(?:co\.za|com|org|net|wine|info|africa|za)\b(?:/\S*)?", re.I)
 SMALL = {'IN','OF','AT','ON','TO','IS','AS','BY','OR','AN','SO','NO','UP','IT','BE','WE','DO','IF','NOT','AND','THE','FOR'}
@@ -128,8 +135,13 @@ def history(note, lowercase_vocab, budget=230, mode="history"):
     t = note.replace("--", "—").replace(" – ", " — ")
     kept = []
     for s in _sentences(t):
-        s = _strip_label(s.strip())
+        s = s.strip() if mode == "hours" else _strip_label(s.strip())   # "BY APPOINTMENT ONLY — …" is the hours, not a label
         if not s: continue
+        if mode == "hours":
+            # hours carry their sourcing in brackets, often with a semicolon inside: drop such a bracket
+            # whole before the clause split, or the split cuts through it and takes the hours with it
+            s = re.sub(r"\s*\(([^()]*)\)", lambda m: "" if PROCESS.search(m.group(0)) or DOMAIN.search(m.group(1)) else m.group(0), s)
+            s = re.sub(r"\s*\[[^\]]*\]", "", s).strip()
         clauses = re.split(r"(;\s+|\s—\s)", s)
         run, glue = [], []
         for i in range(0, len(clauses), 2):
@@ -146,8 +158,8 @@ def history(note, lowercase_vocab, budget=230, mode="history"):
         for g, c in zip(glue, run[1:]): text += g + c
         text = text.strip(" ,;:—-")
         text = _balance(text)
-        if len(text) < 25: continue
-        if re.match(r"^[\)'\"”’]|^[a-z]", text): continue          # a sentence that began inside a quote or bracket
+        if len(text) < MIN_LEN.get(mode, 25): continue
+        if re.match(r"^[\)'\"”’]", text) or (mode != "hours" and re.match(r"^[a-z]", text)): continue   # began inside a quote or bracket
         if text[0].islower(): text = text[0].upper() + text[1:]
         if not re.search(r"[.!?…”\"')]$", text): text += "."
         kept.append(text)
@@ -164,6 +176,7 @@ def history(note, lowercase_vocab, budget=230, mode="history"):
             out = cut[:k].rstrip(" ,;—") + "."
         else:
             out = cut.rsplit(" ", 1)[0].rstrip(" ,;—") + "…"
+        out = _balance(out.rstrip(".…")) + out[-1] if _balance(out.rstrip(".…")) else ""   # the cut may have opened a bracket
     out = _unshout(out, lowercase_vocab)
     out = re.sub(r"\s+([,;:.])", r"\1", out)
     out = re.sub(r"([;,])\.$", ".", out)

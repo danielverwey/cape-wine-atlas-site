@@ -2,6 +2,15 @@
 
 Newest first. Each entry is one sync to `production site/`.
 
+## v0.20.0 — 2026-11-05 — September 2026 edition
+`versions/cape-wine-atlas_2026-11-05_v0.20.0_september-2026-edition.html`
+
+Built against the atlas of 5 November. **A field the atlas had held since September reaches the page, and the first producer to write in is answered.**
+
+- **Styles are shown.** Rosé, Cap Classique, Blanc de Noir, Cape Vintage, a red or white blend — what a producer makes that names no grape. The atlas split these out of the grape list in September (ADR-031), cited and validated them, and never projected them, so 165 producers carried a list no page showed. Every one of those producers now has a STYLES row beside VARIETIES, on the region card and on its own page (ADR-154). The wine names are untouched: a Rosé is a style, not a brand.
+- **Skilpadvlei, corrected from its own contribution.** The producer wrote in through the site's contribute section — the first to do so — asking for its tasting-room hours to be told apart from its restaurant's, and for its four wines to be shown. Both were checked against the producer's own page source before anything was written: the hours now read Mon–Sat 10:00–17:00, Sun 10:00–16:00, the restaurant's hours sit in the venue note, and all four wines appear — ML Joubert as the named wine, Sauvignon Blanc and Merlot among the varieties, the Rosé under styles (ADR-153). The contributor's details were recorded nowhere, by the atlas's standing rule.
+- **Counts unchanged.** 651 producers published, 2,586 honours.
+
 ## v0.19.0 — 2026-09-18 — September 2026 edition
 `versions/cape-wine-atlas_2026-09-18_v0.19.0_september-2026-edition.html`
 

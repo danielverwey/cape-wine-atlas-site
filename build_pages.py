@@ -158,7 +158,7 @@ for r in atlas['regions']:
     if short == 'Constantia': lng, lat = 18.42, -34.04
     farms = []
     for f in r['farms']:
-        rec = {k: f.get(k) for k in ('id','name','ward','lat','lng','geoConfidence','founded','hours','venue','access','varieties','signatureWines','web','routeMember','oldVineFlag','awardsCollected','pendingClaims','locality','contactHeld','coordsClean')}
+        rec = {k: f.get(k) for k in ('id','name','ward','lat','lng','geoConfidence','founded','hours','venue','access','varieties','styles','signatureWines','web','routeMember','oldVineFlag','awardsCollected','pendingClaims','locality','contactHeld','coordsClean')}
         rec['awards'] = [{k: aw.get(k) for k in ('body','year','wine','award','sourceUrl','sourceName')} | {'corr': bool(aw.get('_corroborated'))} for aw in f['awards']]
         # the producer's own range, as printed on its own pages: names and range labels, the producer's own
         # account of a name where it gives one, and where and when the atlas read it. The working note behind
@@ -253,7 +253,7 @@ grape_count = {}
 for R in regions.values():
     for f in R['farms']:
         for g in {norm_grape(v) for v in (f['varieties'] or []) if v}: grape_count[g] = grape_count.get(g, 0) + 1
-LENS_GRAPES = [g for g, _ in sorted(grape_count.items(), key=lambda x: -x[1])[:12]]
+LENS_GRAPES = [g for g, _ in sorted(grape_count.items(), key=lambda x: (-x[1], x[0]))[:12]]
 def lens_of(farms):
     fs = farms
     founded = [f['founded'] for f in fs if f.get('founded')]
@@ -340,7 +340,7 @@ for key, R in regions.items():
             if not k or k in seen: continue
             seen.add(k); search.append({'t': 'WINE', 'l': tidy_name(w, pre), 's': f['name'], 'k': key, 'id': f['id']})
 for w, x in wards.items(): search.append({'t': 'WARD', 'l': w, 's': f"{x['n']} producers · {name_of[x['k']]}", 'k': x['k']})
-for g, n in sorted(grape_count.items(), key=lambda x: -x[1]): search.append({'t': 'GRAPE', 'l': g, 's': f"{n} producers grow it", 'g': g})
+for g, n in sorted(grape_count.items(), key=lambda x: (-x[1], x[0])): search.append({'t': 'GRAPE', 'l': g, 's': f"{n} producers grow it", 'g': g})  # ties broken by name: the search index, DATA_V and the script's fingerprint are now stable between runs
 # every producer, compactly, so the producer page can find its region and its neighbours across region borders
 producers = [[f['id'], key, f['name'], f['lat'], f['lng']] for key, R in regions.items() for f in R['farms']]
 index = {'idx': idx, 'stats': stats, 'geo': geo, 'marks': marks, 'lensGrapes': LENS_GRAPES, 'lensTotals': lens_totals, 'producers': producers}
@@ -482,6 +482,7 @@ def prerender(R):
           {f'<div class="rec-row"><span class="k mono">PEOPLE</span><span>{esc(f["people"])}</span></div>' if f.get('people') else ''}
           {f'<div class="rec-row"><span class="k mono">HOURS</span><span>{esc(f["hours"])}</span></div>' if f['hours'] else ''}
           {('<div class="rec-row"><span class="k mono">VARIETIES</span><div class="tags mono">' + ''.join(f'<span>{esc(v)}</span>' for v in f['varieties']) + '</div></div>') if f['varieties'] else ''}
+          {('<div class="rec-row"><span class="k mono">STYLES</span><div class="tags mono">' + ''.join(f'<span>{esc(v)}</span>' for v in f['styles']) + '</div></div>') if f.get('styles') else ''}
           {('<div class="rec-row"><span class="k mono">SIGNATURE</span><span>' + ' · '.join(esc(x) for x in f['signatureWines']) + '</span></div>') if f['signatureWines'] else ''}
           <div class="rec-awards">{led}{flags}</div>
           <div class="rec-contact mono">{contact}</div>
@@ -613,6 +614,9 @@ def prerender_producer(R, f):
         '' if located else row('POSITION', 'None published by the producer or an association; the atlas does not invent one.')])
     vineyard = ''.join([
         (f'<div class="pv-row"><span class="k mono">VARIETIES</span><div class="tags mono">' + ''.join(f'<span>{esc(v)}</span>' for v in f['varieties']) + '</div></div>') if f['varieties'] else row('VARIETIES', 'None on record yet.'),
+        # ADR-154: styles are the half of ADR-031's split that names no grape — Rosé, Cap Classique,
+        # a red blend. On record and cited since September; shown beside the varieties from here on.
+        (f'<div class="pv-row"><span class="k mono">STYLES</span><div class="tags mono">' + ''.join(f'<span>{esc(v)}</span>' for v in f['styles']) + '</div></div>') if f.get('styles') else '',
         row('SIGNATURE', ' · '.join(esc(x) for x in f['signatureWines'])) if f['signatureWines'] else '',
         row('OLD VINES', 'Old-vine bottlings on record.') if f['oldVineFlag'] else '',
         row('FOUNDED', esc(f['founded'])) if f['founded'] else ''])

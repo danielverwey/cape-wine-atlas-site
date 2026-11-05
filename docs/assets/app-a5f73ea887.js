@@ -6,7 +6,7 @@
      single-file build sets window.__CWA with the same things inlined. */
   const INLINE = window.__CWA || {};
   const ROOT = (document.documentElement.dataset.root || '/');
-  const DATA_V = '292c6c831a';   // the build's fingerprint: data addresses change when the data does
+  const DATA_V = '739d44268d';   // the build's fingerprint: data addresses change when the data does
   const asset = p => INLINE.assets && INLINE.assets[p] ? INLINE.assets[p] : ROOT + 'assets/' + p;
   const FOOTER_HALFTONE_SRC = asset('img/footer-halftone.jpg');
   const MAP_TEX_SRC = asset('img/map-tex.jpg');
@@ -1008,6 +1008,7 @@
           ${f.people ? `<div class="rec-row"><span class="k mono">PEOPLE</span><span>${esc(f.people)}</span></div>` : ''}
           ${f.hours ? `<div class="rec-row"><span class="k mono">HOURS</span><span>${esc(f.hours)}</span></div>` : ''}
           ${f.varieties && f.varieties.length ? `<div class="rec-row"><span class="k mono">VARIETIES</span><div class="tags mono">${f.varieties.map(v=>`<span>${esc(v)}</span>`).join('')}</div></div>` : ''}
+          ${f.styles && f.styles.length ? `<div class="rec-row"><span class="k mono">STYLES</span><div class="tags mono">${f.styles.map(v=>`<span>${esc(v)}</span>`).join('')}</div></div>` : ''}
           ${f.signatureWines && f.signatureWines.length ? `<div class="rec-row"><span class="k mono">SIGNATURE</span><span>${f.signatureWines.map(esc).join(' · ')}</span></div>` : ''}
           <div class="rec-awards">${led}${flags}</div>
           <div class="rec-contact mono">${contact}</div>
@@ -1634,6 +1635,7 @@
         </div>
         <div><h3 class="mono"><span class="h3l">THE VINEYARD</span></h3>
           ${(f.varieties || []).length ? `<div class="pv-row"><span class="k mono">VARIETIES</span><div class="tags mono">${f.varieties.map(v => `<span>${esc(v)}</span>`).join('')}</div></div>` : row('VARIETIES', 'None on record yet.')}
+          ${(f.styles || []).length ? `<div class="pv-row"><span class="k mono">STYLES</span><div class="tags mono">${f.styles.map(v => `<span>${esc(v)}</span>`).join('')}</div></div>` : ''}
           ${(f.signatureWines || []).length ? row('SIGNATURE', f.signatureWines.map(esc).join(' · ')) : ''}
           ${f.oldVineFlag ? row('OLD VINES', 'Old-vine bottlings on record.') : ''}
           ${f.founded ? row('FOUNDED', esc(f.founded)) : ''}

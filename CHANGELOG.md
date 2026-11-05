@@ -2,6 +2,15 @@
 
 Newest first. Each entry is one sync to `production site/`.
 
+## v0.20.1 — 2026-11-05 — September 2026 edition
+`versions/cape-wine-atlas_2026-11-05_v0.20.1_september-2026-edition.html`
+
+Two things v0.20.0 promised and did not deliver on the page a visitor sees.
+
+- **The styles row now shows for visitors, not only for crawlers.** v0.20.0 added STYLES to the pre-rendered page and not to the script that re-renders it on load, so the row was in the HTML and gone by the time anyone read it. The script now draws it too, on the region card and the producer page.
+- **Skilpadvlei lists its four wines.** The owner ruled (ADR-155) that the wine list shows what a producer sells: a wine the producer prints under its own house name — *Skilpadvlei Merlot*, *Skilpadvlei Rosé* — is a wine of that producer and is written as printed, with the house name folded off for display. A bare grape name still is not a wine. The rule applies to a record when its range is next read; it is not swept across the atlas.
+- **Counts unchanged.** 651 producers, 2,586 honours; wines on record rise by three.
+
 ## v0.20.0 — 2026-11-05 — September 2026 edition
 `versions/cape-wine-atlas_2026-11-05_v0.20.0_september-2026-edition.html`
 

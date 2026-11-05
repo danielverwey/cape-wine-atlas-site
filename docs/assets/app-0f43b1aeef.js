@@ -1006,7 +1006,8 @@
           <div class="rec-meta mono">${meta}</div>
           ${f.history ? `<p class="rec-hist">${esc(f.history)}</p>` : ''}
           ${f.people ? `<div class="rec-row"><span class="k mono">PEOPLE</span><span>${esc(f.people)}</span></div>` : ''}
-          ${f.hours ? `<div class="rec-row"><span class="k mono">HOURS</span><span>${esc(f.hours)}</span></div>` : ''}
+          ${f.hours ? `<div class="rec-row"><span class="k mono">TASTING HOURS</span><span>${esc(f.hours)}</span></div>` : ''}
+          ${venueNote(f) ? `<div class="rec-row"><span class="k mono">VENUE NOTE</span><span>${esc(venueNote(f))}</span></div>` : ''}
           ${f.varieties && f.varieties.length ? `<div class="rec-row"><span class="k mono">VARIETIES</span><div class="tags mono">${f.varieties.map(v=>`<span>${esc(v)}</span>`).join('')}</div></div>` : ''}
           ${f.styles && f.styles.length ? `<div class="rec-row"><span class="k mono">STYLES</span><div class="tags mono">${f.styles.map(v=>`<span>${esc(v)}</span>`).join('')}</div></div>` : ''}
           ${f.signatureWines && f.signatureWines.length ? `<div class="rec-row"><span class="k mono">SIGNATURE</span><span>${f.signatureWines.map(esc).join(' · ')}</span></div>` : ''}
@@ -1521,6 +1522,10 @@
     return n;
   }
   const SRC_LABEL = { list: 'ON THE PRODUCER’S OWN LIST', range: 'A RANGE ON THE PRODUCER’S OWN LIST', signature: 'SIGNATURE WINE', ledger: 'NAMED IN THE HONOURS LEDGER' };
+  // ADR-133 / ADR-156: a venue note is shown only when it is a value — short and free of research markers —
+  // the same boundary the pre-render draws, so a visitor sees what a crawler sees.
+  const NOTE_INTERNAL = /\bADR-\d{3}\b|\bpass \d{2,3}\b|retrieved \d{4}-|recorded as-is|not reconciled|CONFLICT|confirm with|medium confidence|third-party director|see note|unverified|kept distinct per/i;
+  function venueNote(f){ const v = f.venueNote; return (typeof v === 'string' && v.length > 0 && v.length <= 170 && !NOTE_INTERNAL.test(v)) ? v : null; }
   function winesOf(f){
     // the producer's own list, each with the honours the ledger names for it (a range label becomes a card only
     // when an honour names it), then the signature wines, then wines only the ledger names
@@ -1626,7 +1631,8 @@
       </div>
       <section class="rv-block pv-three">
         <div><h3 class="mono"><span class="h3l">VISIT</span></h3>
-          ${row('HOURS', f.hours ? esc(f.hours) : 'No public tasting schedule on record.')}
+          ${row('TASTING HOURS', f.hours ? esc(f.hours) : 'No public tasting schedule on record.')}
+          ${venueNote(f) ? row('VENUE NOTE', esc(venueNote(f))) : ''}
           ${VENUE[f.venue] ? row('VENUE', VENUE[f.venue]) : ''}
           ${f.web ? row('WEBSITE', `<a href="${esc(f.web)}" target="_blank" rel="noopener">${esc(host(f.web))}</a>`) : ''}
           ${row('CONTACT', f.contactHeld ? esc(String(f.contactHeld).toUpperCase()) + ' on file, not republished — reach the producer through its own site.' : 'Not held; reach the producer through its own site.')}

@@ -5,7 +5,7 @@ Newest first. Each entry is one sync to `production site/`.
 ## v0.20.2 — 2026-11-05 — September 2026 edition
 `versions/cape-wine-atlas_2026-11-05_v0.20.2_september-2026-edition.html`
 
-- **Tasting hours are named as such, and the venue note is shown.** The hours row is now labelled TASTING HOURS — that is what the field has held since September — and a record's venue note appears beside it where it is a plain value: a restaurant on the farm with its own hours, a tasting room at a named outlet, a planned facility. Fifty-seven producers gain the row. Skilpadvlei reads *Tasting hours Mon–Sat 10:00–17:00; Sun 10:00–16:00 · Venue note: Restaurant on the farm: Mon–Sat 07:00–21:00; Sun 07:00–16:00. Wine sales keep the tasting-room hours.* (ADR-156)
+- **Tasting room and restaurant, as the producer wrote them.** The hours row is now labelled TASTING ROOM — that is what the field has held since September — and a record's venue note appears beside it where it is a plain value. A note the producer gave as a label and its hours prints as that label's own row, so Skilpadvlei reads *Tasting room · Mon–Sat 10:00–17:00; Sun 10:00–16:00* and *Restaurant · Mon–Sat 07:00–21:00; Sun 07:00–16:00*, exactly the distinction it asked for. Fifty-six other producers gain a VENUE NOTE row. (ADR-156)
 - **Skilpadvlei's wine list cites the day it was read.** The page said the four wines were read on 2026-09-12, which was the day one of them was; the list of four was read on 2026-11-05 and the citation now says so.
 
 ## v0.20.1 — 2026-11-05 — September 2026 edition

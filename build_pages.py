@@ -275,6 +275,14 @@ _NOTE_INTERNAL = re.compile(r"\bADR-\d{3}\b|\bpass \d{2,3}\b|retrieved \d{4}-|re
 def venue_note(f):
     v = f.get('venueNote')
     return v if isinstance(v, str) and 0 < len(v) <= 170 and not _NOTE_INTERNAL.search(v) else None
+_NOTE_LABEL = re.compile(r'^([A-Z][A-Za-z ]{2,24}):\s+(\S.*)$')
+def venue_note_row(f):
+    """A note the producer gave as a label and its hours — 'Restaurant: Mon–Sat 07:00–21:00' — is printed as that
+    label's own row, the way the producer wrote it; any other note is printed under VENUE NOTE (ADR-156)."""
+    v = venue_note(f)
+    if not v: return None, None
+    m = _NOTE_LABEL.match(v)
+    return (m.group(1).upper(), m.group(2)) if m else ('VENUE NOTE', v)
 def producer_prefixes(f):
     short = SHORT_SUFFIX.sub('', re.sub(r' \(.*\)$', '', f['name']))
     cands = {fold_name(f['name']), fold_name(short)}
@@ -487,8 +495,8 @@ def prerender(R):
           <div class="rec-meta mono">{''.join(f'<span>{x}</span>' for x in meta)}</div>
           {f'<p class="rec-hist">{esc(f["history"])}</p>' if f['history'] else ''}
           {f'<div class="rec-row"><span class="k mono">PEOPLE</span><span>{esc(f["people"])}</span></div>' if f.get('people') else ''}
-          {f'<div class="rec-row"><span class="k mono">TASTING HOURS</span><span>{esc(f["hours"])}</span></div>' if f['hours'] else ''}
-          {f'<div class="rec-row"><span class="k mono">VENUE NOTE</span><span>{esc(venue_note(f))}</span></div>' if venue_note(f) else ''}
+          {f'<div class="rec-row"><span class="k mono">TASTING ROOM</span><span>{esc(f["hours"])}</span></div>' if f['hours'] else ''}
+          {f'<div class="rec-row"><span class="k mono">{esc(venue_note_row(f)[0])}</span><span>{esc(venue_note_row(f)[1])}</span></div>' if venue_note(f) else ''}
           {('<div class="rec-row"><span class="k mono">VARIETIES</span><div class="tags mono">' + ''.join(f'<span>{esc(v)}</span>' for v in f['varieties']) + '</div></div>') if f['varieties'] else ''}
           {('<div class="rec-row"><span class="k mono">STYLES</span><div class="tags mono">' + ''.join(f'<span>{esc(v)}</span>' for v in f['styles']) + '</div></div>') if f.get('styles') else ''}
           {('<div class="rec-row"><span class="k mono">SIGNATURE</span><span>' + ' · '.join(esc(x) for x in f['signatureWines']) + '</span></div>') if f['signatureWines'] else ''}
@@ -614,8 +622,8 @@ def prerender_producer(R, f):
     lede = esc(f['history']) if f['history'] else (('A producer the atlas can name, source and reach, and cannot place narrower than the Western Cape. ' if R['nochart'] else f'A producer on the {esc(region)} record. ') + 'The atlas holds its hours, varieties and honours; a history line will follow when the record has one that meets the publication standard.')
     row = lambda k, v: f'<div class="pv-row"><span class="k mono">{k}</span><span>{v}</span></div>'
     visit = ''.join([
-        row('TASTING HOURS', esc(f['hours']) if f['hours'] else 'No public tasting schedule on record.'),
-        row('VENUE NOTE', esc(venue_note(f))) if venue_note(f) else '',
+        row('TASTING ROOM', esc(f['hours']) if f['hours'] else 'No public tasting schedule on record.'),
+        row(venue_note_row(f)[0], esc(venue_note_row(f)[1])) if venue_note(f) else '',
         row('VENUE', VENUE[f['venue']]) if f['venue'] in VENUE else '',
         row('WEBSITE', f'<a href="{esc(f["web"])}" target="_blank" rel="noopener">{esc(host(f["web"]))}</a>') if f['web'] else '',
         row('CONTACT', (esc(str(f['contactHeld']).upper()) + ' on file, not republished — reach the producer through its own site.') if f['contactHeld'] else 'Not held; reach the producer through its own site.'),
